@@ -40,6 +40,15 @@ class SpreadsheetImporter {
       'numero cellulare',
       'phone',
     },
+    'secondaryPhone': {
+      'telefono 2',
+      'secondo telefono',
+      'cellulare 2',
+      'secondo cellulare',
+      'tel 2',
+      'phone 2',
+      'secondary phone',
+    },
     'memberNumber': {
       'tessera',
       'numero tessera',
@@ -88,7 +97,12 @@ class SpreadsheetImporter {
     for (var index = 0; index < header.length; index++) {
       final normalized = _normalizeHeader(_asText(header[index]));
       for (final entry in _headerAliases.entries) {
-        if (entry.value.contains(normalized)) columns[entry.key] = index;
+        if (!entry.value.contains(normalized)) continue;
+        if (entry.key == 'phone' && columns.containsKey('phone')) {
+          columns.putIfAbsent('secondaryPhone', () => index);
+        } else {
+          columns[entry.key] = index;
+        }
       }
     }
 
@@ -123,6 +137,9 @@ class SpreadsheetImporter {
           firstName: firstName,
           lastName: lastName,
           phone: _cleanPhone(_valueAt(row, columns['phone'], maxLength: 40)),
+          secondaryPhone: _cleanPhone(
+            _valueAt(row, columns['secondaryPhone'], maxLength: 40),
+          ),
           memberNumber: _cleanNumericText(
             _valueAt(row, columns['memberNumber'], maxLength: 100),
           ),

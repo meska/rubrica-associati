@@ -1,5 +1,7 @@
 # Rubrica Associati
 
+[Supporto](https://meska.github.io/rubrica-associati/) · [Privacy](https://meska.github.io/rubrica-associati/privacy.html)
+
 <p align="center">
   <img src="assets/branding/rubrica-associati-logo.png" width="180" alt="Logo Rubrica Associati">
 </p>
@@ -14,7 +16,7 @@ L'app è e resterà gratuita. Chi vuole sostenere volontariamente lo sviluppo pu
 
 - elenco associati ordinato per cognome e nome;
 - ricerca immediata per nome, cognome, telefono o numero tessera;
-- scheda con telefono, numero e scadenza tessera, data di nascita e note;
+- scheda con due telefoni, numero e scadenza tessera, data di nascita e note;
 - chiamata rapida tramite il dialer del telefono;
 - inserimento, modifica ed eliminazione manuale;
 - nome del centro personalizzabile dal menu principale;
@@ -30,7 +32,7 @@ L'app è e resterà gratuita. Chi vuole sostenere volontariamente lo sviluppo pu
 
 Dal menu scegli **Condividi rubrica**. L'app crea un backup come `rubrica-associati-2026-07-16.rubrica` e apre il pannello di condivisione del sistema. Il file può essere salvato in File/Drive, inviato via email o messaggistica e poi importato dall'altro dispositivo con **Importa rubrica / Excel**.
 
-Il backup è versionato e comprende nome, cognome, telefono, numero e scadenza tessera, data di nascita e note. In importazione i record esistenti vengono riconosciuti dal numero tessera o dal telefono e aggiornati senza cancellare campi già valorizzati.
+Il backup è versionato e comprende nome, cognome, due telefoni, numero e scadenza tessera, data di nascita e note. In importazione i record esistenti vengono riconosciuti dal numero tessera o da uno dei telefoni e aggiornati senza cancellare campi già valorizzati.
 
 Non è una sincronizzazione automatica in tempo reale: chi riceve un file più recente deve importarlo. Questo mantiene l'app indipendente da iCloud e utilizzabile allo stesso modo su Android e iOS.
 
@@ -43,6 +45,7 @@ La prima riga deve contenere le intestazioni. Sono riconosciute queste colonne, 
 | Nome | Maria |
 | Cognome | Rossi |
 | Telefono | 333 1234567 |
+| Secondo telefono | 049 7654321 |
 | Numero tessera | A001 |
 | Scadenza tessera | 31/12/2027 |
 | Data di nascita | 15/04/1952 |

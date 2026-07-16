@@ -8,6 +8,7 @@ void main() {
       firstName: 'Anna',
       lastName: 'Verdi',
       phone: '+39 0123 456789',
+      secondaryPhone: '049 111222',
       memberNumber: 'A-42',
       expiryDate: DateTime(2027, 12, 31),
       birthDate: DateTime(1950, 5, 4),
@@ -18,6 +19,7 @@ void main() {
 
     expect(restored.fullName, 'Anna Verdi');
     expect(restored.phoneKey, '390123456789');
+    expect(restored.secondaryPhoneKey, '049111222');
     expect(restored.memberNumber, 'A-42');
     expect(restored.expiryDate, DateTime(2027, 12, 31));
     expect(restored.birthDate, DateTime(1950, 5, 4));

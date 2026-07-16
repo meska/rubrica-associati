@@ -28,9 +28,9 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     _member = widget.member;
   }
 
-  Future<void> _call() async {
-    if (_member.phone.isEmpty) return;
-    final uri = Uri(scheme: 'tel', path: _member.phone);
+  Future<void> _call(String phone) async {
+    if (phone.isEmpty) return;
+    final uri = Uri(scheme: 'tel', path: phone);
     if (await launchUrl(uri)) return;
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -126,10 +126,18 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
           const SizedBox(height: 20),
           if (_member.phone.isNotEmpty)
             FilledButton.icon(
-              onPressed: _call,
+              onPressed: () => _call(_member.phone),
               icon: const Icon(Icons.call),
               label: Text('Chiama ${_member.phone}'),
             ),
+          if (_member.secondaryPhone.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => _call(_member.secondaryPhone),
+              icon: const Icon(Icons.call_outlined),
+              label: Text('Chiama ${_member.secondaryPhone}'),
+            ),
+          ],
           const SizedBox(height: 18),
           Card(
             child: Column(
@@ -138,6 +146,11 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   icon: Icons.phone_outlined,
                   label: 'Telefono',
                   value: _member.phone,
+                ),
+                _DetailRow(
+                  icon: Icons.phone_outlined,
+                  label: 'Secondo telefono',
+                  value: _member.secondaryPhone,
                 ),
                 _DetailRow(
                   icon: Icons.badge_outlined,

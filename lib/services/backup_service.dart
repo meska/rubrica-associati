@@ -83,6 +83,7 @@ class BackupService {
     'firstName': member.firstName,
     'lastName': member.lastName,
     'phone': member.phone,
+    'secondaryPhone': member.secondaryPhone,
     'memberNumber': member.memberNumber,
     'expiryDate': _dateToJson(member.expiryDate),
     'birthDate': _dateToJson(member.birthDate),
@@ -99,6 +100,7 @@ class BackupService {
       firstName: firstName,
       lastName: lastName,
       phone: _string(row, 'phone', 40, rowNumber),
+      secondaryPhone: _optionalString(row, 'secondaryPhone', 40, rowNumber),
       memberNumber: _string(row, 'memberNumber', 100, rowNumber),
       expiryDate: _date(row, 'expiryDate', rowNumber),
       birthDate: _date(row, 'birthDate', rowNumber),
@@ -117,6 +119,16 @@ class BackupService {
       throw BackupException('Campo $key non valido nell’associato $rowNumber.');
     }
     return value.trim();
+  }
+
+  String _optionalString(
+    Map<String, dynamic> row,
+    String key,
+    int maxLength,
+    int rowNumber,
+  ) {
+    if (!row.containsKey(key)) return '';
+    return _string(row, key, maxLength, rowNumber);
   }
 
   DateTime? _date(Map<String, dynamic> row, String key, int rowNumber) {

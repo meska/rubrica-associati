@@ -4,6 +4,7 @@ class Member {
     required this.firstName,
     required this.lastName,
     required this.phone,
+    this.secondaryPhone = '',
     required this.memberNumber,
     this.expiryDate,
     this.birthDate,
@@ -14,6 +15,7 @@ class Member {
   final String firstName;
   final String lastName;
   final String phone;
+  final String secondaryPhone;
   final String memberNumber;
   final DateTime? expiryDate;
   final DateTime? birthDate;
@@ -27,6 +29,8 @@ class Member {
   }
 
   String get phoneKey => phone.replaceAll(RegExp(r'\D'), '');
+
+  String get secondaryPhoneKey => secondaryPhone.replaceAll(RegExp(r'\D'), '');
 
   bool get isExpired {
     final expiry = expiryDate;
@@ -44,6 +48,7 @@ class Member {
     firstName: firstName,
     lastName: lastName,
     phone: phone,
+    secondaryPhone: secondaryPhone,
     memberNumber: memberNumber,
     expiryDate: expiryDate,
     birthDate: birthDate,
@@ -56,6 +61,8 @@ class Member {
     'last_name': lastName.trim(),
     'phone': phone.trim(),
     'phone_key': phoneKey,
+    'secondary_phone': secondaryPhone.trim(),
+    'secondary_phone_key': secondaryPhoneKey,
     'member_number': memberNumber.trim(),
     'expiry_date': _dateToStorage(expiryDate),
     'birth_date': _dateToStorage(birthDate),
@@ -67,6 +74,7 @@ class Member {
     firstName: map['first_name'] as String? ?? '',
     lastName: map['last_name'] as String? ?? '',
     phone: map['phone'] as String? ?? '',
+    secondaryPhone: map['secondary_phone'] as String? ?? '',
     memberNumber: map['member_number'] as String? ?? '',
     expiryDate: _dateFromStorage(map['expiry_date'] as String?),
     birthDate: _dateFromStorage(map['birth_date'] as String?),

@@ -19,9 +19,10 @@ void main() {
 }
 
 class RubricaAssociatiApp extends StatelessWidget {
-  const RubricaAssociatiApp({super.key, this.repository});
+  const RubricaAssociatiApp({super.key, this.repository, this.home});
 
   final MemberRepository? repository;
+  final Widget? home;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class RubricaAssociatiApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: HomeScreen(repository: repository ?? MemberRepository()),
+      home: home ?? HomeScreen(repository: repository ?? MemberRepository()),
     );
   }
 }

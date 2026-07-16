@@ -36,6 +36,16 @@ void main() {
     expect(result.members.single.memberNumber, '009');
   });
 
+  test('importa due numeri di telefono anche con intestazioni ripetute', () {
+    final result = importer.parseRows([
+      ['Nome', 'Cognome', 'Telefono', 'Telefono'],
+      ['Lucia', 'Bianchi', '049 123456', '333 7654321'],
+    ]);
+
+    expect(result.members.single.phone, '049 123456');
+    expect(result.members.single.secondaryPhone, '333 7654321');
+  });
+
   test('legge un vero file xlsx', () {
     final workbook = Excel.createExcel();
     final sheet = workbook['Associati'];

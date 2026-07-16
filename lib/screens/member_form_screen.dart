@@ -17,6 +17,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
   late final TextEditingController _firstName;
   late final TextEditingController _lastName;
   late final TextEditingController _phone;
+  late final TextEditingController _secondaryPhone;
   late final TextEditingController _memberNumber;
   late final TextEditingController _notes;
   DateTime? _expiryDate;
@@ -29,6 +30,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
     _firstName = TextEditingController(text: member?.firstName ?? '');
     _lastName = TextEditingController(text: member?.lastName ?? '');
     _phone = TextEditingController(text: member?.phone ?? '');
+    _secondaryPhone = TextEditingController(text: member?.secondaryPhone ?? '');
     _memberNumber = TextEditingController(text: member?.memberNumber ?? '');
     _notes = TextEditingController(text: member?.notes ?? '');
     _expiryDate = member?.expiryDate;
@@ -40,6 +42,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
     _firstName.dispose();
     _lastName.dispose();
     _phone.dispose();
+    _secondaryPhone.dispose();
     _memberNumber.dispose();
     _notes.dispose();
     super.dispose();
@@ -78,6 +81,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
         firstName: _firstName.text.trim(),
         lastName: _lastName.text.trim(),
         phone: _phone.text.trim(),
+        secondaryPhone: _secondaryPhone.text.trim(),
         memberNumber: _memberNumber.text.trim(),
         expiryDate: _expiryDate,
         birthDate: _birthDate,
@@ -126,6 +130,16 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
                 controller: _phone,
                 decoration: const InputDecoration(
                   labelText: 'Telefono',
+                  prefixIcon: Icon(Icons.phone_outlined),
+                ),
+                keyboardType: TextInputType.phone,
+                inputFormatters: [LengthLimitingTextInputFormatter(40)],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _secondaryPhone,
+                decoration: const InputDecoration(
+                  labelText: 'Secondo telefono',
                   prefixIcon: Icon(Icons.phone_outlined),
                 ),
                 keyboardType: TextInputType.phone,

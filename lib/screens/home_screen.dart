@@ -272,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
             'Per trasferire tutta la rubrica tra dispositivi usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\n'
             'Puoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\n'
             'Colonne riconosciute:\n'
-            '• Nome\n• Cognome\n• Telefono\n• Numero tessera\n'
+            '• Nome\n• Cognome\n• Telefono\n• Secondo telefono\n• Numero tessera\n'
             '• Scadenza tessera\n• Data di nascita\n• Note\n\n'
             'Le date possono essere nel formato 31/12/2026. Numero tessera e telefono servono anche per riconoscere e aggiornare i duplicati.',
           ),
@@ -487,6 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _memberSubtitle(Member member) {
     final parts = <String>[];
     if (member.phone.isNotEmpty) parts.add(member.phone);
+    if (member.secondaryPhone.isNotEmpty) parts.add(member.secondaryPhone);
     if (member.memberNumber.isNotEmpty) {
       parts.add('Tessera ${member.memberNumber}');
     }

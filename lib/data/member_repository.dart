@@ -25,7 +25,7 @@ class MemberRepository {
     final databasesPath = await getDatabasesPath();
     _database = await openDatabase(
       path.join(databasesPath, 'rubrica_associati.db'),
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
@@ -34,6 +34,8 @@ class MemberRepository {
             last_name TEXT NOT NULL,
             phone TEXT NOT NULL DEFAULT '',
             phone_key TEXT NOT NULL DEFAULT '',
+            secondary_phone TEXT NOT NULL DEFAULT '',
+            secondary_phone_key TEXT NOT NULL DEFAULT '',
             member_number TEXT NOT NULL DEFAULT '',
             expiry_date TEXT,
             birth_date TEXT,
@@ -50,6 +52,14 @@ class MemberRepository {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) await _createSettingsTable(db);
+        if (oldVersion < 3) {
+          await db.execute(
+            "ALTER TABLE members ADD COLUMN secondary_phone TEXT NOT NULL DEFAULT ''",
+          );
+          await db.execute(
+            "ALTER TABLE members ADD COLUMN secondary_phone_key TEXT NOT NULL DEFAULT ''",
+          );
+        }
       },
     );
     return _database!;
@@ -114,9 +124,11 @@ class MemberRepository {
           OR LOWER(last_name || ' ' || first_name) LIKE ? ESCAPE '\\'
           OR LOWER(phone) LIKE ? ESCAPE '\\'
           OR phone_key LIKE ?
+          OR LOWER(secondary_phone) LIKE ? ESCAPE '\\'
+          OR secondary_phone_key LIKE ?
           OR LOWER(member_number) LIKE ? ESCAPE '\\'
         ''',
-        whereArgs: [term, term, term, phoneTerm, term],
+        whereArgs: [term, term, term, phoneTerm, term, phoneTerm, term],
         orderBy: 'last_name COLLATE NOCASE, first_name COLLATE NOCASE',
       );
     }
@@ -185,8 +197,16 @@ class MemberRepository {
     if (rows.isEmpty && member.phoneKey.isNotEmpty) {
       rows = await db.query(
         'members',
-        where: 'phone_key = ?',
-        whereArgs: [member.phoneKey],
+        where: 'phone_key = ? OR secondary_phone_key = ?',
+        whereArgs: [member.phoneKey, member.phoneKey],
+        limit: 1,
+      );
+    }
+    if (rows.isEmpty && member.secondaryPhoneKey.isNotEmpty) {
+      rows = await db.query(
+        'members',
+        where: 'phone_key = ? OR secondary_phone_key = ?',
+        whereArgs: [member.secondaryPhoneKey, member.secondaryPhoneKey],
         limit: 1,
       );
     }
@@ -198,6 +218,10 @@ class MemberRepository {
     firstName: _preferIncoming(old.firstName, incoming.firstName),
     lastName: _preferIncoming(old.lastName, incoming.lastName),
     phone: _preferIncoming(old.phone, incoming.phone),
+    secondaryPhone: _preferIncoming(
+      old.secondaryPhone,
+      incoming.secondaryPhone,
+    ),
     memberNumber: _preferIncoming(old.memberNumber, incoming.memberNumber),
     expiryDate: incoming.expiryDate ?? old.expiryDate,
     birthDate: incoming.birthDate ?? old.birthDate,

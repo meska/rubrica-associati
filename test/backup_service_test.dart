@@ -15,6 +15,7 @@ void main() {
         firstName: 'Giovanna',
         lastName: 'Dall’Ò',
         phone: '+39 049 123456',
+        secondaryPhone: '333 9876543',
         memberNumber: 'A-001',
         expiryDate: DateTime(2028, 12, 31),
         birthDate: DateTime(1949, 3, 2),
@@ -28,6 +29,7 @@ void main() {
     expect(members.single.id, isNull);
     expect(members.single.fullName, 'Giovanna Dall’Ò');
     expect(members.single.memberNumber, 'A-001');
+    expect(members.single.secondaryPhone, '333 9876543');
     expect(members.single.expiryDate, DateTime(2028, 12, 31));
     expect(members.single.birthDate, DateTime(1949, 3, 2));
   });
