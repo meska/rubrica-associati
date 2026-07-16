@@ -1,10 +1,20 @@
+import 'dart:io';
+
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Su Windows SQLite el ga bisogno del backend FFI, sui telefoni fa tuto el plugin nativo.
+  if (Platform.isWindows) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   runApp(const RubricaAssociatiApp());
 }
 

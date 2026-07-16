@@ -4,7 +4,7 @@
   <img src="assets/branding/rubrica-associati-logo.png" width="180" alt="Logo Rubrica Associati">
 </p>
 
-App Flutter open source per gestire sul telefono gli associati di un centro pensionati o di una piccola associazione.
+App Flutter open source per gestire gli associati di un centro pensionati o di una piccola associazione da telefono o PC.
 
 L'app non invia dati a server e non richiede account o connessione Internet. I dati escono dal dispositivo soltanto quando l'utente sceglie esplicitamente di esportare e condividere un backup.
 
@@ -21,11 +21,11 @@ L'app non invia dati a server e non richiede account o connessione Internet. I d
 - importazione da Excel `.xlsx` e CSV;
 - aggiornamento dei duplicati riconosciuti dal numero tessera o dal telefono;
 - evidenza delle tessere scadute;
-- interfaccia italiana per iOS e Android.
+- interfaccia italiana per iOS, Android e Windows.
 
-## Condivisione tra telefoni
+## Condivisione tra dispositivi
 
-Dal menu scegli **Condividi rubrica**. L'app crea un backup come `rubrica-associati-2026-07-16.rubrica` e apre il pannello di condivisione del telefono. Il file può essere salvato in File/Drive, inviato via email o messaggistica e poi importato dall'altro dispositivo con **Importa rubrica / Excel**.
+Dal menu scegli **Condividi rubrica**. L'app crea un backup come `rubrica-associati-2026-07-16.rubrica` e apre il pannello di condivisione del sistema. Il file può essere salvato in File/Drive, inviato via email o messaggistica e poi importato dall'altro dispositivo con **Importa rubrica / Excel**.
 
 Il backup è versionato e comprende nome, cognome, telefono, numero e scadenza tessera, data di nascita e note. In importazione i record esistenti vengono riconosciuti dal numero tessera o dal telefono e aggiornati senza cancellare campi già valorizzati.
 
@@ -71,6 +71,14 @@ Build iOS:
 ```bash
 flutter build ipa --release
 ```
+
+Build Windows (da un computer Windows con Visual Studio e il workload C++ desktop):
+
+```powershell
+flutter build windows --release
+```
+
+Ad ogni push GitHub Actions compila anche una versione portabile Windows e la pubblica come artefatto ZIP del workflow.
 
 Per distribuire su App Store occorrono un account Apple Developer, un bundle identifier definitivo e la firma configurata in Xcode.
 

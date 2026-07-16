@@ -25,3 +25,30 @@ jobs:
         run: flutter test
       - name: Build Android APK
         run: flutter build apk --debug
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Test on Windows
+        run: flutter test
+      - name: Build Windows
+        run: flutter build windows --release
+      - name: Create portable archive
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path build/windows/x64/runner/Release/* `
+            -DestinationPath rubrica-associati-windows-x64.zip
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: rubrica-associati-windows-x64
+          path: rubrica-associati-windows-x64.zip
+          if-no-files-found: error

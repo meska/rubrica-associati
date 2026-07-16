@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Come preparare il file'),
         content: const SingleChildScrollView(
           child: Text(
-            'Per trasferire tutta la rubrica tra telefoni usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\n'
+            'Per trasferire tutta la rubrica tra dispositivi usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\n'
             'Puoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\n'
             'Colonne riconosciute:\n'
             '• Nome\n• Cognome\n• Telefono\n• Numero tessera\n'
