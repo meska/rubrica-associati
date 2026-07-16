@@ -1,0 +1,15 @@
+Rubrica Associati è una rubrica semplice e privata pensata per circoli, centri pensionati e associazioni.
+
+Gestisci i dati degli associati direttamente sul dispositivo:
+
+• cerca per nome, numero di telefono o tessera;
+• chiama un associato con un tocco;
+• salva fino a due numeri di telefono;
+• annota numero tessera, scadenza, compleanno e note;
+• importa elenchi Excel (.xlsx) e CSV;
+• esporta e condividi l’intera rubrica tra i tuoi dispositivi;
+• personalizza il nome del centro o dell’associazione.
+
+L’app funziona completamente offline, senza account e senza server. I dati restano sul dispositivo, salvo quando decidi esplicitamente di esportare e condividere un backup.
+
+Rubrica Associati è gratuita, senza pubblicità e open source.

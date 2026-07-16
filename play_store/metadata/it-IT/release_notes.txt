@@ -1,0 +1,1 @@
+Prima versione pubblica: rubrica offline, importazione Excel e CSV, backup condivisibili, ricerca rapida e gestione di due numeri di telefono.
