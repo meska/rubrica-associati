@@ -8,6 +8,8 @@ App Flutter open source per gestire gli associati di un centro pensionati o di u
 
 L'app non invia dati a server e non richiede account o connessione Internet. I dati escono dal dispositivo soltanto quando l'utente sceglie esplicitamente di esportare e condividere un backup.
 
+L'app è e resterà gratuita. Chi vuole sostenere volontariamente lo sviluppo può farlo tramite [GitHub Sponsors](https://github.com/sponsors/meska); la donazione non sblocca funzioni e non è necessaria per usare l'app.
+
 ## Funzioni
 
 - elenco associati ordinato per cognome e nome;

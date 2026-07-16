@@ -25,5 +25,6 @@ void main() {
     await tester.tap(find.byType(PopupMenuButton<String>));
     await tester.pumpAndSettle();
     expect(find.text('Condividi rubrica'), findsOneWidget);
+    expect(find.text('Sostieni il progetto'), findsOneWidget);
   });
 }

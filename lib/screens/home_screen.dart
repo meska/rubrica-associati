@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.repository});
@@ -24,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static final _donationsUri = Uri.parse('https://github.com/sponsors/meska');
+
   final _searchController = TextEditingController();
   final _importer = SpreadsheetImporter();
   final _backupService = BackupService();
@@ -187,6 +190,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Future<void> _openDonations() async {
+    // La donazion la resta fora dall'app e no la sblocca gnente: xe proprio volontaria.
+    final opened = await launchUrl(
+      _donationsUri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened) {
+      _showMessage('Non è stato possibile aprire la pagina delle donazioni.');
+    }
+  }
+
   Future<void> _showImportHelp() async {
     await showDialog<void>(
       context: context,
@@ -239,6 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'share') unawaited(_shareBackup());
               if (value == 'import') unawaited(_import());
               if (value == 'help') unawaited(_showImportHelp());
+              if (value == 'donate') unawaited(_openDonations());
             },
             itemBuilder: (_) => const [
               PopupMenuItem(
@@ -262,6 +277,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: Icon(Icons.help_outline),
                   title: Text('Formato del file'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'donate',
+                child: ListTile(
+                  leading: Icon(Icons.volunteer_activism_outlined),
+                  title: Text('Sostieni il progetto'),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
