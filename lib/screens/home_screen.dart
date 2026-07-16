@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:anteas_rubrica/data/member_repository.dart';
-import 'package:anteas_rubrica/models/member.dart';
-import 'package:anteas_rubrica/screens/member_detail_screen.dart';
-import 'package:anteas_rubrica/screens/member_form_screen.dart';
-import 'package:anteas_rubrica/services/backup_service.dart';
-import 'package:anteas_rubrica/services/spreadsheet_importer.dart';
+import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/screens/member_detail_screen.dart';
+import 'package:rubrica_associati/screens/member_form_screen.dart';
+import 'package:rubrica_associati/services/backup_service.dart';
+import 'package:rubrica_associati/services/spreadsheet_importer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _import() async {
     final picked = await FilePicker.pickFiles(
       type: FileType.custom,
-      allowedExtensions: const ['anteas', 'json', 'xlsx', 'csv'],
+      allowedExtensions: const ['rubrica', 'json', 'xlsx', 'csv'],
       withData: false,
     );
     if (picked == null || picked.files.isEmpty) return;
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final bytes = await file.xFile.readAsBytes();
       final lowerName = file.name.toLowerCase();
       final isBackup =
-          lowerName.endsWith('.anteas') || lowerName.endsWith('.json');
+          lowerName.endsWith('.rubrica') || lowerName.endsWith('.json');
       late final List<Member> imported;
       var warningCount = 0;
       if (isBackup) {
@@ -115,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.check_circle_outline),
           title: const Text('Importazione completata'),
           content: Text(
-            '${saved.inserted} nuovi tesserati\n'
-            '${saved.updated} tesserati aggiornati'
+            '${saved.inserted} nuovi associati\n'
+            '${saved.updated} associati aggiornati'
             '${warningCount == 0 ? '' : '\n\n$warningCount righe con avvisi.'}',
           ),
           actions: [
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final now = DateTime.now();
       final date = DateFormat('yyyy-MM-dd').format(now);
-      final fileName = 'anteas-rubrica-$date.anteas';
+      final fileName = 'rubrica-associati-$date.rubrica';
       final directory = await getTemporaryDirectory();
       final backupFile = File(path.join(directory.path, fileName));
       await backupFile.writeAsBytes(
@@ -168,8 +168,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ShareParams(
           files: [XFile(backupFile.path, mimeType: 'application/json')],
           fileNameOverrides: [fileName],
-          title: 'Condividi rubrica Anteas',
-          subject: 'Backup rubrica Anteas del $date',
+          title: 'Condividi Rubrica Associati',
+          subject: 'Backup Rubrica Associati del $date',
           sharePositionOrigin: origin,
         ),
       );
@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Come preparare il file'),
         content: const SingleChildScrollView(
           child: Text(
-            'Per trasferire tutta la rubrica tra telefoni usa Condividi rubrica e importa il file .anteas sull’altro dispositivo.\n\n'
+            'Per trasferire tutta la rubrica tra telefoni usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\n'
             'Puoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\n'
             'Colonne riconosciute:\n'
             '• Nome\n• Cognome\n• Telefono\n• Numero tessera\n'
@@ -216,11 +216,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(9),
+            child: Image.asset(
+              'assets/branding/rubrica-associati-logo.png',
+              semanticLabel: 'Logo Rubrica Associati',
+            ),
+          ),
+        ),
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Anteas'),
-            Text('Rubrica tesserati', style: TextStyle(fontSize: 13)),
+            Text('Rubrica Associati'),
+            Text('Centro pensionati', style: TextStyle(fontSize: 13)),
           ],
         ),
         actions: [
@@ -315,14 +325,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 _searchController.text.isEmpty
                     ? 'La rubrica è vuota'
-                    : 'Nessun tesserato trovato',
+                    : 'Nessun associato trovato',
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 _searchController.text.isEmpty
-                    ? 'Aggiungi il primo tesserato oppure importa una rubrica o un file Excel.'
+                    ? 'Aggiungi il primo associato oppure importa una rubrica o un file Excel.'
                     : 'Prova con un altro nome, telefono o numero tessera.',
                 textAlign: TextAlign.center,
               ),
@@ -350,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return Padding(
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 6),
               child: Text(
-                '${_members.length} ${_members.length == 1 ? 'tesserato' : 'tesserati'}',
+                '${_members.length} ${_members.length == 1 ? 'associato' : 'associati'}',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             );

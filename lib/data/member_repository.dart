@@ -1,4 +1,4 @@
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/models/member.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
@@ -21,7 +21,7 @@ class MemberRepository {
 
     final databasesPath = await getDatabasesPath();
     _database = await openDatabase(
-      path.join(databasesPath, 'anteas_rubrica.db'),
+      path.join(databasesPath, 'rubrica_associati.db'),
       version: 1,
       onCreate: (db, version) async {
         await db.execute('''

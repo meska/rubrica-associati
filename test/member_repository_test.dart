@@ -1,5 +1,5 @@
-import 'package:anteas_rubrica/data/member_repository.dart';
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/models/member.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

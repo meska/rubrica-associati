@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:anteas_rubrica/services/spreadsheet_importer.dart';
+import 'package:rubrica_associati/services/spreadsheet_importer.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -30,7 +30,7 @@ void main() {
       ),
     );
 
-    final result = importer.parse('tesserati.csv', bytes);
+    final result = importer.parse('associati.csv', bytes);
 
     expect(result.members.single.fullName, 'Luca Bianchi');
     expect(result.members.single.memberNumber, '009');
@@ -38,7 +38,7 @@ void main() {
 
   test('legge un vero file xlsx', () {
     final workbook = Excel.createExcel();
-    final sheet = workbook['Tesserati'];
+    final sheet = workbook['Associati'];
     sheet.appendRow([
       TextCellValue('Nome'),
       TextCellValue('Cognome'),
@@ -55,7 +55,7 @@ void main() {
     expect(encoded, isNotNull);
 
     final result = importer.parse(
-      'tesserati.xlsx',
+      'associati.xlsx',
       Uint8List.fromList(encoded!),
     );
 

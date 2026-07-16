@@ -1,4 +1,4 @@
-package it.meska.anteasrubrica
+package it.meska.rubricaassociati
 
 import io.flutter.embedding.android.FlutterActivity
 

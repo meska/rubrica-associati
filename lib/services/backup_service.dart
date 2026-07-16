@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/models/member.dart';
 
 class BackupException implements Exception {
   const BackupException(this.message);
@@ -13,7 +13,7 @@ class BackupException implements Exception {
 }
 
 class BackupService {
-  static const format = 'anteas-rubrica';
+  static const format = 'rubrica-associati';
   static const version = 1;
   static const maxFileBytes = 10 * 1024 * 1024;
   static const maxMembers = 20000;
@@ -21,7 +21,7 @@ class BackupService {
   Uint8List encode(List<Member> members, {DateTime? exportedAt}) {
     if (members.length > maxMembers) {
       throw const BackupException(
-        'La rubrica supera il limite di 20.000 tesserati.',
+        'La rubrica supera il limite di 20.000 associati.',
       );
     }
     // Gli ID sono locali: tra telefoni il merge usa numero tessera o telefono.
@@ -49,7 +49,9 @@ class BackupService {
         throw const BackupException('Il contenuto del backup non è valido.');
       }
       if (decoded['format'] != format) {
-        throw const BackupException('Questo file non è un backup Anteas.');
+        throw const BackupException(
+          'Questo file non è un backup di Rubrica Associati.',
+        );
       }
       if (decoded['version'] != version) {
         throw const BackupException('La versione del backup non è supportata.');
@@ -57,7 +59,7 @@ class BackupService {
       final rows = decoded['members'];
       if (rows is! List || rows.length > maxMembers) {
         throw const BackupException(
-          'L’elenco tesserati del backup non è valido.',
+          'L’elenco associati del backup non è valido.',
         );
       }
 
@@ -65,7 +67,7 @@ class BackupService {
           .map((entry) {
             final row = entry.$2;
             if (row is! Map<String, dynamic>) {
-              throw BackupException('Tesserato ${entry.$1 + 1} non valido.');
+              throw BackupException('Associato ${entry.$1 + 1} non valido.');
             }
             return _memberFromJson(row, entry.$1 + 1);
           })
@@ -91,7 +93,7 @@ class BackupService {
     final firstName = _string(row, 'firstName', 100, rowNumber);
     final lastName = _string(row, 'lastName', 100, rowNumber);
     if (firstName.isEmpty && lastName.isEmpty) {
-      throw BackupException('Tesserato $rowNumber senza nome o cognome.');
+      throw BackupException('Associato $rowNumber senza nome o cognome.');
     }
     return Member(
       firstName: firstName,
@@ -112,7 +114,7 @@ class BackupService {
   ) {
     final value = row[key];
     if (value is! String || value.length > maxLength) {
-      throw BackupException('Campo $key non valido nel tesserato $rowNumber.');
+      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
     }
     return value.trim();
   }
@@ -121,11 +123,11 @@ class BackupService {
     final value = row[key];
     if (value == null) return null;
     if (value is! String || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) {
-      throw BackupException('Campo $key non valido nel tesserato $rowNumber.');
+      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
     }
     final parsed = DateTime.tryParse(value);
     if (parsed == null || _dateToJson(parsed) != value) {
-      throw BackupException('Campo $key non valido nel tesserato $rowNumber.');
+      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
     }
     return parsed;
   }

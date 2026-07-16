@@ -1,6 +1,6 @@
-import 'package:anteas_rubrica/data/member_repository.dart';
-import 'package:anteas_rubrica/main.dart';
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/main.dart';
+import 'package:rubrica_associati/models/member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,10 +13,12 @@ void main() {
   testWidgets('mostra lo stato vuoto e il comando di importazione', (
     tester,
   ) async {
-    await tester.pumpWidget(AnteasApp(repository: _FakeMemberRepository()));
+    await tester.pumpWidget(
+      RubricaAssociatiApp(repository: _FakeMemberRepository()),
+    );
     await tester.pumpAndSettle();
 
-    expect(find.text('Rubrica tesserati'), findsOneWidget);
+    expect(find.text('Rubrica Associati'), findsOneWidget);
     expect(find.text('La rubrica è vuota'), findsOneWidget);
     expect(find.text('Importa rubrica / Excel'), findsOneWidget);
 

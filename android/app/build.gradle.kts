@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "it.meska.anteasrubrica"
+    namespace = "it.meska.rubricaassociati"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "it.meska.anteasrubrica"
+        applicationId = "it.meska.rubricaassociati"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

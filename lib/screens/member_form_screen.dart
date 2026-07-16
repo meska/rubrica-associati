@@ -1,4 +1,4 @@
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/models/member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -90,7 +90,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.member == null ? 'Nuovo tesserato' : 'Modifica'),
+        title: Text(widget.member == null ? 'Nuovo associato' : 'Modifica'),
         actions: [TextButton(onPressed: _save, child: const Text('Salva'))],
       ),
       body: SafeArea(
@@ -171,7 +171,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               FilledButton.icon(
                 onPressed: _save,
                 icon: const Icon(Icons.save_outlined),
-                label: const Text('Salva tesserato'),
+                label: const Text('Salva associato'),
               ),
             ],
           ),

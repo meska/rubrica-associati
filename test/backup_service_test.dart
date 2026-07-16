@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:anteas_rubrica/models/member.dart';
-import 'package:anteas_rubrica/services/backup_service.dart';
+import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/services/backup_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -32,7 +32,7 @@ void main() {
     expect(members.single.birthDate, DateTime(1949, 3, 2));
   });
 
-  test('rifiuta JSON generico che non è un backup Anteas', () {
+  test('rifiuta JSON generico che non è un backup Rubrica Associati', () {
     final bytes = Uint8List.fromList(utf8.encode('{"members":[]}'));
 
     expect(() => service.decode(bytes), throwsA(isA<BackupException>()));

@@ -1,23 +1,23 @@
-import 'package:anteas_rubrica/data/member_repository.dart';
-import 'package:anteas_rubrica/screens/home_screen.dart';
+import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const AnteasApp());
+  runApp(const RubricaAssociatiApp());
 }
 
-class AnteasApp extends StatelessWidget {
-  const AnteasApp({super.key, this.repository});
+class RubricaAssociatiApp extends StatelessWidget {
+  const RubricaAssociatiApp({super.key, this.repository});
 
   final MemberRepository? repository;
 
   @override
   Widget build(BuildContext context) {
-    const anteasGreen = Color(0xFF006B52);
+    const brandTeal = Color(0xFF006B5B);
     return MaterialApp(
-      title: 'Anteas Rubrica',
+      title: 'Rubrica Associati',
       debugShowCheckedModeBanner: false,
       locale: const Locale('it'),
       supportedLocales: const [Locale('it')],
@@ -28,7 +28,7 @@ class AnteasApp extends StatelessWidget {
       ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: anteasGreen,
+          seedColor: brandTeal,
           brightness: Brightness.light,
         ),
         useMaterial3: true,

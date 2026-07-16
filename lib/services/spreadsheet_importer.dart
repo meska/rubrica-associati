@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:anteas_rubrica/models/member.dart';
+import 'package:rubrica_associati/models/member.dart';
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';

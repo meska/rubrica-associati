@@ -1,6 +1,6 @@
-import 'package:anteas_rubrica/data/member_repository.dart';
-import 'package:anteas_rubrica/models/member.dart';
-import 'package:anteas_rubrica/screens/member_form_screen.dart';
+import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,7 +56,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminare il tesserato?'),
+        title: const Text('Eliminare l’associato?'),
         content: Text('${_member.fullName} verrà rimosso dalla rubrica.'),
         actions: [
           TextButton(
@@ -80,7 +80,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tesserato'),
+        title: const Text('Associato'),
         actions: [
           IconButton(
             tooltip: 'Modifica',
