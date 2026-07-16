@@ -32,12 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final _backupService = BackupService();
   Timer? _searchTimer;
   List<Member> _members = const [];
+  var _organizationName = MemberRepository.defaultOrganizationName;
   var _loading = true;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _loadOrganizationName();
   }
 
   @override
@@ -54,6 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
       _members = members;
       _loading = false;
     });
+  }
+
+  Future<void> _loadOrganizationName() async {
+    final name = await widget.repository.loadOrganizationName();
+    if (!mounted) return;
+    setState(() => _organizationName = name);
   }
 
   void _search(String _) {
@@ -201,6 +209,59 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _editOrganizationName() async {
+    var editedName = _organizationName;
+    final formKey = GlobalKey<FormState>();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Nome del centro'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            initialValue: _organizationName,
+            autofocus: true,
+            maxLength: MemberRepository.maxOrganizationNameLength,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(labelText: 'Nome visualizzato'),
+            onChanged: (value) => editedName = value,
+            validator: (value) => value == null || value.trim().isEmpty
+                ? 'Inserisci il nome del centro'
+                : null,
+            onFieldSubmitted: (value) {
+              if (formKey.currentState?.validate() ?? false) {
+                Navigator.pop(context, value.trim());
+              }
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (formKey.currentState?.validate() ?? false) {
+                Navigator.pop(context, editedName.trim());
+              }
+            },
+            child: const Text('Salva'),
+          ),
+        ],
+      ),
+    );
+    if (name == null || name == _organizationName) return;
+
+    try {
+      await widget.repository.saveOrganizationName(name);
+      if (!mounted) return;
+      setState(() => _organizationName = name);
+    } on Object catch (_) {
+      _showMessage('Non è stato possibile salvare il nome del centro.');
+    }
+  }
+
   Future<void> _showImportHelp() async {
     await showDialog<void>(
       context: context,
@@ -240,11 +301,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Rubrica Associati'),
-            Text('Centro pensionati', style: TextStyle(fontSize: 13)),
+            const Text('Rubrica Associati'),
+            Text(
+              _organizationName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 13),
+            ),
           ],
         ),
         actions: [
@@ -252,6 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onSelected: (value) {
               if (value == 'share') unawaited(_shareBackup());
               if (value == 'import') unawaited(_import());
+              if (value == 'organization') unawaited(_editOrganizationName());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'donate') unawaited(_openDonations());
             },
@@ -269,6 +336,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: Icon(Icons.file_download_outlined),
                   title: Text('Importa rubrica / Excel'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'organization',
+                child: ListTile(
+                  leading: Icon(Icons.business_outlined),
+                  title: Text('Nome del centro'),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),

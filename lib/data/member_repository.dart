@@ -12,6 +12,9 @@ class ImportSaveResult {
 class MemberRepository {
   MemberRepository({Database? database}) : _databaseOverride = database;
 
+  static const defaultOrganizationName = 'Centro pensionati';
+  static const maxOrganizationNameLength = 80;
+
   final Database? _databaseOverride;
   Database? _database;
 
@@ -22,7 +25,7 @@ class MemberRepository {
     final databasesPath = await getDatabasesPath();
     _database = await openDatabase(
       path.join(databasesPath, 'rubrica_associati.db'),
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
@@ -43,9 +46,47 @@ class MemberRepository {
         await db.execute(
           'CREATE INDEX members_card_idx ON members(member_number)',
         );
+        await _createSettingsTable(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) await _createSettingsTable(db);
       },
     );
     return _database!;
+  }
+
+  static Future<void> _createSettingsTable(DatabaseExecutor db) =>
+      db.execute('''
+      CREATE TABLE app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    ''');
+
+  Future<String> loadOrganizationName() async {
+    final db = await _db;
+    final rows = await db.query(
+      'app_settings',
+      columns: const ['value'],
+      where: 'key = ?',
+      whereArgs: const ['organization_name'],
+      limit: 1,
+    );
+    if (rows.isEmpty) return defaultOrganizationName;
+    return rows.single['value'] as String;
+  }
+
+  Future<void> saveOrganizationName(String name) async {
+    final cleaned = name.trim();
+    if (cleaned.isEmpty || cleaned.length > maxOrganizationNameLength) {
+      throw ArgumentError.value(name, 'name', 'Nome del centro non valido');
+    }
+
+    final db = await _db;
+    await db.insert('app_settings', {
+      'key': 'organization_name',
+      'value': cleaned,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Member>> search(String query) async {

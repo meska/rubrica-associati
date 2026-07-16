@@ -17,6 +17,7 @@ L'app è e resterà gratuita. Chi vuole sostenere volontariamente lo sviluppo pu
 - scheda con telefono, numero e scadenza tessera, data di nascita e note;
 - chiamata rapida tramite il dialer del telefono;
 - inserimento, modifica ed eliminazione manuale;
+- nome del centro personalizzabile dal menu principale;
 - esportazione dell'intera rubrica in un file portabile `.rubrica`;
 - condivisione tramite File, AirDrop, email, messaggistica o servizi disponibili sul telefono;
 - reimportazione del backup su iOS e Android senza alcun server;

@@ -23,6 +23,12 @@ void main() {
         notes TEXT NOT NULL DEFAULT ''
       )
     ''');
+    await database.execute('''
+      CREATE TABLE app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    ''');
     repository = MemberRepository(database: database);
   });
 
@@ -61,5 +67,17 @@ void main() {
     expect(members.single.phone, '333 1234567');
     expect(members.single.notes, 'Nota originale');
     expect(members.single.expiryDate, DateTime(2027, 12, 31));
+  });
+
+  test('salva e rilegge il nome personalizzato del centro', () async {
+    expect(
+      await repository.loadOrganizationName(),
+      MemberRepository.defaultOrganizationName,
+    );
+
+    await repository.saveOrganizationName('  Circolo Serenità  ');
+
+    expect(await repository.loadOrganizationName(), 'Circolo Serenità');
+    expect(() => repository.saveOrganizationName('   '), throwsArgumentError);
   });
 }
