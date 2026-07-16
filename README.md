@@ -74,6 +74,14 @@ Build iOS:
 flutter build ipa --release
 ```
 
+Rilascio TestFlight dal Mac configurato per il progetto:
+
+```bash
+./scripts/release-testflight.sh
+```
+
+Lo script usa firma manuale e App Store Connect API: non richiede password Apple ID o codici 2FA. Prima di ogni rilascio va aumentato il numero di build in `pubspec.yaml`. La chiave privata `.p8`, il certificato Distribution e il provisioning profile rimangono fuori dal repository.
+
 Build Windows (da un computer Windows con Visual Studio e il workload C++ desktop):
 
 ```powershell
@@ -90,7 +98,7 @@ flutter build linux --release
 
 La CI pubblica anche un archivio portabile `rubrica-associati-linux-x64.tar.gz`.
 
-Per distribuire su App Store occorrono un account Apple Developer, un bundle identifier definitivo e la firma configurata in Xcode.
+La configurazione iOS usa il bundle ID `it.meska.rubricaassociati` e il profilo App Store `Rubrica Associati App Store`.
 
 ## Privacy e backup
 
