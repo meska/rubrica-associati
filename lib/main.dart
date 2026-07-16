@@ -9,8 +9,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Su Windows SQLite el ga bisogno del backend FFI, sui telefoni fa tuto el plugin nativo.
-  if (Platform.isWindows) {
+  // Sui desktop SQLite el ga bisogno del backend FFI, sui telefoni fa tuto el plugin nativo.
+  if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }

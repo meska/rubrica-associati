@@ -21,7 +21,7 @@ L'app non invia dati a server e non richiede account o connessione Internet. I d
 - importazione da Excel `.xlsx` e CSV;
 - aggiornamento dei duplicati riconosciuti dal numero tessera o dal telefono;
 - evidenza delle tessere scadute;
-- interfaccia italiana per iOS, Android e Windows.
+- interfaccia italiana per iOS, Android, Windows e Linux.
 
 ## Condivisione tra dispositivi
 
@@ -79,6 +79,14 @@ flutter build windows --release
 ```
 
 Ad ogni push GitHub Actions compila anche una versione portabile Windows e la pubblica come artefatto ZIP del workflow.
+
+Build Linux (con toolchain C++, CMake, Ninja e GTK 3):
+
+```bash
+flutter build linux --release
+```
+
+La CI pubblica anche un archivio portabile `rubrica-associati-linux-x64.tar.gz`.
 
 Per distribuire su App Store occorrono un account Apple Developer, un bundle identifier definitivo e la firma configurata in Xcode.
 
