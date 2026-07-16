@@ -25,13 +25,14 @@ class MemberRepository {
     final databasesPath = await getDatabasesPath();
     _database = await openDatabase(
       path.join(databasesPath, 'rubrica_associati.db'),
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
+            name_key TEXT NOT NULL DEFAULT '',
             phone TEXT NOT NULL DEFAULT '',
             phone_key TEXT NOT NULL DEFAULT '',
             secondary_phone TEXT NOT NULL DEFAULT '',
@@ -60,6 +61,12 @@ class MemberRepository {
             "ALTER TABLE members ADD COLUMN secondary_phone_key TEXT NOT NULL DEFAULT ''",
           );
         }
+        if (oldVersion < 4) {
+          await db.execute(
+            "ALTER TABLE members ADD COLUMN name_key TEXT NOT NULL DEFAULT ''",
+          );
+          await _populateNameKeys(db);
+        }
       },
     );
     return _database!;
@@ -72,6 +79,29 @@ class MemberRepository {
         value TEXT NOT NULL
       )
     ''');
+
+  static Future<void> _populateNameKeys(Database db) async {
+    final rows = await db.query(
+      'members',
+      columns: const ['id', 'first_name', 'last_name'],
+    );
+    final batch = db.batch();
+    for (final row in rows) {
+      batch.update(
+        'members',
+        {
+          'name_key': _nameKey(
+            row['first_name'] as String? ?? '',
+            row['last_name'] as String? ?? '',
+          ),
+        },
+        where: 'id = ?',
+        whereArgs: [row['id']],
+      );
+    }
+    // Una botta sola al database, cussì l'aggiornamento resta svelto.
+    await batch.commit(noResult: true);
+  }
 
   Future<String> loadOrganizationName() async {
     final db = await _db;
@@ -116,19 +146,30 @@ class MemberRepository {
           .replaceAll('%', r'\%')
           .replaceAll('_', r'\_');
       final term = '%$escaped%';
-      final phoneTerm = '%${cleaned.replaceAll(RegExp(r'\D'), '')}%';
+      final phoneDigits = cleaned.replaceAll(RegExp(r'\D'), '');
+      final nameTokens = _normalizeSearchText(
+        cleaned,
+      ).split(' ').where((token) => token.isNotEmpty).toList(growable: false);
+      final conditions = <String>[
+        if (nameTokens.isNotEmpty)
+          '(${nameTokens.map((_) => "name_key LIKE ? ESCAPE '\\'").join(' AND ')})',
+        "LOWER(phone) LIKE ? ESCAPE '\\'",
+        "LOWER(secondary_phone) LIKE ? ESCAPE '\\'",
+        "LOWER(member_number) LIKE ? ESCAPE '\\'",
+        if (phoneDigits.isNotEmpty) 'phone_key LIKE ?',
+        if (phoneDigits.isNotEmpty) 'secondary_phone_key LIKE ?',
+      ];
       rows = await db.query(
         'members',
-        where: '''
-          LOWER(first_name || ' ' || last_name) LIKE ? ESCAPE '\\'
-          OR LOWER(last_name || ' ' || first_name) LIKE ? ESCAPE '\\'
-          OR LOWER(phone) LIKE ? ESCAPE '\\'
-          OR phone_key LIKE ?
-          OR LOWER(secondary_phone) LIKE ? ESCAPE '\\'
-          OR secondary_phone_key LIKE ?
-          OR LOWER(member_number) LIKE ? ESCAPE '\\'
-        ''',
-        whereArgs: [term, term, term, phoneTerm, term, phoneTerm, term],
+        where: conditions.join(' OR '),
+        whereArgs: [
+          ...nameTokens.map((token) => '%$token%'),
+          term,
+          term,
+          term,
+          if (phoneDigits.isNotEmpty) '%$phoneDigits%',
+          if (phoneDigits.isNotEmpty) '%$phoneDigits%',
+        ],
         orderBy: 'last_name COLLATE NOCASE, first_name COLLATE NOCASE',
       );
     }
@@ -138,7 +179,7 @@ class MemberRepository {
 
   Future<Member> save(Member member) async {
     final db = await _db;
-    final values = member.toMap()..remove('id');
+    final values = _valuesFor(member);
     if (member.id == null) {
       final id = await db.insert('members', values);
       return member.copyWith(id: id);
@@ -162,7 +203,7 @@ class MemberRepository {
       for (final member in members) {
         final existing = await _findDuplicate(transaction, member);
         if (existing == null) {
-          final values = member.toMap()..remove('id');
+          final values = _valuesFor(member);
           await transaction.insert('members', values);
           inserted++;
           continue;
@@ -170,7 +211,7 @@ class MemberRepository {
 
         // L'import completa i dati nuovi senza cancellare campi già compilati.
         final merged = _merge(existing, member);
-        final values = merged.toMap()..remove('id');
+        final values = _valuesFor(merged);
         await transaction.update(
           'members',
           values,
@@ -197,16 +238,24 @@ class MemberRepository {
     if (rows.isEmpty && member.phoneKey.isNotEmpty) {
       rows = await db.query(
         'members',
-        where: 'phone_key = ? OR secondary_phone_key = ?',
-        whereArgs: [member.phoneKey, member.phoneKey],
+        where: 'name_key = ? AND (phone_key = ? OR secondary_phone_key = ?)',
+        whereArgs: [
+          _nameKey(member.firstName, member.lastName),
+          member.phoneKey,
+          member.phoneKey,
+        ],
         limit: 1,
       );
     }
     if (rows.isEmpty && member.secondaryPhoneKey.isNotEmpty) {
       rows = await db.query(
         'members',
-        where: 'phone_key = ? OR secondary_phone_key = ?',
-        whereArgs: [member.secondaryPhoneKey, member.secondaryPhoneKey],
+        where: 'name_key = ? AND (phone_key = ? OR secondary_phone_key = ?)',
+        whereArgs: [
+          _nameKey(member.firstName, member.lastName),
+          member.secondaryPhoneKey,
+          member.secondaryPhoneKey,
+        ],
         limit: 1,
       );
     }
@@ -230,4 +279,50 @@ class MemberRepository {
 
   String _preferIncoming(String old, String incoming) =>
       incoming.trim().isEmpty ? old : incoming.trim();
+
+  Map<String, Object?> _valuesFor(Member member) => member.toMap()
+    ..remove('id')
+    ..['name_key'] = _nameKey(member.firstName, member.lastName);
+
+  static String _nameKey(String firstName, String lastName) =>
+      _normalizeSearchText('$firstName $lastName');
+
+  static String _normalizeSearchText(String value) {
+    const replacements = <String, String>{
+      'à': 'a',
+      'á': 'a',
+      'â': 'a',
+      'ä': 'a',
+      'ã': 'a',
+      'å': 'a',
+      'è': 'e',
+      'é': 'e',
+      'ê': 'e',
+      'ë': 'e',
+      'ì': 'i',
+      'í': 'i',
+      'î': 'i',
+      'ï': 'i',
+      'ò': 'o',
+      'ó': 'o',
+      'ô': 'o',
+      'ö': 'o',
+      'õ': 'o',
+      'ù': 'u',
+      'ú': 'u',
+      'û': 'u',
+      'ü': 'u',
+      'ç': 'c',
+      'ñ': 'n',
+    };
+    final buffer = StringBuffer();
+    for (final character in value.toLowerCase().split('')) {
+      buffer.write(replacements[character] ?? character);
+    }
+    return buffer
+        .toString()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), ' ')
+        .trim()
+        .replaceAll(RegExp(r'\s+'), ' ');
+  }
 }

@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Member> _members = const [];
   var _organizationName = MemberRepository.defaultOrganizationName;
   var _loading = true;
+  var _loadGeneration = 0;
 
   @override
   void initState() {
@@ -50,8 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _load() async {
-    final members = await widget.repository.search(_searchController.text);
-    if (!mounted) return;
+    final generation = ++_loadGeneration;
+    final query = _searchController.text;
+    final members = await widget.repository.search(query);
+    // Se nel frattempo xe cambiada la ricerca, sta risposta ormai xe vecia.
+    if (!mounted || generation != _loadGeneration) return;
     setState(() {
       _members = members;
       _loading = false;

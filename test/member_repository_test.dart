@@ -15,6 +15,7 @@ void main() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
+        name_key TEXT NOT NULL DEFAULT '',
         phone TEXT NOT NULL DEFAULT '',
         phone_key TEXT NOT NULL DEFAULT '',
         secondary_phone TEXT NOT NULL DEFAULT '',
@@ -84,5 +85,44 @@ void main() {
 
     expect(await repository.loadOrganizationName(), 'Circolo Serenità');
     expect(() => repository.saveOrganizationName('   '), throwsArgumentError);
+  });
+
+  test('cerca nomi accentati, composti e in qualsiasi ordine', () async {
+    await repository.save(
+      const Member(
+        firstName: 'Niccolò Maria',
+        lastName: 'Dall’Ò',
+        phone: '',
+        memberNumber: '',
+        notes: '',
+      ),
+    );
+
+    expect(await repository.search('niccolo'), hasLength(1));
+    expect(await repository.search('dall o'), hasLength(1));
+    expect(await repository.search('ò niccolò'), hasLength(1));
+  });
+
+  test('non fonde associati diversi che condividono il telefono', () async {
+    final result = await repository.importMembers(const [
+      Member(
+        firstName: 'Anna',
+        lastName: 'Bianchi',
+        phone: '333 1112222',
+        memberNumber: '',
+        notes: '',
+      ),
+      Member(
+        firstName: 'Paolo',
+        lastName: 'Verdi',
+        phone: '333 1112222',
+        memberNumber: '',
+        notes: '',
+      ),
+    ]);
+
+    expect(result.inserted, 2);
+    expect(await repository.search('Anna'), hasLength(1));
+    expect(await repository.search('Paolo'), hasLength(1));
   });
 }
