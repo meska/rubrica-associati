@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:anteas_rubrica/data/member_repository.dart';
 import 'package:anteas_rubrica/models/member.dart';
 import 'package:anteas_rubrica/screens/member_detail_screen.dart';
 import 'package:anteas_rubrica/screens/member_form_screen.dart';
+import 'package:anteas_rubrica/services/backup_service.dart';
 import 'package:anteas_rubrica/services/spreadsheet_importer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.repository});
@@ -21,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _searchController = TextEditingController();
   final _importer = SpreadsheetImporter();
+  final _backupService = BackupService();
   Timer? _searchTimer;
   List<Member> _members = const [];
   var _loading = true;
@@ -74,22 +80,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _import() async {
-    final picked = await FilePicker.platform.pickFiles(
+    final picked = await FilePicker.pickFiles(
       type: FileType.custom,
-      allowedExtensions: const ['xlsx', 'csv'],
+      allowedExtensions: const ['anteas', 'json', 'xlsx', 'csv'],
       withData: false,
     );
     if (picked == null || picked.files.isEmpty) return;
     final file = picked.files.single;
-    if (file.size > SpreadsheetImporter.maxFileBytes) {
+    if (file.size > BackupService.maxFileBytes) {
       _showMessage('Il file supera il limite di 10 MB.');
       return;
     }
 
     try {
       final bytes = await file.xFile.readAsBytes();
-      final parsed = _importer.parse(file.name, bytes);
-      final saved = await widget.repository.importMembers(parsed.members);
+      final lowerName = file.name.toLowerCase();
+      final isBackup =
+          lowerName.endsWith('.anteas') || lowerName.endsWith('.json');
+      late final List<Member> imported;
+      var warningCount = 0;
+      if (isBackup) {
+        imported = _backupService.decode(bytes);
+      } else {
+        final parsed = _importer.parse(file.name, bytes);
+        imported = parsed.members;
+        warningCount = parsed.warnings.length;
+      }
+      final saved = await widget.repository.importMembers(imported);
       await _load();
       if (!mounted) return;
       await showDialog<void>(
@@ -100,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
           content: Text(
             '${saved.inserted} nuovi tesserati\n'
             '${saved.updated} tesserati aggiornati'
-            '${parsed.warnings.isEmpty ? '' : '\n\n${parsed.warnings.length} righe con avvisi.'}',
+            '${warningCount == 0 ? '' : '\n\n$warningCount righe con avvisi.'}',
           ),
           actions: [
             TextButton(
@@ -112,10 +129,54 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } on SpreadsheetImportException catch (error) {
       _showMessage(error.message);
+    } on BackupException catch (error) {
+      _showMessage(error.message);
     } on Object catch (_) {
       _showMessage(
         'Importazione non riuscita. Il file potrebbe essere danneggiato.',
       );
+    }
+  }
+
+  Future<void> _shareBackup() async {
+    try {
+      final members = await widget.repository.search('');
+      if (members.isEmpty) {
+        _showMessage(
+          'La rubrica è vuota: non c’è ancora nulla da condividere.',
+        );
+        return;
+      }
+
+      final now = DateTime.now();
+      final date = DateFormat('yyyy-MM-dd').format(now);
+      final fileName = 'anteas-rubrica-$date.anteas';
+      final directory = await getTemporaryDirectory();
+      final backupFile = File(path.join(directory.path, fileName));
+      await backupFile.writeAsBytes(
+        _backupService.encode(members, exportedAt: now),
+        flush: true,
+      );
+      if (!mounted) return;
+
+      // Su iPad il pannello di condivisione ga bisogno de un punto d'ancoraggio.
+      final box = context.findRenderObject() as RenderBox?;
+      final origin = box == null
+          ? null
+          : box.localToGlobal(Offset.zero) & box.size;
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(backupFile.path, mimeType: 'application/json')],
+          fileNameOverrides: [fileName],
+          title: 'Condividi rubrica Anteas',
+          subject: 'Backup rubrica Anteas del $date',
+          sharePositionOrigin: origin,
+        ),
+      );
+    } on BackupException catch (error) {
+      _showMessage(error.message);
+    } on Object catch (_) {
+      _showMessage('Non è stato possibile condividere la rubrica.');
     }
   }
 
@@ -133,7 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Come preparare il file'),
         content: const SingleChildScrollView(
           child: Text(
-            'Usa un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\n'
+            'Per trasferire tutta la rubrica tra telefoni usa Condividi rubrica e importa il file .anteas sull’altro dispositivo.\n\n'
+            'Puoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\n'
             'Colonne riconosciute:\n'
             '• Nome\n• Cognome\n• Telefono\n• Numero tessera\n'
             '• Scadenza tessera\n• Data di nascita\n• Note\n\n'
@@ -164,15 +226,24 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'import') _import();
-              if (value == 'help') _showImportHelp();
+              if (value == 'share') unawaited(_shareBackup());
+              if (value == 'import') unawaited(_import());
+              if (value == 'help') unawaited(_showImportHelp());
             },
             itemBuilder: (_) => const [
               PopupMenuItem(
+                value: 'share',
+                child: ListTile(
+                  leading: Icon(Icons.ios_share_outlined),
+                  title: Text('Condividi rubrica'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
                 value: 'import',
                 child: ListTile(
-                  leading: Icon(Icons.upload_file_outlined),
-                  title: Text('Importa Excel / CSV'),
+                  leading: Icon(Icons.file_download_outlined),
+                  title: Text('Importa rubrica / Excel'),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
@@ -251,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               Text(
                 _searchController.text.isEmpty
-                    ? 'Aggiungi il primo tesserato oppure importa un file Excel dal menu.'
+                    ? 'Aggiungi il primo tesserato oppure importa una rubrica o un file Excel.'
                     : 'Prova con un altro nome, telefono o numero tessera.',
                 textAlign: TextAlign.center,
               ),
@@ -260,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 OutlinedButton.icon(
                   onPressed: _import,
                   icon: const Icon(Icons.upload_file_outlined),
-                  label: const Text('Importa Excel / CSV'),
+                  label: const Text('Importa rubrica / Excel'),
                 ),
               ],
             ],

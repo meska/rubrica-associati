@@ -2,7 +2,7 @@
 
 App Flutter open source per gestire sul telefono la rubrica dei tesserati di un centro Anteas.
 
-I dati rimangono **solo sul dispositivo**: non servono account, server o connessione Internet. Questa scelta rende l'app semplice e riduce l'esposizione di nomi, numeri di telefono e date di nascita.
+L'app non invia dati a server e non richiede account o connessione Internet. I dati escono dal dispositivo soltanto quando l'utente sceglie esplicitamente di esportare e condividere un backup.
 
 ## Funzioni
 
@@ -11,10 +11,21 @@ I dati rimangono **solo sul dispositivo**: non servono account, server o conness
 - scheda con telefono, numero e scadenza tessera, data di nascita e note;
 - chiamata rapida tramite il dialer del telefono;
 - inserimento, modifica ed eliminazione manuale;
+- esportazione dell'intera rubrica in un file portabile `.anteas`;
+- condivisione tramite File, AirDrop, email, messaggistica o servizi disponibili sul telefono;
+- reimportazione del backup su iOS e Android senza alcun server;
 - importazione da Excel `.xlsx` e CSV;
 - aggiornamento dei duplicati riconosciuti dal numero tessera o dal telefono;
 - evidenza delle tessere scadute;
 - interfaccia italiana per iOS e Android.
+
+## Condivisione tra telefoni
+
+Dal menu scegli **Condividi rubrica**. L'app crea un backup come `anteas-rubrica-2026-07-16.anteas` e apre il pannello di condivisione del telefono. Il file può essere salvato in File/Drive, inviato via email o messaggistica e poi importato dall'altro dispositivo con **Importa rubrica / Excel**.
+
+Il backup è versionato e comprende nome, cognome, telefono, numero e scadenza tessera, data di nascita e note. In importazione i record esistenti vengono riconosciuti dal numero tessera o dal telefono e aggiornati senza cancellare campi già valorizzati.
+
+Non è una sincronizzazione automatica in tempo reale: chi riceve un file più recente deve importarlo. Questo mantiene l'app indipendente da iCloud e utilizzabile allo stesso modo su Android e iOS.
 
 ## Importazione Excel / CSV
 
@@ -63,7 +74,9 @@ Per distribuire su App Store occorrono un account Apple Developer, un bundle ide
 
 Il database SQLite si trova nell'area privata dell'app. Disinstallare l'app elimina normalmente anche i dati locali. Prima dell'uso operativo è consigliato conservare il foglio Excel originale come backup protetto e limitare l'accesso al telefono con codice o biometria.
 
-Questa prima versione non sincronizza dati tra più telefoni. Una futura sincronizzazione dovrà essere progettata con autenticazione, autorizzazioni e cifratura adeguate ai dati personali trattati.
+I file `.anteas` contengono dati personali in formato JSON leggibile e non sono cifrati. Devono quindi essere condivisi solo con persone autorizzate e conservati in una posizione protetta.
+
+Questa versione trasferisce i dati manualmente tramite file e non li sincronizza automaticamente. Un'eventuale sincronizzazione in tempo reale dovrà essere progettata con autenticazione, autorizzazioni e cifratura adeguate ai dati personali trattati.
 
 ## Licenza
 

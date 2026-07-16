@@ -1,6 +1,7 @@
 import 'package:anteas_rubrica/data/member_repository.dart';
 import 'package:anteas_rubrica/main.dart';
 import 'package:anteas_rubrica/models/member.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeMemberRepository extends MemberRepository {
@@ -17,6 +18,10 @@ void main() {
 
     expect(find.text('Rubrica tesserati'), findsOneWidget);
     expect(find.text('La rubrica è vuota'), findsOneWidget);
-    expect(find.text('Importa Excel / CSV'), findsOneWidget);
+    expect(find.text('Importa rubrica / Excel'), findsOneWidget);
+
+    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.pumpAndSettle();
+    expect(find.text('Condividi rubrica'), findsOneWidget);
   });
 }
