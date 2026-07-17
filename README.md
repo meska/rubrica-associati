@@ -6,6 +6,28 @@
   <img src="assets/branding/rubrica-associati-logo.png" width="180" alt="Logo Rubrica Associati">
 </p>
 
+## Scarica l'app
+
+<p align="center">
+  <a href="https://apps.apple.com/app/id6791575906"><img alt="Scarica su App Store" src="https://img.shields.io/badge/App%20Store-iPhone%20e%20iPad-0D96F6?style=for-the-badge&amp;logo=apple&amp;logoColor=white"></a>
+  <a href="https://play.google.com/store/apps/details?id=it.meska.rubricaassociati"><img alt="Google Play: in approvazione" src="https://img.shields.io/badge/Google%20Play-in%20approvazione-414141?style=for-the-badge&amp;logo=googleplay&amp;logoColor=white"></a>
+  <a href="https://apps.microsoft.com/detail/9NMPTTSFPJ9Q"><img alt="Microsoft Store: in certificazione" src="https://img.shields.io/badge/Microsoft%20Store-in%20certificazione-0078D4?style=for-the-badge&amp;logo=microsoft&amp;logoColor=white"></a>
+</p>
+
+I link Google Play e Microsoft Store diventeranno attivi appena le rispettive revisioni saranno concluse. Nel frattempo sono disponibili i download desktop diretti qui sotto.
+
+<p align="center">
+  <a href="https://github.com/meska/rubrica-associati/releases/latest/download/rubrica-associati-windows-x64.zip"><img alt="Scarica Windows portatile" src="https://img.shields.io/badge/Windows-ZIP%20portatile-0078D4?style=for-the-badge&amp;logo=windows11&amp;logoColor=white"></a>
+  <a href="https://github.com/meska/rubrica-associati/releases/latest/download/rubrica-associati-linux-x86_64.AppImage"><img alt="Scarica AppImage per Linux" src="https://img.shields.io/badge/Linux-AppImage-FCC624?style=for-the-badge&amp;logo=linux&amp;logoColor=black"></a>
+  <a href="https://github.com/meska/rubrica-associati/releases/latest"><img alt="Scarica DEB e altri formati" src="https://img.shields.io/badge/Linux-DEB%20e%20altri%20formati-A81D33?style=for-the-badge&amp;logo=debian&amp;logoColor=white"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/meska/rubrica-associati/releases/latest">Tutti i download dell'ultima versione</a>
+  ·
+  <a href="https://github.com/meska/rubrica-associati/releases/latest/download/SHA256SUMS-linux-x64.txt">Checksum Linux SHA-256</a>
+</p>
+
 App Flutter open source per gestire gli associati di un centro pensionati o di una piccola associazione da telefono o PC.
 
 L'app non invia dati a server e non richiede account o connessione Internet. I dati escono dal dispositivo soltanto quando l'utente sceglie esplicitamente di esportare e condividere un backup.
