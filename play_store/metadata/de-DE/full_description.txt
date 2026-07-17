@@ -1,0 +1,15 @@
+Mitgliederverzeichnis ist ein einfaches, privates Verzeichnis für Vereine, Seniorenzentren und Gemeinschaften.
+
+Verwalten Sie Mitgliedsdaten direkt auf Ihrem Gerät:
+
+• Suche nach Name, Telefonnummer oder Mitgliedsausweis;
+• ein Mitglied mit einem Fingertipp anrufen;
+• bis zu zwei Telefonnummern speichern;
+• Mitgliedsnummer, Ablaufdatum, Geburtstag und Notizen erfassen;
+• Excel- (.xlsx) und CSV-Listen importieren;
+• das gesamte Verzeichnis zwischen Ihren Geräten exportieren und teilen;
+• den Namen Ihres Zentrums oder Vereins anpassen.
+
+Die App funktioniert vollständig offline, ohne Konto und ohne Server. Ihre Daten bleiben auf dem Gerät, außer Sie exportieren und teilen ausdrücklich eine Sicherung.
+
+Mitgliederverzeichnis ist kostenlos, werbefrei und Open Source.

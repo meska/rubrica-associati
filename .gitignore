@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+# `flutter gen-l10n` rigenera questi file dai cataloghi ARB prima di analisi e build.
+/lib/l10n/generated/
 
 # Symbolication related
 app.*.symbols

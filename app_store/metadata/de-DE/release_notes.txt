@@ -1,0 +1,1 @@
+Die App ist jetzt auf Deutsch, Englisch, Italienisch und Französisch verfügbar und übernimmt automatisch die Gerätesprache. Auch Daten, Meldungen, Import, Teilen und native Ansichten sind lokalisiert.

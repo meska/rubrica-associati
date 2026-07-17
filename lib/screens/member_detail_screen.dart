@@ -1,4 +1,5 @@
 import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     if (await launchUrl(uri)) return;
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Non è stato possibile aprire il telefono.'),
-      ),
+      SnackBar(content: Text(AppLocalizations.of(context).phoneOpenFailed)),
     );
   }
 
@@ -53,19 +52,20 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
   }
 
   Future<void> _delete() async {
+    final strings = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminare l’associato?'),
-        content: Text('${_member.fullName} verrà rimosso dalla rubrica.'),
+        title: Text(strings.deleteMemberQuestion),
+        content: Text(strings.memberWillBeRemoved(_member.fullName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Annulla'),
+            child: Text(strings.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Elimina'),
+            child: Text(strings.delete),
           ),
         ],
       ),
@@ -78,12 +78,13 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final strings = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Associato'),
+        title: Text(strings.member),
         actions: [
           IconButton(
-            tooltip: 'Modifica',
+            tooltip: strings.edit,
             onPressed: _edit,
             icon: const Icon(Icons.edit_outlined),
           ),
@@ -91,12 +92,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
             onSelected: (value) {
               if (value == 'delete') _delete();
             },
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem(
                 value: 'delete',
                 child: ListTile(
-                  leading: Icon(Icons.delete_outline),
-                  title: Text('Elimina'),
+                  leading: const Icon(Icons.delete_outline),
+                  title: Text(strings.delete),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
@@ -128,14 +129,14 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
             FilledButton.icon(
               onPressed: () => _call(_member.phone),
               icon: const Icon(Icons.call),
-              label: Text('Chiama ${_member.phone}'),
+              label: Text(strings.callPhone(_member.phone)),
             ),
           if (_member.secondaryPhone.isNotEmpty) ...[
             const SizedBox(height: 8),
             OutlinedButton.icon(
               onPressed: () => _call(_member.secondaryPhone),
               icon: const Icon(Icons.call_outlined),
-              label: Text('Chiama ${_member.secondaryPhone}'),
+              label: Text(strings.callPhone(_member.secondaryPhone)),
             ),
           ],
           const SizedBox(height: 18),
@@ -144,33 +145,33 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
               children: [
                 _DetailRow(
                   icon: Icons.phone_outlined,
-                  label: 'Telefono',
+                  label: strings.phone,
                   value: _member.phone,
                 ),
                 _DetailRow(
                   icon: Icons.phone_outlined,
-                  label: 'Secondo telefono',
+                  label: strings.secondaryPhone,
                   value: _member.secondaryPhone,
                 ),
                 _DetailRow(
                   icon: Icons.badge_outlined,
-                  label: 'Numero tessera',
+                  label: strings.memberNumber,
                   value: _member.memberNumber,
                 ),
                 _DetailRow(
                   icon: Icons.event_available_outlined,
-                  label: 'Scadenza tessera',
-                  value: _formatDate(_member.expiryDate),
+                  label: strings.membershipExpiry,
+                  value: _formatDate(_member.expiryDate, strings.localeName),
                   warning: _member.isExpired,
                 ),
                 _DetailRow(
                   icon: Icons.cake_outlined,
-                  label: 'Data di nascita',
-                  value: _formatDate(_member.birthDate),
+                  label: strings.dateOfBirth,
+                  value: _formatDate(_member.birthDate, strings.localeName),
                 ),
                 _DetailRow(
                   icon: Icons.notes_outlined,
-                  label: 'Note',
+                  label: strings.notes,
                   value: _member.notes,
                   last: true,
                 ),
@@ -182,8 +183,8 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     );
   }
 
-  String _formatDate(DateTime? value) =>
-      value == null ? '' : DateFormat('dd/MM/yyyy').format(value);
+  String _formatDate(DateTime? value, String localeName) =>
+      value == null ? '' : DateFormat.yMd(localeName).format(value);
 }
 
 class _DetailRow extends StatelessWidget {
@@ -203,7 +204,8 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shownValue = value.isEmpty ? 'Non indicato' : value;
+    final strings = AppLocalizations.of(context);
+    final shownValue = value.isEmpty ? strings.notProvided : value;
     final color = warning ? Theme.of(context).colorScheme.error : null;
     return Column(
       children: [
@@ -211,7 +213,7 @@ class _DetailRow extends StatelessWidget {
           leading: Icon(icon, color: color),
           title: Text(label),
           subtitle: Text(shownValue, style: TextStyle(color: color)),
-          trailing: warning ? const Chip(label: Text('Scaduta')) : null,
+          trailing: warning ? Chip(label: Text(strings.expired)) : null,
         ),
         if (!last) const Divider(height: 1, indent: 56),
       ],

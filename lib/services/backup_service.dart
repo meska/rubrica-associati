@@ -3,13 +3,28 @@ import 'dart:typed_data';
 
 import 'package:rubrica_associati/models/member.dart';
 
-class BackupException implements Exception {
-  const BackupException(this.message);
+enum BackupError {
+  tooManyMembers,
+  tooLarge,
+  invalidContent,
+  wrongFormat,
+  unsupportedVersion,
+  invalidMembers,
+  invalidMember,
+  unreadable,
+  missingMemberName,
+  invalidField,
+}
 
-  final String message;
+class BackupException implements Exception {
+  const BackupException(this.error, {this.row, this.field});
+
+  final BackupError error;
+  final int? row;
+  final String? field;
 
   @override
-  String toString() => message;
+  String toString() => 'BackupException($error, row: $row, field: $field)';
 }
 
 class BackupService {
@@ -20,9 +35,7 @@ class BackupService {
 
   Uint8List encode(List<Member> members, {DateTime? exportedAt}) {
     if (members.length > maxMembers) {
-      throw const BackupException(
-        'La rubrica supera il limite di 20.000 associati.',
-      );
+      throw const BackupException(BackupError.tooManyMembers);
     }
     // Gli ID sono locali: tra telefoni il merge usa numero tessera o telefono.
     final document = <String, Object?>{
@@ -33,41 +46,40 @@ class BackupService {
     };
     final bytes = Uint8List.fromList(utf8.encode(jsonEncode(document)));
     if (bytes.length > maxFileBytes) {
-      throw const BackupException('Il backup supera il limite di 10 MB.');
+      throw const BackupException(BackupError.tooLarge);
     }
     return bytes;
   }
 
   List<Member> decode(Uint8List bytes) {
     if (bytes.length > maxFileBytes) {
-      throw const BackupException('Il backup supera il limite di 10 MB.');
+      throw const BackupException(BackupError.tooLarge);
     }
 
     try {
       final decoded = jsonDecode(utf8.decode(bytes));
       if (decoded is! Map<String, dynamic>) {
-        throw const BackupException('Il contenuto del backup non è valido.');
+        throw const BackupException(BackupError.invalidContent);
       }
       if (decoded['format'] != format) {
-        throw const BackupException(
-          'Questo file non è un backup di Rubrica Associati.',
-        );
+        throw const BackupException(BackupError.wrongFormat);
       }
       if (decoded['version'] != version) {
-        throw const BackupException('La versione del backup non è supportata.');
+        throw const BackupException(BackupError.unsupportedVersion);
       }
       final rows = decoded['members'];
       if (rows is! List || rows.length > maxMembers) {
-        throw const BackupException(
-          'L’elenco associati del backup non è valido.',
-        );
+        throw const BackupException(BackupError.invalidMembers);
       }
 
       return rows.indexed
           .map((entry) {
             final row = entry.$2;
             if (row is! Map<String, dynamic>) {
-              throw BackupException('Associato ${entry.$1 + 1} non valido.');
+              throw BackupException(
+                BackupError.invalidMember,
+                row: entry.$1 + 1,
+              );
             }
             return _memberFromJson(row, entry.$1 + 1);
           })
@@ -75,7 +87,7 @@ class BackupService {
     } on BackupException {
       rethrow;
     } on Object catch (_) {
-      throw const BackupException('Il backup è danneggiato o non leggibile.');
+      throw const BackupException(BackupError.unreadable);
     }
   }
 
@@ -94,7 +106,7 @@ class BackupService {
     final firstName = _string(row, 'firstName', 100, rowNumber);
     final lastName = _string(row, 'lastName', 100, rowNumber);
     if (firstName.isEmpty && lastName.isEmpty) {
-      throw BackupException('Associato $rowNumber senza nome o cognome.');
+      throw BackupException(BackupError.missingMemberName, row: rowNumber);
     }
     return Member(
       firstName: firstName,
@@ -116,7 +128,11 @@ class BackupService {
   ) {
     final value = row[key];
     if (value is! String || value.length > maxLength) {
-      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
+      throw BackupException(
+        BackupError.invalidField,
+        row: rowNumber,
+        field: key,
+      );
     }
     return value.trim();
   }
@@ -135,11 +151,19 @@ class BackupService {
     final value = row[key];
     if (value == null) return null;
     if (value is! String || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) {
-      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
+      throw BackupException(
+        BackupError.invalidField,
+        row: rowNumber,
+        field: key,
+      );
     }
     final parsed = DateTime.tryParse(value);
     if (parsed == null || _dateToJson(parsed) != value) {
-      throw BackupException('Campo $key non valido nell’associato $rowNumber.');
+      throw BackupException(
+        BackupError.invalidField,
+        row: rowNumber,
+        field: key,
+      );
     }
     return parsed;
   }

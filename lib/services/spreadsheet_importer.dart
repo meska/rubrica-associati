@@ -16,13 +16,24 @@ class SpreadsheetImportResult {
   final List<String> warnings;
 }
 
-class SpreadsheetImportException implements Exception {
-  const SpreadsheetImportException(this.message);
+enum SpreadsheetImportError {
+  fileTooLarge,
+  unsupportedFormat,
+  tooManyRows,
+  emptyFile,
+  missingNameColumn,
+  noValidRows,
+  unreadableExcel,
+  unreadableCsv,
+}
 
-  final String message;
+class SpreadsheetImportException implements Exception {
+  const SpreadsheetImportException(this.error);
+
+  final SpreadsheetImportError error;
 
   @override
-  String toString() => message;
+  String toString() => 'SpreadsheetImportException($error)';
 }
 
 class SpreadsheetImporter {
@@ -30,8 +41,8 @@ class SpreadsheetImporter {
   static const maxRows = 20000;
 
   static const _headerAliases = <String, Set<String>>{
-    'firstName': {'nome', 'firstname'},
-    'lastName': {'cognome', 'lastname'},
+    'firstName': {'nome', 'firstname', 'first name', 'prenom', 'vorname'},
+    'lastName': {'cognome', 'lastname', 'last name', 'nom', 'nachname'},
     'phone': {
       'telefono',
       'cellulare',
@@ -39,6 +50,8 @@ class SpreadsheetImporter {
       'numero telefono',
       'numero cellulare',
       'phone',
+      'telephone',
+      'telefon',
     },
     'secondaryPhone': {
       'telefono 2',
@@ -48,6 +61,9 @@ class SpreadsheetImporter {
       'tel 2',
       'phone 2',
       'secondary phone',
+      'deuxieme telephone',
+      'second telephone',
+      'zweites telefon',
     },
     'memberNumber': {
       'tessera',
@@ -55,17 +71,38 @@ class SpreadsheetImporter {
       'n tessera',
       'n. tessera',
       'codice tessera',
+      'member number',
+      'numero adherent',
+      'numero d adherent',
+      'mitgliedsnummer',
     },
-    'expiryDate': {'scadenza', 'scadenza tessera', 'data scadenza'},
-    'birthDate': {'compleanno', 'data nascita', 'nascita', 'data di nascita'},
-    'notes': {'note', 'annotazioni'},
+    'expiryDate': {
+      'scadenza',
+      'scadenza tessera',
+      'data scadenza',
+      'membership expiry',
+      'expiration adhesion',
+      'expiration de l adhesion',
+      'ablauf mitgliedschaft',
+      'ablauf der mitgliedschaft',
+    },
+    'birthDate': {
+      'compleanno',
+      'data nascita',
+      'nascita',
+      'data di nascita',
+      'date of birth',
+      'date de naissance',
+      'geburtsdatum',
+    },
+    'notes': {'note', 'annotazioni', 'notes', 'notizen'},
   };
 
   SpreadsheetImportResult parse(String fileName, Uint8List bytes) {
     // El limite evita che un file scelto per sbaglio saturi la memoria del telefono.
     if (bytes.length > maxFileBytes) {
       throw const SpreadsheetImportException(
-        'Il file supera il limite di 10 MB.',
+        SpreadsheetImportError.fileTooLarge,
       );
     }
     final lowerName = fileName.toLowerCase();
@@ -74,7 +111,7 @@ class SpreadsheetImporter {
         : lowerName.endsWith('.xlsx')
         ? _readExcel(bytes)
         : throw const SpreadsheetImportException(
-            'Formato non supportato. Scegli un file .xlsx o .csv.',
+            SpreadsheetImportError.unsupportedFormat,
           );
     return parseRows(rows);
   }
@@ -82,14 +119,14 @@ class SpreadsheetImporter {
   SpreadsheetImportResult parseRows(List<List<Object?>> rows) {
     if (rows.length > maxRows) {
       throw const SpreadsheetImportException(
-        'Il file supera il limite di 20.000 righe.',
+        SpreadsheetImportError.tooManyRows,
       );
     }
     final nonEmptyRows = rows
         .where((row) => row.any((cell) => _asText(cell).isNotEmpty))
         .toList(growable: false);
     if (nonEmptyRows.isEmpty) {
-      throw const SpreadsheetImportException('Il file selezionato è vuoto.');
+      throw const SpreadsheetImportException(SpreadsheetImportError.emptyFile);
     }
 
     final header = nonEmptyRows.first;
@@ -108,7 +145,7 @@ class SpreadsheetImporter {
 
     if (!columns.containsKey('firstName') && !columns.containsKey('lastName')) {
       throw const SpreadsheetImportException(
-        'Manca una colonna Nome o Cognome. Controlla le intestazioni.',
+        SpreadsheetImportError.missingNameColumn,
       );
     }
 
@@ -152,7 +189,7 @@ class SpreadsheetImporter {
 
     if (members.isEmpty) {
       throw const SpreadsheetImportException(
-        'Non ho trovato righe valide da importare.',
+        SpreadsheetImportError.noValidRows,
       );
     }
     return SpreadsheetImportResult(members: members, warnings: warnings);
@@ -172,7 +209,7 @@ class SpreadsheetImporter {
       }
     } on Object catch (_) {
       throw const SpreadsheetImportException(
-        'Non riesco a leggere il file Excel. Verifica che sia un .xlsx valido.',
+        SpreadsheetImportError.unreadableExcel,
       );
     }
     return const [];
@@ -193,7 +230,7 @@ class SpreadsheetImporter {
       return rows.map<List<Object?>>((row) => List<Object?>.from(row)).toList();
     } on Object catch (_) {
       throw const SpreadsheetImportException(
-        'Non riesco a leggere il file CSV. Verifica separatori e codifica.',
+        SpreadsheetImportError.unreadableCsv,
       );
     }
   }
@@ -223,7 +260,12 @@ class SpreadsheetImporter {
     }
 
     final text = _asText(raw);
-    for (final pattern in ['dd/MM/yyyy', 'dd-MM-yyyy', 'yyyy-MM-dd']) {
+    for (final pattern in [
+      'dd/MM/yyyy',
+      'dd-MM-yyyy',
+      'dd.MM.yyyy',
+      'yyyy-MM-dd',
+    ]) {
       try {
         return _ParsedDate(value: DateFormat(pattern).parseStrict(text));
       } on FormatException {
@@ -249,6 +291,16 @@ class SpreadsheetImporter {
 
   String _normalizeHeader(String value) => value
       .toLowerCase()
+      .replaceAll('é', 'e')
+      .replaceAll('è', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('à', 'a')
+      .replaceAll('ä', 'a')
+      .replaceAll('ö', 'o')
+      .replaceAll('ü', 'u')
+      .replaceAll('ß', 'ss')
+      .replaceAll("'", ' ')
+      .replaceAll('’', ' ')
       .replaceAll(RegExp(r'[_-]+'), ' ')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();

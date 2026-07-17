@@ -46,6 +46,23 @@ void main() {
     expect(result.members.single.secondaryPhone, '333 7654321');
   });
 
+  test('riconosce anche le intestazioni francesi e tedesche', () {
+    final french = importer.parseRows([
+      ['Prénom', 'Nom', 'Téléphone', 'Numéro d’adhérent'],
+      ['Élise', 'Martin', '01 23 45 67 89', 'F-12'],
+    ]);
+    final german = importer.parseRows([
+      ['Vorname', 'Nachname', 'Telefon', 'Mitgliedsnummer', 'Geburtsdatum'],
+      ['Anna', 'Schmidt', '030 123456', 'D-34', '17.07.1950'],
+    ]);
+
+    expect(french.members.single.fullName, 'Élise Martin');
+    expect(french.members.single.memberNumber, 'F-12');
+    expect(german.members.single.fullName, 'Anna Schmidt');
+    expect(german.members.single.memberNumber, 'D-34');
+    expect(german.members.single.birthDate, DateTime(1950, 7, 17));
+  });
+
   test('legge un vero file xlsx', () {
     final workbook = Excel.createExcel();
     final sheet = workbook['Associati'];

@@ -1,0 +1,15 @@
+Member Directory is a simple, private directory designed for community groups, senior centers and associations.
+
+Manage member details directly on your device:
+
+• search by name, phone number or membership card;
+• call a member with one tap;
+• save up to two phone numbers;
+• record membership number, expiry date, birthday and notes;
+• import Excel (.xlsx) and CSV lists;
+• export and share the entire directory between your devices;
+• customize the name of your center or association.
+
+The app works completely offline, with no account and no server. Your data stays on your device unless you explicitly choose to export and share a backup.
+
+Member Directory is free, ad-free and open source.

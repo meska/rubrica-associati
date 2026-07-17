@@ -1,3 +1,4 @@
+import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,13 +50,16 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
   }
 
   Future<void> _chooseDate({required bool expiry}) async {
+    final strings = AppLocalizations.of(context);
     final current = expiry ? _expiryDate : _birthDate;
     final selected = await showDatePicker(
       context: context,
       initialDate: current ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: expiry ? DateTime(2100) : DateTime.now(),
-      helpText: expiry ? 'SCADENZA TESSERA' : 'DATA DI NASCITA',
+      helpText: expiry
+          ? strings.membershipExpiryPicker
+          : strings.dateOfBirthPicker,
     );
     if (selected == null) return;
     setState(() {
@@ -68,11 +72,12 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
   }
 
   void _save() {
+    final strings = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) return;
     if (_firstName.text.trim().isEmpty && _lastName.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Inserisci almeno il nome o il cognome.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(strings.enterFirstOrLastName)));
       return;
     }
     Navigator.of(context).pop(
@@ -92,10 +97,11 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.member == null ? 'Nuovo associato' : 'Modifica'),
-        actions: [TextButton(onPressed: _save, child: const Text('Salva'))],
+        title: Text(widget.member == null ? strings.newMember : strings.edit),
+        actions: [TextButton(onPressed: _save, child: Text(strings.save))],
       ),
       body: SafeArea(
         child: Form(
@@ -109,7 +115,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _firstName,
-                      decoration: const InputDecoration(labelText: 'Nome'),
+                      decoration: InputDecoration(labelText: strings.firstName),
                       textCapitalization: TextCapitalization.words,
                       inputFormatters: [LengthLimitingTextInputFormatter(100)],
                     ),
@@ -118,7 +124,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _lastName,
-                      decoration: const InputDecoration(labelText: 'Cognome'),
+                      decoration: InputDecoration(labelText: strings.lastName),
                       textCapitalization: TextCapitalization.words,
                       inputFormatters: [LengthLimitingTextInputFormatter(100)],
                     ),
@@ -128,9 +134,9 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _phone,
-                decoration: const InputDecoration(
-                  labelText: 'Telefono',
-                  prefixIcon: Icon(Icons.phone_outlined),
+                decoration: InputDecoration(
+                  labelText: strings.phone,
+                  prefixIcon: const Icon(Icons.phone_outlined),
                 ),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [LengthLimitingTextInputFormatter(40)],
@@ -138,9 +144,9 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _secondaryPhone,
-                decoration: const InputDecoration(
-                  labelText: 'Secondo telefono',
-                  prefixIcon: Icon(Icons.phone_outlined),
+                decoration: InputDecoration(
+                  labelText: strings.secondaryPhone,
+                  prefixIcon: const Icon(Icons.phone_outlined),
                 ),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [LengthLimitingTextInputFormatter(40)],
@@ -148,15 +154,15 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _memberNumber,
-                decoration: const InputDecoration(
-                  labelText: 'Numero tessera',
-                  prefixIcon: Icon(Icons.badge_outlined),
+                decoration: InputDecoration(
+                  labelText: strings.memberNumber,
+                  prefixIcon: const Icon(Icons.badge_outlined),
                 ),
                 inputFormatters: [LengthLimitingTextInputFormatter(100)],
               ),
               const SizedBox(height: 12),
               _DateField(
-                label: 'Scadenza tessera',
+                label: strings.membershipExpiry,
                 value: _expiryDate,
                 icon: Icons.event_available_outlined,
                 onTap: () => _chooseDate(expiry: true),
@@ -164,7 +170,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               ),
               const SizedBox(height: 12),
               _DateField(
-                label: 'Data di nascita',
+                label: strings.dateOfBirth,
                 value: _birthDate,
                 icon: Icons.cake_outlined,
                 onTap: () => _chooseDate(expiry: false),
@@ -173,8 +179,8 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _notes,
-                decoration: const InputDecoration(
-                  labelText: 'Note',
+                decoration: InputDecoration(
+                  labelText: strings.notes,
                   alignLabelWithHint: true,
                 ),
                 minLines: 3,
@@ -185,7 +191,7 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
               FilledButton.icon(
                 onPressed: _save,
                 icon: const Icon(Icons.save_outlined),
-                label: const Text('Salva associato'),
+                label: Text(strings.saveMember),
               ),
             ],
           ),
@@ -212,6 +218,7 @@ class _DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(4),
@@ -222,15 +229,15 @@ class _DateField extends StatelessWidget {
           suffixIcon: value == null
               ? const Icon(Icons.calendar_month_outlined)
               : IconButton(
-                  tooltip: 'Cancella data',
+                  tooltip: strings.clearDate,
                   onPressed: onClear,
                   icon: const Icon(Icons.close),
                 ),
         ),
         child: Text(
           value == null
-              ? 'Non indicata'
-              : DateFormat('dd/MM/yyyy').format(value!),
+              ? strings.notSpecified
+              : DateFormat.yMd(strings.localeName).format(value!),
         ),
       ),
     );

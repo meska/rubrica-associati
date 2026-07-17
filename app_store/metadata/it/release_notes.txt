@@ -1,1 +1,1 @@
-Corregge la ricerca degli associati per nome e cognome, inclusi accenti e nomi composti. Migliora inoltre l'importazione evitando di unire persone diverse con lo stesso numero di telefono.
+L’app ora è disponibile in italiano, inglese, francese e tedesco e segue automaticamente la lingua del dispositivo. Sono localizzati anche date, messaggi, importazione, condivisione e schermate native.

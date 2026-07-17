@@ -1,0 +1,15 @@
+Répertoire des adhérents est un répertoire simple et privé conçu pour les clubs, les centres pour seniors et les associations.
+
+Gérez les données des adhérents directement sur votre appareil :
+
+• recherchez par nom, numéro de téléphone ou carte d’adhérent ;
+• appelez un adhérent en un geste ;
+• enregistrez jusqu’à deux numéros de téléphone ;
+• notez le numéro d’adhérent, l’expiration, l’anniversaire et des remarques ;
+• importez des listes Excel (.xlsx) et CSV ;
+• exportez et partagez tout le répertoire entre vos appareils ;
+• personnalisez le nom de votre centre ou association.
+
+L’application fonctionne entièrement hors ligne, sans compte ni serveur. Vos données restent sur l’appareil, sauf si vous choisissez explicitement d’exporter et de partager une sauvegarde.
+
+Répertoire des adhérents est gratuit, sans publicité et open source.

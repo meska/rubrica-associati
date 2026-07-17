@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.6.1+9
+version: 1.7.0+10
 
 environment:
   sdk: ^3.11.1
@@ -66,6 +66,8 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+  generate: true
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -93,7 +95,7 @@ msix_config:
   publisher: CN=50AC4578-CD7A-470F-8C51-A3C1BC12F4A6
   logo_path: assets/branding/rubrica-associati-logo.png
   output_name: rubrica-associati-windows-x64
-  languages: it-it
+  languages: en-us, it-it, fr-fr, de-de
   store: true
 
   # To add assets to your application, add an assets section, like this:

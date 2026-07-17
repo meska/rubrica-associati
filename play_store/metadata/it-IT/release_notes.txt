@@ -1,1 +1,1 @@
-Prima versione pubblica: rubrica offline, importazione Excel e CSV, backup condivisibili, ricerca rapida e gestione di due numeri di telefono.
+L’app ora è disponibile in italiano, inglese, francese e tedesco e segue automaticamente la lingua del dispositivo. Sono localizzati anche date, messaggi, importazione e condivisione.

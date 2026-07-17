@@ -1,7 +1,13 @@
 [Desktop Entry]
 Type=Application
-Name=Rubrica Associati
-Comment=Rubrica offline per circoli e associazioni
+Name=Member Directory
+Name[it]=Rubrica Associati
+Name[fr]=Répertoire des adhérents
+Name[de]=Mitgliederverzeichnis
+Comment=Private offline directory for community groups and associations
+Comment[it]=Rubrica privata e offline per circoli e associazioni
+Comment[fr]=Répertoire privé hors ligne pour clubs et associations
+Comment[de]=Privates Offline-Verzeichnis für Vereine und Gemeinschaften
 Exec=rubrica-associati
 Icon=it.meska.rubricaassociati
 Categories=Office;Utility;Database;

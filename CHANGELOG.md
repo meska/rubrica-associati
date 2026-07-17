@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.7.0 - 2026-07-17
+
+### Aggiunto
+
+- Interfaccia completa in italiano, inglese, francese e tedesco, selezionata
+  automaticamente dalla lingua del dispositivo con fallback inglese.
+- Nomi e messaggi nativi localizzati su iOS e Android e lingue dichiarate nel
+  pacchetto Microsoft Store.
+- Metadati App Store e Google Play completi nelle quattro lingue.
+- Intestazioni Excel e CSV francesi e tedesche riconosciute durante
+  l'importazione.
+
+### Migliorato
+
+- Date, plurali, messaggi di errore, importazione e condivisione ora rispettano
+  la lingua attiva.
+
 ## 1.6.1 - 2026-07-16
 
 ### Corretto

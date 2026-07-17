@@ -24,7 +24,10 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      RubricaAssociatiApp(repository: _FakeMemberRepository()),
+      RubricaAssociatiApp(
+        repository: _FakeMemberRepository(),
+        locale: const Locale('it'),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -41,7 +44,9 @@ void main() {
 
   testWidgets('modifica il nome del centro dal menu', (tester) async {
     final repository = _FakeMemberRepository();
-    await tester.pumpWidget(RubricaAssociatiApp(repository: repository));
+    await tester.pumpWidget(
+      RubricaAssociatiApp(repository: repository, locale: const Locale('it')),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Centro pensionati'), findsOneWidget);
@@ -58,5 +63,39 @@ void main() {
 
     expect(find.text('Circolo Serenità'), findsOneWidget);
     expect(repository.organizationName, 'Circolo Serenità');
+  });
+
+  testWidgets('usa le quattro lingue supportate', (tester) async {
+    const expectedTitles = <String, String>{
+      'en': 'Member Directory',
+      'it': 'Rubrica Associati',
+      'fr': 'Répertoire des adhérents',
+      'de': 'Mitgliederverzeichnis',
+    };
+
+    for (final entry in expectedTitles.entries) {
+      await tester.pumpWidget(
+        RubricaAssociatiApp(
+          repository: _FakeMemberRepository(),
+          locale: Locale(entry.key),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(entry.value), findsOneWidget);
+    }
+  });
+
+  testWidgets('usa l’inglese per una lingua non supportata', (tester) async {
+    await tester.pumpWidget(
+      RubricaAssociatiApp(
+        repository: _FakeMemberRepository(),
+        locale: const Locale('es'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Member Directory'), findsOneWidget);
+    expect(find.text('The directory is empty'), findsOneWidget);
   });
 }

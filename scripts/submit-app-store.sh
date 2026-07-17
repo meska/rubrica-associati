@@ -44,15 +44,18 @@ fi
 
 readonly marketing_version="${BASH_REMATCH[1]}"
 readonly build_number="${BASH_REMATCH[2]}"
-readonly release_notes="$ROOT_DIR/app_store/metadata/it/release_notes.txt"
+readonly metadata_locales=(it en-US fr-FR de-DE)
 readonly api_key_id="${APP_STORE_CONNECT_KEY_ID:-}"
 readonly api_issuer_id="${APP_STORE_CONNECT_ISSUER_ID:-}"
 readonly api_key_path="${APP_STORE_CONNECT_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${api_key_id}.p8}"
 
-if [[ ! -s "$release_notes" ]]; then
-  echo "Note di rilascio mancanti o vuote: $release_notes" >&2
-  exit 1
-fi
+for locale in "${metadata_locales[@]}"; do
+  release_notes="$ROOT_DIR/app_store/metadata/$locale/release_notes.txt"
+  if [[ ! -s "$release_notes" ]]; then
+    echo "Note di rilascio mancanti o vuote: $release_notes" >&2
+    exit 1
+  fi
+done
 
 if [[ -z "$api_key_id" || -z "$api_issuer_id" ]]; then
   echo "Configura APP_STORE_CONNECT_KEY_ID e APP_STORE_CONNECT_ISSUER_ID in $API_CONFIG_PATH." >&2

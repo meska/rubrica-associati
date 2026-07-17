@@ -48,7 +48,8 @@ L'app è e resterà gratuita. Chi vuole sostenere volontariamente lo sviluppo pu
 - importazione da Excel `.xlsx` e CSV;
 - aggiornamento dei duplicati riconosciuti dal numero tessera o dal telefono;
 - evidenza delle tessere scadute;
-- interfaccia italiana per iOS, Android, Windows e Linux.
+- interfaccia in italiano, inglese, francese e tedesco su iOS, Android,
+  Windows e Linux, selezionata automaticamente dalla lingua del dispositivo;
 
 ## Condivisione tra dispositivi
 
@@ -75,7 +76,7 @@ La prima riga deve contenere le intestazioni. Sono riconosciute queste colonne, 
 
 È disponibile un file pronto da copiare in [examples/associati-esempio.csv](examples/associati-esempio.csv).
 
-Le date accettate sono `gg/mm/aaaa`, `gg-mm-aaaa` e `aaaa-mm-gg`. Nei file Excel sono accettate anche le vere celle data. Per conservare eventuali zeri iniziali, conviene formattare telefono e numero tessera come testo in Excel.
+Le date accettate sono `gg/mm/aaaa`, `gg-mm-aaaa`, `gg.mm.aaaa` e `aaaa-mm-gg`. Nei file Excel sono accettate anche le vere celle data. Per conservare eventuali zeri iniziali, conviene formattare telefono e numero tessera come testo in Excel.
 
 ## Sviluppo
 
@@ -114,7 +115,7 @@ Quando la build risulta elaborata su TestFlight, invio alla revisione pubblica:
 ./scripts/submit-app-store.sh
 ```
 
-Gli script usano firma manuale e una chiave App Store Connect con ruolo App Manager: non richiedono password Apple ID o codici 2FA. Prima di ogni rilascio vanno aggiornati versione/build in `pubspec.yaml` e `app_store/metadata/it/release_notes.txt`. La pubblicazione crea la versione, seleziona la build, carica le note, invia alla revisione e abilita il rilascio automatico dopo l'approvazione. La chiave privata `.p8`, il certificato Distribution e il provisioning profile rimangono fuori dal repository.
+Gli script usano firma manuale e una chiave App Store Connect con ruolo App Manager: non richiedono password Apple ID o codici 2FA. Prima di ogni rilascio vanno aggiornati versione/build in `pubspec.yaml` e i file `release_notes.txt` nelle quattro cartelle di `app_store/metadata`. La pubblicazione crea la versione, seleziona la build, carica le schede localizzate, invia alla revisione e abilita il rilascio automatico dopo l'approvazione. La chiave privata `.p8`, il certificato Distribution e il provisioning profile rimangono fuori dal repository.
 
 Build Windows (da un computer Windows con Visual Studio e il workload C++ desktop):
 
