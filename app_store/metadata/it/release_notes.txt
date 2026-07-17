@@ -1,0 +1,1 @@
+Corregge la ricerca degli associati per nome e cognome, inclusi accenti e nomi composti. Migliora inoltre l'importazione evitando di unire persone diverse con lo stesso numero di telefono.

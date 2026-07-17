@@ -81,10 +81,18 @@ flutter build ipa --release
 Rilascio TestFlight dal Mac configurato per il progetto:
 
 ```bash
+cp .env.appstore.example .env.appstore
+# Compilare .env.appstore con Key ID e Issuer ID della chiave App Manager.
 ./scripts/release-testflight.sh
 ```
 
-Lo script usa firma manuale e App Store Connect API: non richiede password Apple ID o codici 2FA. Prima di ogni rilascio va aumentato il numero di build in `pubspec.yaml`. La chiave privata `.p8`, il certificato Distribution e il provisioning profile rimangono fuori dal repository.
+Quando la build risulta elaborata su TestFlight, invio alla revisione pubblica:
+
+```bash
+./scripts/submit-app-store.sh
+```
+
+Gli script usano firma manuale e una chiave App Store Connect con ruolo App Manager: non richiedono password Apple ID o codici 2FA. Prima di ogni rilascio vanno aggiornati versione/build in `pubspec.yaml` e `app_store/metadata/it/release_notes.txt`. La pubblicazione crea la versione, seleziona la build, carica le note, invia alla revisione e abilita il rilascio automatico dopo l'approvazione. La chiave privata `.p8`, il certificato Distribution e il provisioning profile rimangono fuori dal repository.
 
 Build Windows (da un computer Windows con Visual Studio e il workload C++ desktop):
 

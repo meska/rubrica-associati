@@ -8,9 +8,19 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly ROOT_DIR
 readonly EXPORT_OPTIONS="$ROOT_DIR/ios/ExportOptions-AppStore.plist"
 readonly PROFILE_NAME="Rubrica Associati App Store"
-readonly API_KEY_ID="${APP_STORE_CONNECT_KEY_ID:-9L7LRSPJW8}"
-readonly API_ISSUER_ID="${APP_STORE_CONNECT_ISSUER_ID:-69a6de79-d743-47e3-e053-5b8c7c11a4d1}"
-readonly API_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8"
+readonly API_CONFIG_PATH="${APP_STORE_CONNECT_CONFIG_PATH:-$ROOT_DIR/.env.appstore}"
+
+if [[ -f "$API_CONFIG_PATH" ]]; then
+  # El file local resta ignorà da Git e passa i valori anca a Fastlane.
+  set -a
+  # shellcheck source=/dev/null
+  source "$API_CONFIG_PATH"
+  set +a
+fi
+
+readonly API_KEY_ID="${APP_STORE_CONNECT_KEY_ID:-}"
+readonly API_ISSUER_ID="${APP_STORE_CONNECT_ISSUER_ID:-}"
+readonly API_KEY_PATH="${APP_STORE_CONNECT_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${API_KEY_ID}.p8}"
 
 flutter_bin="${FLUTTER_BIN:-$(command -v flutter || true)}"
 if [[ -z "$flutter_bin" && -x /opt/flutter/bin/flutter ]]; then
@@ -31,6 +41,11 @@ done
 
 if [[ -z "$flutter_bin" ]]; then
   echo "Comando richiesto non trovato: flutter" >&2
+  exit 1
+fi
+
+if [[ -z "$API_KEY_ID" || -z "$API_ISSUER_ID" ]]; then
+  echo "Configura APP_STORE_CONNECT_KEY_ID e APP_STORE_CONNECT_ISSUER_ID in $API_CONFIG_PATH." >&2
   exit 1
 fi
 
