@@ -13,7 +13,7 @@ $versionMatch = [regex]::Match(
 )
 
 if (-not $versionMatch.Success) {
-    throw "Versione non valida in $pubspecPath: richiesto major.minor.patch+build."
+    throw "Versione non valida in ${pubspecPath}: richiesto major.minor.patch+build."
 }
 
 $versionParts = 1..4 | ForEach-Object {
