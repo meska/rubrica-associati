@@ -34,6 +34,8 @@ platform :ios do
       skip_binary_upload: true,
       skip_screenshots: true,
       submit_for_review: true,
+      # Se Apple sta ancora valutando la release precedente, la nova la sostituise.
+      reject_if_possible: true,
       automatic_release: true,
       force: true,
       run_precheck_before_submit: true,
