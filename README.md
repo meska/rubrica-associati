@@ -101,7 +101,7 @@ flutter build windows --release
 ./scripts/build-msix.ps1 -SkipBuild
 ```
 
-Ad ogni push GitHub Actions compila la versione portabile Windows e pubblica sia lo ZIP sia il pacchetto MSIX per Microsoft Store. Lo script ricava automaticamente la versione MSIX da `pubspec.yaml`: per esempio `1.6.1+9` diventa `1.6.1.9`.
+Ad ogni push GitHub Actions compila la versione portabile Windows e pubblica sia lo ZIP sia il pacchetto MSIX per Microsoft Store. Lo script ricava automaticamente la versione MSIX da `pubspec.yaml`: per esempio `1.6.1+9` diventa `1.6.1.0`, perché Microsoft Store richiede la revisione finale a zero.
 
 Build Linux (con toolchain C++, CMake, Ninja e GTK 3):
 
