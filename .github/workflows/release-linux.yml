@@ -1,0 +1,53 @@
+name: Publish Linux packages
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing GitHub release tag, for example v1.6.1
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-linux:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Verify release version
+        shell: bash
+        run: |
+          app_version="$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+[[:space:]]*$/\1/p' pubspec.yaml)"
+          if [[ "$RELEASE_TAG" != "v$app_version" ]]; then
+            echo "Tag $RELEASE_TAG non coerente con pubspec.yaml ($app_version)." >&2
+            exit 1
+          fi
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev imagemagick
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      - name: Build Linux
+        run: flutter build linux --release
+      - name: Create Linux packages
+        run: ./scripts/build-linux-packages.sh
+      - name: Publish packages in GitHub Release
+        shell: bash
+        run: |
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --generate-notes
+          fi
+          gh release upload "$RELEASE_TAG" build/linux/packages/* --clobber

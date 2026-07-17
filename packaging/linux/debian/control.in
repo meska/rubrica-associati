@@ -1,0 +1,10 @@
+Package: rubrica-associati
+Version: @VERSION@
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Meskatech <276923+meska@users.noreply.github.com>
+Depends: libgtk-3-0 | libgtk-3-0t64, libglib2.0-0, libstdc++6
+Description: rubrica offline per circoli e associazioni
+ Gestisce localmente associati, tessere, scadenze e contatti, con importazione
+ da Excel e CSV. Non richiede account, server o connessione Internet.

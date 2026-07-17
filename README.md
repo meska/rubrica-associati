@@ -107,9 +107,17 @@ Build Linux (con toolchain C++, CMake, Ninja e GTK 3):
 
 ```bash
 flutter build linux --release
+./scripts/build-linux-packages.sh
 ```
 
-La CI pubblica anche un archivio portabile `rubrica-associati-linux-x64.tar.gz`.
+La CI produce automaticamente:
+
+- `rubrica-associati-linux-x86_64.AppImage`, eseguibile sulle principali distribuzioni x64;
+- `rubrica-associati_<versione>-<build>_amd64.deb`, per Debian, Ubuntu e derivate;
+- `rubrica-associati-linux-x64.tar.gz`, archivio portatile;
+- `SHA256SUMS-linux-x64.txt`, per verificare l'integrità dei download.
+
+Quando viene pubblicato un tag `vX.Y.Z`, gli stessi file vengono aggiunti alla GitHub Release corrispondente.
 
 La configurazione iOS usa il bundle ID `it.meska.rubricaassociati` e il profilo App Store `Rubrica Associati App Store`.
 

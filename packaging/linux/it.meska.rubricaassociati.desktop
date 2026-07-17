@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Rubrica Associati
+Comment=Rubrica offline per circoli e associazioni
+Exec=rubrica-associati
+Icon=it.meska.rubricaassociati
+Categories=Office;Utility;Database;
+Terminal=false
+StartupNotify=true
