@@ -50,13 +50,13 @@ jobs:
         shell: pwsh
         run: ./scripts/build-msix.ps1 -SkipBuild
       - name: Upload Windows build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rubrica-associati-windows-x64
           path: rubrica-associati-windows-x64.zip
           if-no-files-found: error
       - name: Upload Microsoft Store package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rubrica-associati-windows-msix
           path: build/windows/**/*.msix
@@ -83,7 +83,7 @@ jobs:
       - name: Create Linux packages
         run: ./scripts/build-linux-packages.sh
       - name: Upload Linux packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rubrica-associati-linux-x64
           path: build/linux/packages/*
