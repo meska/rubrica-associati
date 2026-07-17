@@ -1,1 +1,1 @@
-L’app ora è disponibile in italiano, inglese, francese e tedesco e segue automaticamente la lingua del dispositivo. Sono localizzati anche date, messaggi, importazione, condivisione e schermate native.
+Corretto un problema che duplicava gli associati senza numero di telefono durante una nuova importazione. Gli omonimi vengono distinti tramite la data di nascita quando disponibile.

@@ -45,7 +45,7 @@
   "save": "Save",
   "organizationSaveFailed": "The organization name could not be saved.",
   "fileHelpTitle": "How to prepare the file",
-  "fileHelpContent": "To move the entire directory between devices, use Share directory and import the .rubrica file on the other device.\n\nYou can also use an Excel .xlsx or CSV file. The first row must contain the headers.\n\nRecognized columns:\n• First name\n• Last name\n• Phone\n• Secondary phone\n• Member number\n• Membership expiry\n• Date of birth\n• Notes\n\nDates can use the format 31/12/2026. Member number and phone are also used to recognize and update duplicates.",
+  "fileHelpContent": "To move the entire directory between devices, use Share directory and import the .rubrica file on the other device.\n\nYou can also use an Excel .xlsx or CSV file. The first row must contain the headers.\n\nRecognized columns:\n• First name\n• Last name\n• Phone\n• Secondary phone\n• Member number\n• Membership expiry\n• Date of birth\n• Notes\n\nDates can use the format 31/12/2026. Duplicates are recognized by member number or phone; when both are missing, by name and date of birth when available.",
   "understood": "Got it",
   "logoSemanticLabel": "Member Directory logo",
   "shareDirectory": "Share directory",

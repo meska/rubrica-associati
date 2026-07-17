@@ -259,7 +259,43 @@ class MemberRepository {
         limit: 1,
       );
     }
+    if (rows.isEmpty &&
+        member.memberNumber.isEmpty &&
+        member.phoneKey.isEmpty &&
+        member.secondaryPhoneKey.isEmpty) {
+      rows = await _findDuplicateWithoutContact(db, member);
+    }
     return rows.isEmpty ? null : Member.fromMap(rows.first);
+  }
+
+  Future<List<Map<String, Object?>>> _findDuplicateWithoutContact(
+    DatabaseExecutor db,
+    Member member,
+  ) async {
+    final nameKey = _nameKey(member.firstName, member.lastName);
+    if (nameKey.isEmpty) return const [];
+
+    final candidates = await db.query(
+      'members',
+      where: 'name_key = ?',
+      whereArgs: [nameKey],
+    );
+    if (candidates.isEmpty) return const [];
+
+    final birthDate = member.toMap()['birth_date'];
+    if (birthDate != null) {
+      final sameBirthDate = candidates
+          .where((row) => row['birth_date'] == birthDate)
+          .toList(growable: false);
+      if (sameBirthDate.length == 1) return sameBirthDate;
+      if (candidates.length == 1 && candidates.single['birth_date'] == null) {
+        return candidates;
+      }
+      return const [];
+    }
+
+    // Col solo nome se aggiorna esclusivamente un candidato non ambiguo.
+    return candidates.length == 1 ? candidates : const [];
   }
 
   Member _merge(Member old, Member incoming) => Member(

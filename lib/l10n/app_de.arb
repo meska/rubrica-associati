@@ -38,7 +38,7 @@
   "save": "Speichern",
   "organizationSaveFailed": "Der Name der Organisation konnte nicht gespeichert werden.",
   "fileHelpTitle": "Datei vorbereiten",
-  "fileHelpContent": "Um das gesamte Verzeichnis zwischen Geräten zu übertragen, verwenden Sie Verzeichnis teilen und importieren Sie die .rubrica-Datei auf dem anderen Gerät.\n\nSie können auch eine Excel-.xlsx- oder CSV-Datei verwenden. Die erste Zeile muss die Überschriften enthalten.\n\nErkannte Spalten:\n• Vorname\n• Nachname\n• Telefon\n• Zweites Telefon\n• Mitgliedsnummer\n• Ablauf der Mitgliedschaft\n• Geburtsdatum\n• Notizen\n\nDatumsangaben können das Format 31.12.2026 verwenden. Mitgliedsnummer und Telefon werden auch zum Erkennen und Aktualisieren von Duplikaten verwendet.",
+  "fileHelpContent": "Um das gesamte Verzeichnis zwischen Geräten zu übertragen, verwenden Sie Verzeichnis teilen und importieren Sie die .rubrica-Datei auf dem anderen Gerät.\n\nSie können auch eine Excel-.xlsx- oder CSV-Datei verwenden. Die erste Zeile muss die Überschriften enthalten.\n\nErkannte Spalten:\n• Vorname\n• Nachname\n• Telefon\n• Zweites Telefon\n• Mitgliedsnummer\n• Ablauf der Mitgliedschaft\n• Geburtsdatum\n• Notizen\n\nDatumsangaben können das Format 31.12.2026 verwenden. Duplikate werden anhand von Mitgliedsnummer oder Telefon erkannt; fehlen beide, anhand von Name und Geburtsdatum, sofern vorhanden.",
   "understood": "Verstanden",
   "logoSemanticLabel": "Logo des Mitgliederverzeichnisses",
   "shareDirectory": "Verzeichnis teilen",

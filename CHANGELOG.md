@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.1 - 2026-07-17
+
+### Corretto
+
+- Reimportare una persona senza telefono e senza numero tessera non crea più
+  un duplicato; gli omonimi vengono distinti tramite la data di nascita quando
+  disponibile.
+
 ## 1.7.0 - 2026-07-17
 
 ### Aggiunto

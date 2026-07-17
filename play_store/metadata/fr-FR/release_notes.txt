@@ -1,1 +1,1 @@
-Disponible en français, anglais, italien et allemand, avec détection automatique de la langue de l’appareil. Les dates, messages, imports et partages sont aussi localisés.
+Correction d’un problème qui dupliquait les adhérents sans numéro de téléphone lors d’un nouvel import. Les homonymes sont distingués par leur date de naissance lorsqu’elle est disponible.

@@ -125,4 +125,58 @@ void main() {
     expect(await repository.search('Anna'), hasLength(1));
     expect(await repository.search('Paolo'), hasLength(1));
   });
+
+  test('non duplica un associato senza telefono o tessera', () async {
+    const member = Member(
+      firstName: 'Lucia',
+      lastName: 'Neri',
+      phone: '',
+      memberNumber: '',
+      notes: '',
+    );
+
+    final firstImport = await repository.importMembers(const [member]);
+    final secondImport = await repository.importMembers(const [member]);
+
+    expect(firstImport.inserted, 1);
+    expect(secondImport.inserted, 0);
+    expect(secondImport.updated, 1);
+    expect(await repository.search('Lucia Neri'), hasLength(1));
+  });
+
+  test('distingue omonimi senza telefono tramite la data di nascita', () async {
+    final result = await repository.importMembers([
+      Member(
+        firstName: 'Andrea',
+        lastName: 'Rossi',
+        phone: '',
+        memberNumber: '',
+        birthDate: DateTime(1945, 1, 10),
+        notes: '',
+      ),
+      Member(
+        firstName: 'Andrea',
+        lastName: 'Rossi',
+        phone: '',
+        memberNumber: '',
+        birthDate: DateTime(1950, 6, 20),
+        notes: '',
+      ),
+    ]);
+
+    expect(result.inserted, 2);
+    expect(await repository.search('Andrea Rossi'), hasLength(2));
+
+    final ambiguous = await repository.importMembers(const [
+      Member(
+        firstName: 'Andrea',
+        lastName: 'Rossi',
+        phone: '',
+        memberNumber: '',
+        notes: '',
+      ),
+    ]);
+    expect(ambiguous.inserted, 1);
+    expect(ambiguous.updated, 0);
+  });
 }

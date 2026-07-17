@@ -38,7 +38,7 @@
   "save": "Salva",
   "organizationSaveFailed": "Non è stato possibile salvare il nome del centro.",
   "fileHelpTitle": "Come preparare il file",
-  "fileHelpContent": "Per trasferire tutta la rubrica tra dispositivi usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\nPuoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\nColonne riconosciute:\n• Nome\n• Cognome\n• Telefono\n• Secondo telefono\n• Numero tessera\n• Scadenza tessera\n• Data di nascita\n• Note\n\nLe date possono essere nel formato 31/12/2026. Numero tessera e telefono servono anche per riconoscere e aggiornare i duplicati.",
+  "fileHelpContent": "Per trasferire tutta la rubrica tra dispositivi usa Condividi rubrica e importa il file .rubrica sull’altro dispositivo.\n\nPuoi anche usare un file Excel .xlsx oppure CSV. La prima riga deve contenere le intestazioni.\n\nColonne riconosciute:\n• Nome\n• Cognome\n• Telefono\n• Secondo telefono\n• Numero tessera\n• Scadenza tessera\n• Data di nascita\n• Note\n\nLe date possono essere nel formato 31/12/2026. I duplicati sono riconosciuti tramite numero tessera o telefono; se mancano entrambi, tramite nome e data di nascita quando disponibile.",
   "understood": "Ho capito",
   "logoSemanticLabel": "Logo Rubrica Associati",
   "shareDirectory": "Condividi rubrica",

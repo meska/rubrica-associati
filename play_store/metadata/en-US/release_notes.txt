@@ -1,1 +1,1 @@
-Now available in English, Italian, French and German, automatically following the device language. Dates, messages, import and sharing are localized too.
+Fixed an issue that duplicated members without a phone number during a new import. Members with the same name are distinguished by date of birth when available.

@@ -1,1 +1,1 @@
-Die App ist jetzt auf Deutsch, Englisch, Italienisch und Französisch verfügbar und übernimmt automatisch die Gerätesprache. Auch Daten, Meldungen, Import, Teilen und native Ansichten sind lokalisiert.
+Ein Problem wurde behoben, durch das Mitglieder ohne Telefonnummer bei einem erneuten Import dupliziert wurden. Gleichnamige Personen werden, sofern vorhanden, anhand des Geburtsdatums unterschieden.

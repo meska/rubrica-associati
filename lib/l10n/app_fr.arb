@@ -38,7 +38,7 @@
   "save": "Enregistrer",
   "organizationSaveFailed": "Impossible d’enregistrer le nom de l’organisation.",
   "fileHelpTitle": "Comment préparer le fichier",
-  "fileHelpContent": "Pour transférer tout le répertoire entre appareils, utilisez Partager le répertoire et importez le fichier .rubrica sur l’autre appareil.\n\nVous pouvez aussi utiliser un fichier Excel .xlsx ou CSV. La première ligne doit contenir les en-têtes.\n\nColonnes reconnues :\n• Prénom\n• Nom\n• Téléphone\n• Deuxième téléphone\n• Numéro d’adhérent\n• Expiration de l’adhésion\n• Date de naissance\n• Notes\n\nLes dates peuvent être au format 31/12/2026. Le numéro d’adhérent et le téléphone servent aussi à reconnaître et mettre à jour les doublons.",
+  "fileHelpContent": "Pour transférer tout le répertoire entre appareils, utilisez Partager le répertoire et importez le fichier .rubrica sur l’autre appareil.\n\nVous pouvez aussi utiliser un fichier Excel .xlsx ou CSV. La première ligne doit contenir les en-têtes.\n\nColonnes reconnues :\n• Prénom\n• Nom\n• Téléphone\n• Deuxième téléphone\n• Numéro d’adhérent\n• Expiration de l’adhésion\n• Date de naissance\n• Notes\n\nLes dates peuvent être au format 31/12/2026. Les doublons sont reconnus par numéro d’adhérent ou téléphone ; à défaut, par nom et date de naissance lorsqu’elle est disponible.",
   "understood": "J’ai compris",
   "logoSemanticLabel": "Logo du Répertoire des adhérents",
   "shareDirectory": "Partager le répertoire",

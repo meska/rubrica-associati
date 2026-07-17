@@ -1,1 +1,1 @@
-The app is now available in English, Italian, French and German and automatically follows the device language. Dates, messages, import, sharing and native screens are localized too.
+Fixed an issue that duplicated members without a phone number during a new import. Members with the same name are distinguished by date of birth when available.
