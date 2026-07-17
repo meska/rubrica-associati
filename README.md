@@ -98,9 +98,10 @@ Build Windows (da un computer Windows con Visual Studio e il workload C++ deskto
 
 ```powershell
 flutter build windows --release
+./scripts/build-msix.ps1 -SkipBuild
 ```
 
-Ad ogni push GitHub Actions compila anche una versione portabile Windows e la pubblica come artefatto ZIP del workflow.
+Ad ogni push GitHub Actions compila la versione portabile Windows e pubblica sia lo ZIP sia il pacchetto MSIX per Microsoft Store. Lo script ricava automaticamente la versione MSIX da `pubspec.yaml`: per esempio `1.6.1+9` diventa `1.6.1.9`.
 
 Build Linux (con toolchain C++, CMake, Ninja e GTK 3):
 

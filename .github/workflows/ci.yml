@@ -46,11 +46,20 @@ jobs:
           Compress-Archive `
             -Path build/windows/x64/runner/Release/* `
             -DestinationPath rubrica-associati-windows-x64.zip
+      - name: Create Microsoft Store package
+        shell: pwsh
+        run: ./scripts/build-msix.ps1 -SkipBuild
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
         with:
           name: rubrica-associati-windows-x64
           path: rubrica-associati-windows-x64.zip
+          if-no-files-found: error
+      - name: Upload Microsoft Store package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rubrica-associati-windows-msix
+          path: build/windows/**/*.msix
           if-no-files-found: error
 
   build-linux:
