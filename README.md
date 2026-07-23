@@ -11,10 +11,10 @@
 <p align="center">
   <a href="https://apps.apple.com/app/id6791575906"><img alt="Scarica su App Store" src="https://img.shields.io/badge/App%20Store-iPhone%20e%20iPad-0D96F6?style=for-the-badge&amp;logo=apple&amp;logoColor=white"></a>
   <a href="https://play.google.com/store/apps/details?id=it.meska.rubricaassociati"><img alt="Google Play: in approvazione" src="https://img.shields.io/badge/Google%20Play-in%20approvazione-414141?style=for-the-badge&amp;logo=googleplay&amp;logoColor=white"></a>
-  <a href="https://apps.microsoft.com/detail/9NMPTTSFPJ9Q"><img alt="Microsoft Store: in certificazione" src="https://img.shields.io/badge/Microsoft%20Store-in%20certificazione-0078D4?style=for-the-badge&amp;logo=microsoft&amp;logoColor=white"></a>
+  <a href="https://apps.microsoft.com/detail/9NMPTTSFPJ9Q"><img alt="Microsoft Store: disponibile" src="https://img.shields.io/badge/Microsoft%20Store-disponibile-0078D4?style=for-the-badge&amp;logo=microsoft&amp;logoColor=white"></a>
 </p>
 
-I link Google Play e Microsoft Store diventeranno attivi appena le rispettive revisioni saranno concluse. Nel frattempo sono disponibili i download desktop diretti qui sotto.
+La versione Windows è disponibile su Microsoft Store. Il link Google Play diventerà attivo appena la revisione sarà conclusa; nel frattempo sono disponibili anche i download desktop diretti qui sotto.
 
 <p align="center">
   <a href="https://github.com/meska/rubrica-associati/releases/latest/download/rubrica-associati-windows-x64.zip"><img alt="Scarica Windows portatile" src="https://img.shields.io/badge/Windows-ZIP%20portatile-0078D4?style=for-the-badge&amp;logo=windows11&amp;logoColor=white"></a>
