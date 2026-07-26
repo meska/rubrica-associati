@@ -30,7 +30,8 @@ platform :ios do
       app_identifier: "it.meska.rubricaassociati",
       app_version: version,
       build_number: build_number,
-      metadata_path: File.expand_path("app_store/metadata", Dir.pwd),
+      # Fastlane cambia la directory corrente in fastlane/: risali al root del repo.
+      metadata_path: File.expand_path("../app_store/metadata", __dir__),
       skip_binary_upload: true,
       skip_screenshots: true,
       submit_for_review: true,
