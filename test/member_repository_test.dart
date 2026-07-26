@@ -1,14 +1,21 @@
+import 'dart:io';
+
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as path;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   late Database database;
   late MemberRepository repository;
 
-  setUp(() async {
+  setUpAll(() {
     sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  });
+
+  setUp(() async {
     database = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
     await database.execute('''
       CREATE TABLE members (
@@ -85,6 +92,26 @@ void main() {
 
     expect(await repository.loadOrganizationName(), 'Circolo Serenità');
     expect(() => repository.saveOrganizationName('   '), throwsArgumentError);
+  });
+
+  test('crea il database nel percorso esplicito', () async {
+    final temporaryDirectory = await Directory.systemTemp.createTemp(
+      'rubrica-associati-test-',
+    );
+    final databasePath = path.join(
+      temporaryDirectory.path,
+      'nested',
+      'rubrica_associati.db',
+    );
+    final fileRepository = MemberRepository(databasePath: databasePath);
+
+    try {
+      expect(await fileRepository.search(''), isEmpty);
+      expect(await File(databasePath).exists(), isTrue);
+    } finally {
+      await fileRepository.close();
+      await temporaryDirectory.delete(recursive: true);
+    }
   });
 
   test('cerca nomi accentati, composti e in qualsiasi ordine', () async {

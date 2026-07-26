@@ -91,5 +91,7 @@
   "lastName": "Last name",
   "saveMember": "Save member",
   "clearDate": "Clear date",
-  "notSpecified": "Not specified"
+  "notSpecified": "Not specified",
+  "directoryLoadFailed": "The directory could not be opened.",
+  "retry": "Try again"
 }

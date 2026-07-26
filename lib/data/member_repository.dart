@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:rubrica_associati/models/member.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ImportSaveResult {
@@ -10,21 +13,25 @@ class ImportSaveResult {
 }
 
 class MemberRepository {
-  MemberRepository({Database? database}) : _databaseOverride = database;
+  MemberRepository({Database? database, String? databasePath})
+    : _databaseOverride = database,
+      _databasePathOverride = databasePath;
 
   static const defaultOrganizationName = 'Centro pensionati';
   static const maxOrganizationNameLength = 80;
+  static const _databaseFileName = 'rubrica_associati.db';
 
   final Database? _databaseOverride;
+  final String? _databasePathOverride;
   Database? _database;
 
   Future<Database> get _db async {
     if (_databaseOverride != null) return _databaseOverride;
     if (_database != null) return _database!;
 
-    final databasesPath = await getDatabasesPath();
+    final databasePath = _databasePathOverride ?? await _defaultDatabasePath();
     _database = await openDatabase(
-      path.join(databasesPath, 'rubrica_associati.db'),
+      databasePath,
       version: 4,
       onCreate: (db, version) async {
         await db.execute('''
@@ -72,6 +79,40 @@ class MemberRepository {
     return _database!;
   }
 
+  static Future<String> _defaultDatabasePath() async {
+    final legacyPath = path.join(await getDatabasesPath(), _databaseFileName);
+    if (!Platform.isWindows && !Platform.isLinux) return legacyPath;
+
+    final supportDirectory = await getApplicationSupportDirectory();
+    final databasePath = path.join(
+      supportDirectory.path,
+      'databases',
+      _databaseFileName,
+    );
+    await _copyLegacyDesktopDatabase(legacyPath, databasePath);
+    return databasePath;
+  }
+
+  static Future<void> _copyLegacyDesktopDatabase(
+    String legacyPath,
+    String databasePath,
+  ) async {
+    if (path.equals(legacyPath, databasePath) ||
+        await File(databasePath).exists() ||
+        !await File(legacyPath).exists()) {
+      return;
+    }
+
+    await Directory(path.dirname(databasePath)).create(recursive: true);
+    // I file laterali vien prima: el DB principale fa da segnale de copia completa.
+    for (final suffix in const ['-wal', '-shm', '']) {
+      final source = File('$legacyPath$suffix');
+      if (await source.exists()) {
+        await source.copy('$databasePath$suffix');
+      }
+    }
+  }
+
   static Future<void> _createSettingsTable(DatabaseExecutor db) =>
       db.execute('''
       CREATE TABLE app_settings (
@@ -101,6 +142,11 @@ class MemberRepository {
     }
     // Una botta sola al database, cussì l'aggiornamento resta svelto.
     await batch.commit(noResult: true);
+  }
+
+  Future<void> close() async {
+    await _database?.close();
+    _database = null;
   }
 
   Future<String> loadOrganizationName() async {

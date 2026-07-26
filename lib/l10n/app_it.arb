@@ -79,5 +79,7 @@
   "lastName": "Cognome",
   "saveMember": "Salva associato",
   "clearDate": "Cancella data",
-  "notSpecified": "Non indicata"
+  "notSpecified": "Non indicata",
+  "directoryLoadFailed": "Non è stato possibile aprire la rubrica.",
+  "retry": "Riprova"
 }

@@ -6,9 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 class _FakeMemberRepository extends MemberRepository {
   String organizationName = MemberRepository.defaultOrganizationName;
+  var failLoading = false;
 
   @override
-  Future<List<Member>> search(String query) async => const [];
+  Future<List<Member>> search(String query) async {
+    if (failLoading) throw StateError('Database non disponibile');
+    return const [];
+  }
 
   @override
   Future<String> loadOrganizationName() async => organizationName;
@@ -63,6 +67,26 @@ void main() {
 
     expect(find.text('Circolo Serenità'), findsOneWidget);
     expect(repository.organizationName, 'Circolo Serenità');
+  });
+
+  testWidgets('mostra un errore recuperabile se la rubrica non si apre', (
+    tester,
+  ) async {
+    final repository = _FakeMemberRepository()..failLoading = true;
+    await tester.pumpWidget(
+      RubricaAssociatiApp(repository: repository, locale: const Locale('it')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.text('Non è stato possibile aprire la rubrica.'), findsOne);
+    expect(find.text('Riprova'), findsOne);
+
+    repository.failLoading = false;
+    await tester.tap(find.text('Riprova'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('La rubrica è vuota'), findsOne);
   });
 
   testWidgets('usa le quattro lingue supportate', (tester) async {

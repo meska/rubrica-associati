@@ -79,5 +79,7 @@
   "lastName": "Nachname",
   "saveMember": "Mitglied speichern",
   "clearDate": "Datum löschen",
-  "notSpecified": "Nicht angegeben"
+  "notSpecified": "Nicht angegeben",
+  "directoryLoadFailed": "Das Verzeichnis konnte nicht geöffnet werden.",
+  "retry": "Erneut versuchen"
 }

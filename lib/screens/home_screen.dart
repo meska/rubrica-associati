@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Member> _members = const [];
   var _organizationName = MemberRepository.defaultOrganizationName;
   var _loading = true;
+  var _loadFailed = false;
   var _loadGeneration = 0;
 
   @override
@@ -54,19 +55,33 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _load() async {
     final generation = ++_loadGeneration;
     final query = _searchController.text;
-    final members = await widget.repository.search(query);
-    // Se nel frattempo xe cambiada la ricerca, sta risposta ormai xe vecia.
-    if (!mounted || generation != _loadGeneration) return;
-    setState(() {
-      _members = members;
-      _loading = false;
-    });
+    try {
+      final members = await widget.repository.search(query);
+      // Se nel frattempo xe cambiada la ricerca, sta risposta ormai xe vecia.
+      if (!mounted || generation != _loadGeneration) return;
+      setState(() {
+        _members = members;
+        _loading = false;
+        _loadFailed = false;
+      });
+    } catch (_) {
+      if (!mounted || generation != _loadGeneration) return;
+      // Niente spinner eterno: se el database no parte, femose capir e riprovemo.
+      setState(() {
+        _loading = false;
+        _loadFailed = true;
+      });
+    }
   }
 
   Future<void> _loadOrganizationName() async {
-    final name = await widget.repository.loadOrganizationName();
-    if (!mounted) return;
-    setState(() => _organizationName = name);
+    try {
+      final name = await widget.repository.loadOrganizationName();
+      if (!mounted) return;
+      setState(() => _organizationName = name);
+    } catch (_) {
+      // L'errore principale vien mostrà dal caricamento della rubrica.
+    }
   }
 
   void _search(String _) {
@@ -407,6 +422,39 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildContent() {
     final strings = AppLocalizations.of(context);
     if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_loadFailed) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                strings.directoryLoadFailed,
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 18),
+              FilledButton.icon(
+                onPressed: () {
+                  setState(() => _loading = true);
+                  _load();
+                  _loadOrganizationName();
+                },
+                icon: const Icon(Icons.refresh),
+                label: Text(strings.retry),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     if (_members.isEmpty) {
       return Center(
         child: Padding(

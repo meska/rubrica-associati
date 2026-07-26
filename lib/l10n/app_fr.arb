@@ -79,5 +79,7 @@
   "lastName": "Nom",
   "saveMember": "Enregistrer l’adhérent",
   "clearDate": "Effacer la date",
-  "notSpecified": "Non renseignée"
+  "notSpecified": "Non renseignée",
+  "directoryLoadFailed": "Impossible d’ouvrir le répertoire.",
+  "retry": "Réessayer"
 }

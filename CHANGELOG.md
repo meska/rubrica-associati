@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.7.2 - 2026-07-26
+
+### Corretto
+
+- La versione Microsoft Store salva ora il database in una cartella dati
+  scrivibile e si avvia correttamente invece di restare sul caricamento.
+- Un errore di apertura della rubrica mostra un messaggio con il comando per
+  riprovare, senza lasciare uno spinner infinito.
+- Le installazioni desktop portatili conservano i dati esistenti copiando il
+  vecchio database nella nuova posizione al primo avvio.
+
 ## 1.7.1 - 2026-07-17
 
 ### Corretto
