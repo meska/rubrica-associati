@@ -1,1 +1,1 @@
-Corretto un problema che duplicava gli associati senza numero di telefono durante una nuova importazione. Gli omonimi vengono distinti tramite la data di nascita quando disponibile.
+Migliorata l’affidabilità all’apertura della rubrica. Se il database non è disponibile, l’app mostra ora un messaggio chiaro e permette di riprovare.

@@ -1,1 +1,1 @@
-Ein Problem wurde behoben, durch das Mitglieder ohne Telefonnummer bei einem erneuten Import dupliziert wurden. Gleichnamige Personen werden, sofern vorhanden, anhand des Geburtsdatums unterschieden.
+Die Zuverlässigkeit beim Öffnen des Verzeichnisses wurde verbessert. Ist die Datenbank nicht verfügbar, zeigt die App nun eine klare Meldung und bietet einen erneuten Versuch an.

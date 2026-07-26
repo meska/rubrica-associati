@@ -1,1 +1,1 @@
-Fixed an issue that duplicated members without a phone number during a new import. Members with the same name are distinguished by date of birth when available.
+Improved reliability when opening the directory. If the database is unavailable, the app now shows a clear message and lets you try again.
