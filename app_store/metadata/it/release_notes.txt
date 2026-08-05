@@ -1,1 +1,1 @@
-Migliorata l’affidabilità all’apertura della rubrica. Se il database non è disponibile, l’app mostra ora un messaggio chiaro e permette di riprovare.
+Rubrica Associati è ora completamente gratuita. Chi vuole può sostenere facoltativamente lo sviluppo con quattro mance simpatiche: non sbloccano funzioni e la rubrica resta completa per tutti.

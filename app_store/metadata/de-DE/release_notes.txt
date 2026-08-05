@@ -1,1 +1,1 @@
-Die Zuverlässigkeit beim Öffnen des Verzeichnisses wurde verbessert. Ist die Datenbank nicht verfügbar, zeigt die App nun eine klare Meldung und bietet einen erneuten Versuch an.
+Rubrica Associati ist jetzt vollständig kostenlos. Wer möchte, kann die Entwicklung freiwillig mit vier humorvollen Trinkgeldern unterstützen: Sie schalten keine Funktionen frei und das Verzeichnis bleibt für alle vollständig.

@@ -8,26 +8,33 @@ import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
 import 'package:rubrica_associati/services/spreadsheet_importer.dart';
+import 'package:rubrica_associati/services/tip_jar_service.dart';
+import 'package:rubrica_associati/support/app_support.dart';
+import 'package:rubrica_associati/widgets/support_sheet.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.repository});
+  const HomeScreen({
+    super.key,
+    required this.repository,
+    this.tipJarController,
+    this.supportLauncher = AppSupport.openExternal,
+  });
 
   final MemberRepository repository;
+  final TipJarController? tipJarController;
+  final ExternalSupportLauncher supportLauncher;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static final _donationsUri = Uri.parse('https://github.com/sponsors/meska');
-
   final _searchController = TextEditingController();
   final _importer = SpreadsheetImporter();
   final _backupService = BackupService();
@@ -218,15 +225,24 @@ class _HomeScreenState extends State<HomeScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _openDonations() async {
+  Future<void> _openSupport() async {
     final strings = AppLocalizations.of(context);
-    // La donazion la resta fora dall'app e no la sblocca gnente: xe proprio volontaria.
-    final opened = await launchUrl(
-      _donationsUri,
-      mode: LaunchMode.externalApplication,
-    );
-    if (!opened) {
-      _showMessage(strings.donationsFailed);
+    final tipJarController = widget.tipJarController;
+    if (tipJarController != null) {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (_) => SupportSheet(controller: tipJarController),
+      );
+      return;
+    }
+    // Su desktop Ko-fi resta fora dall'app e no sblocca proprio gnente.
+    try {
+      final opened = await widget.supportLauncher(AppSupport.koFiUri);
+      if (!opened) _showMessage(strings.supportOpenFailed);
+    } catch (_) {
+      _showMessage(strings.supportOpenFailed);
     }
   }
 
@@ -336,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'import') unawaited(_import());
               if (value == 'organization') unawaited(_editOrganizationName());
               if (value == 'help') unawaited(_showImportHelp());
-              if (value == 'donate') unawaited(_openDonations());
+              if (value == 'support') unawaited(_openSupport());
             },
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -372,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               PopupMenuItem(
-                value: 'donate',
+                value: 'support',
                 child: ListTile(
                   leading: const Icon(Icons.volunteer_activism_outlined),
                   title: Text(strings.supportProject),

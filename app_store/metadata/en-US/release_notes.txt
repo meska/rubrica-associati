@@ -1,1 +1,1 @@
-Improved reliability when opening the directory. If the database is unavailable, the app now shows a clear message and lets you try again.
+Rubrica Associati is now completely free. Anyone who wishes can optionally support development with four playful tips: they unlock no features and the full directory remains available to everyone.

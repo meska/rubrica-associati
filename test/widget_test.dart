@@ -122,4 +122,27 @@ void main() {
     expect(find.text('Member Directory'), findsOneWidget);
     expect(find.text('The directory is empty'), findsOneWidget);
   });
+
+  testWidgets('mostra un errore se Ko-fi non può essere aperto', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      RubricaAssociatiApp(
+        repository: _FakeMemberRepository(),
+        locale: const Locale('it'),
+        supportLauncher: (_) async => throw StateError('browser unavailable'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sostieni il progetto'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Non è stato possibile aprire la pagina di supporto.'),
+      findsOneWidget,
+    );
+  });
 }

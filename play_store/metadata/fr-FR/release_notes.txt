@@ -1,1 +1,1 @@
-Amélioration de la fiabilité à l’ouverture du répertoire. Si la base de données est indisponible, l’app affiche désormais un message clair et permet de réessayer.
+Rubrica Associati est désormais entièrement gratuite. Vous pouvez soutenir son développement avec quatre pourboires facultatifs et amusants : ils ne débloquent aucune fonction et le répertoire reste complet pour tous.

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.8.0 - 2026-08-05
+
+### Aggiunto
+
+- Su iPhone, iPad e Android è possibile sostenere facoltativamente lo sviluppo
+  con quattro mance consumabili dai nomi personalizzati.
+- Su Windows e Linux il comando di supporto apre Ko-fi nel browser esterno.
+
+### Migliorato
+
+- L'app è completamente gratuita: le mance non sbloccano funzioni, non creano
+  diritti da ripristinare e non interferiscono con la rubrica.
+- Stati di caricamento, acquisto, annullamento ed errore sono localizzati e
+  annunciati correttamente dalle tecnologie assistive.
+
 ## 1.7.2 - 2026-07-26
 
 ### Corretto
