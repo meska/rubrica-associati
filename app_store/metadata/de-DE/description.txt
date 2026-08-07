@@ -12,4 +12,4 @@ Verwalten Sie Mitgliedsdaten direkt auf Ihrem Gerät:
 
 Die App funktioniert vollständig offline, ohne Konto und ohne Server. Ihre Daten bleiben auf dem Gerät, außer Sie exportieren und teilen ausdrücklich eine Sicherung.
 
-Mitgliederverzeichnis ist kostenlos, werbefrei und Open Source.
+Mitgliederverzeichnis ist kostenlos, werbefrei und Open Source. Alle Funktionen sind ohne Kauf verfügbar; wer möchte, kann die Entwicklung mit einem von vier freiwilligen verbrauchbaren Trinkgeldern unterstützen.

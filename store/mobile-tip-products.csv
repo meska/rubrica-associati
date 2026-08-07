@@ -1,0 +1,17 @@
+product_id,locale,reference_price_eur,name,description
+rubrica_tip_small,it-IT,0.99,Caffè del segretario,Carburante per un’altra scheda ordinata.
+rubrica_tip_medium,it-IT,2.99,Tessera ritrovata,Per la tessera sparita un minuto fa.
+rubrica_tip_large,it-IT,5.99,Assemblea senza fogli,Meno faldoni e stampe in assemblea.
+rubrica_tip_legendary,it-IT,9.99,Socio onorario digitale,Sostegno da socio onorario digitale.
+rubrica_tip_small,en-US,0.99,Secretary’s coffee,Fuel for one more perfectly sorted record.
+rubrica_tip_medium,en-US,2.99,Found membership card,For the card that vanished a minute ago.
+rubrica_tip_large,en-US,5.99,Paperless meeting,Fewer folders and printouts at meetings.
+rubrica_tip_legendary,en-US,9.99,Digital honorary member,Honorary-level support for this little app.
+rubrica_tip_small,fr-FR,0.99,Café du secrétaire,Du carburant pour une fiche bien rangée.
+rubrica_tip_medium,fr-FR,2.99,Carte d’adhérent retrouvée,Pour la carte disparue il y a une minute.
+rubrica_tip_large,fr-FR,5.99,Réunion sans papier,Moins de classeurs et d’impressions.
+rubrica_tip_legendary,fr-FR,9.99,Membre honoraire numérique,Un soutien digne d’un membre honoraire.
+rubrica_tip_small,de-DE,0.99,Kaffee fürs Sekretariat,Kraft für einen gut sortierten Eintrag.
+rubrica_tip_medium,de-DE,2.99,Gefundener Mitgliedsausweis,Für den eben noch hier liegenden Ausweis.
+rubrica_tip_large,de-DE,5.99,Papierlose Versammlung,Weniger Ordner und Ausdrucke bei Treffen.
+rubrica_tip_legendary,de-DE,9.99,Digitales Ehrenmitglied,Unterstützung auf Ehrenmitglied-Niveau.

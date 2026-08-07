@@ -12,4 +12,4 @@ Gestisci i dati degli associati direttamente sul dispositivo:
 
 L’app funziona completamente offline, senza account e senza server. I dati restano sul dispositivo, salvo quando decidi esplicitamente di esportare e condividere un backup.
 
-Rubrica Associati è gratuita, senza pubblicità e open source.
+Rubrica Associati è gratuita, senza pubblicità e open source. Tutte le funzioni sono disponibili senza acquisti; chi vuole può lasciare una delle quattro mance consumabili facoltative per sostenere lo sviluppo.

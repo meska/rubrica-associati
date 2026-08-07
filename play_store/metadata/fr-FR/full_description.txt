@@ -12,4 +12,4 @@ Gérez les données des adhérents directement sur votre appareil :
 
 L’application fonctionne entièrement hors ligne, sans compte ni serveur. Vos données restent sur l’appareil, sauf si vous choisissez explicitement d’exporter et de partager une sauvegarde.
 
-Répertoire des adhérents est gratuit, sans publicité et open source.
+Répertoire des adhérents est gratuit, sans publicité et open source. Toutes les fonctions sont accessibles sans achat ; vous pouvez laisser l’un des quatre pourboires consommables facultatifs pour soutenir le développement.

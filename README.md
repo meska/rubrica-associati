@@ -34,6 +34,8 @@ L'app non invia dati a server e non richiede account o connessione Internet. I d
 
 L'app è e resterà gratuita. Su iOS e Android chi vuole può lasciare una mancia facoltativa tramite lo store; su Windows e Linux il supporto apre [Ko-fi](https://ko-fi.com/meskatech) nel browser. Il sostegno non sblocca funzioni e non è necessario per usare l'app.
 
+Il piano di distribuzione mondiale, le localizzazioni previste e la matrice dei prodotti di supporto sono documentati in [`store/release-plan.md`](store/release-plan.md).
+
 ## Funzioni
 
 - elenco associati ordinato per cognome e nome;
@@ -124,7 +126,7 @@ flutter build windows --release
 ./scripts/build-msix.ps1 -SkipBuild
 ```
 
-Ad ogni push GitHub Actions compila la versione portabile Windows e pubblica sia lo ZIP sia il pacchetto MSIX per Microsoft Store. Lo script ricava automaticamente la versione MSIX da `pubspec.yaml`: per esempio `1.6.1+9` diventa `1.6.1.0`, perché Microsoft Store richiede la revisione finale a zero.
+GitHub Actions compila e pubblica soltanto la versione portabile Windows con il relativo checksum. L'MSIX per Partner Center va creato su una VM Windows privata o tramite un canale privato, usando lo script locale; non viene mai prodotto o conservato nei workflow e negli artefatti GitHub pubblici. Lo script ricava automaticamente la versione MSIX da `pubspec.yaml`: per esempio `1.6.1+9` diventa `1.6.1.0`, perché Microsoft Store richiede la revisione finale a zero.
 
 Build Linux (con toolchain C++, CMake, Ninja e GTK 3):
 

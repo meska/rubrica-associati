@@ -1,4 +1,4 @@
-name: Publish Linux packages
+name: Publish desktop packages
 
 on:
   push:
@@ -7,33 +7,67 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Existing GitHub release tag, for example v1.6.1
+        description: Existing GitHub release tag, for example v1.8.0
         required: true
         type: string
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: desktop-release-${{ inputs.release_tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
 
 jobs:
-  publish-linux:
+  build-linux:
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
-      GH_TOKEN: ${{ github.token }}
+    permissions:
+      contents: read
+    outputs:
+      source_commit: ${{ steps.source.outputs.commit }}
     steps:
+      - name: Validate release tag input
+        shell: bash
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "Tag release non valido: $RELEASE_TAG" >&2
+            exit 1
+          }
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source tag and version
+        id: source
+        shell: bash
+        run: |
+          tag_ref="refs/tags/$RELEASE_TAG"
+          git show-ref --verify --quiet "$tag_ref" || {
+            echo "Riferimento tag mancante: $tag_ref" >&2
+            exit 1
+          }
+          tag_commit="$(git rev-parse "$tag_ref^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          [[ "$head_commit" == "$tag_commit" ]] || {
+            echo "HEAD $head_commit non coincide con $RELEASE_TAG ($tag_commit)." >&2
+            exit 1
+          }
+          app_version="$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+[[:space:]]*$/\1/p' pubspec.yaml)"
+          [[ "$RELEASE_TAG" == "v$app_version" ]] || {
+            echo "Tag $RELEASE_TAG non coerente con pubspec.yaml ($app_version)." >&2
+            exit 1
+          }
+          echo "commit=$head_commit" >> "$GITHUB_OUTPUT"
+      - name: Validate repository metadata
+        run: ./scripts/validate-release-readiness.sh
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           cache: true
-      - name: Verify release version
-        shell: bash
-        run: |
-          app_version="$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+[[:space:]]*$/\1/p' pubspec.yaml)"
-          if [[ "$RELEASE_TAG" != "v$app_version" ]]; then
-            echo "Tag $RELEASE_TAG non coerente con pubspec.yaml ($app_version)." >&2
-            exit 1
-          fi
       - name: Install Linux build dependencies
         run: |
           sudo apt-get update
@@ -44,10 +78,152 @@ jobs:
         run: flutter build linux --release
       - name: Create Linux packages
         run: ./scripts/build-linux-packages.sh
-      - name: Publish packages in GitHub Release
+      - name: Preserve public Linux packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: github-linux-${{ env.RELEASE_TAG }}
+          path: build/linux/packages/*
+          if-no-files-found: error
+          retention-days: 7
+
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      source_commit: ${{ steps.source.outputs.commit }}
+    steps:
+      - name: Validate release tag input
         shell: bash
         run: |
-          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release create "$RELEASE_TAG" --verify-tag --generate-notes
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "Tag release non valido: $RELEASE_TAG" >&2
+            exit 1
+          }
+      - uses: actions/checkout@v5
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source tag and version
+        id: source
+        shell: bash
+        run: |
+          tag_ref="refs/tags/$RELEASE_TAG"
+          git show-ref --verify --quiet "$tag_ref" || {
+            echo "Riferimento tag mancante: $tag_ref" >&2
+            exit 1
+          }
+          tag_commit="$(git rev-parse "$tag_ref^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          [[ "$head_commit" == "$tag_commit" ]] || {
+            echo "HEAD $head_commit non coincide con $RELEASE_TAG ($tag_commit)." >&2
+            exit 1
+          }
+          app_version="$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+[[:space:]]*$/\1/p' pubspec.yaml)"
+          [[ "$RELEASE_TAG" == "v$app_version" ]] || {
+            echo "Tag $RELEASE_TAG non coerente con pubspec.yaml ($app_version)." >&2
+            exit 1
+          }
+          echo "commit=$head_commit" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      - name: Build Windows
+        run: flutter build windows --release
+      - name: Package Windows artifacts
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path build/windows/x64/runner/Release/* `
+            -DestinationPath rubrica-associati-windows-x64.zip
+          Get-FileHash rubrica-associati-windows-x64.zip -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" } |
+            Set-Content SHA256SUMS-windows-x64.txt
+      - name: Preserve public Windows package
+        uses: actions/upload-artifact@v7
+        with:
+          name: github-windows-${{ env.RELEASE_TAG }}
+          path: |
+            rubrica-associati-windows-x64.zip
+            SHA256SUMS-windows-x64.txt
+          if-no-files-found: error
+          retention-days: 7
+  publish-release:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Refuse an existing public release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_state="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null || true)"
+          if [[ "$release_state" == "false" ]]; then
+            echo "La release pubblica $RELEASE_TAG esiste già: nessun asset verrà sovrascritto." >&2
+            exit 1
           fi
-          gh release upload "$RELEASE_TAG" build/linux/packages/* --clobber
+      - name: Verify both builds used the current tag commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LINUX_COMMIT: ${{ needs.build-linux.outputs.source_commit }}
+          WINDOWS_COMMIT: ${{ needs.build-windows.outputs.source_commit }}
+        run: |
+          [[ -n "$LINUX_COMMIT" && "$LINUX_COMMIT" == "$WINDOWS_COMMIT" ]] || {
+            echo "Le build desktop non provengono dallo stesso commit." >&2
+            exit 1
+          }
+          tag_ref="refs/tags/$RELEASE_TAG"
+          encoded_tag_ref="${tag_ref//\//%2F}"
+          remote_commit="$(gh api "repos/$GITHUB_REPOSITORY/commits/$encoded_tag_ref" --jq .sha)"
+          [[ "$LINUX_COMMIT" == "$remote_commit" ]] || {
+            echo "Il tag $RELEASE_TAG non punta più al commit compilato." >&2
+            exit 1
+          }
+      - name: Download Linux release assets
+        uses: actions/download-artifact@v8
+        with:
+          name: github-linux-${{ env.RELEASE_TAG }}
+          path: release-assets/linux
+      - name: Download Windows release assets
+        uses: actions/download-artifact@v8
+        with:
+          name: github-windows-${{ env.RELEASE_TAG }}
+          path: release-assets/windows
+      - name: Publish complete GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_state="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null || true)"
+          if [[ "$release_state" == "false" ]]; then
+            echo "La release pubblica $RELEASE_TAG esiste già: nessun asset verrà sovrascritto." >&2
+            exit 1
+          fi
+          if [[ -z "$release_state" ]]; then
+            # La bozza evita una release pubblica a metà se l'upload si interrompe.
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --generate-notes \
+              --draft
+          fi
+          release_state="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)"
+          [[ "$release_state" == "true" ]] || {
+            echo "La release $RELEASE_TAG non è una bozza: upload annullato." >&2
+            exit 1
+          }
+          gh release upload "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            release-assets/linux/* \
+            release-assets/windows/* \
+            --clobber
+          gh release edit "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false

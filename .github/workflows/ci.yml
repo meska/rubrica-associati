@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           cache: true
@@ -21,6 +21,8 @@ jobs:
         run: flutter pub get
       - name: Analyze
         run: flutter analyze
+      - name: Validate release metadata
+        run: ./scripts/validate-release-readiness.sh
       - name: Test
         run: flutter test
       - name: Build Android APK
@@ -30,7 +32,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           cache: true
@@ -46,27 +48,17 @@ jobs:
           Compress-Archive `
             -Path build/windows/x64/runner/Release/* `
             -DestinationPath rubrica-associati-windows-x64.zip
-      - name: Create Microsoft Store package
-        shell: pwsh
-        run: ./scripts/build-msix.ps1 -SkipBuild
       - name: Upload Windows build
         uses: actions/upload-artifact@v7
         with:
           name: rubrica-associati-windows-x64
           path: rubrica-associati-windows-x64.zip
           if-no-files-found: error
-      - name: Upload Microsoft Store package
-        uses: actions/upload-artifact@v7
-        with:
-          name: rubrica-associati-windows-msix
-          path: build/windows/**/*.msix
-          if-no-files-found: error
-
   build-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
           cache: true
