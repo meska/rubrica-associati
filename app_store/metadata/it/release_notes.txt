@@ -1,1 +1,1 @@
-Abbiamo aggiunto quattro mance facoltative per chi vuole sostenere lo sviluppo. Rubrica Associati resta gratuita e completa: le mance non sbloccano funzioni.
+Corretto il caricamento del catalogo delle mance facoltative su iPhone e iPad. Rubrica Associati resta gratuita e completa.

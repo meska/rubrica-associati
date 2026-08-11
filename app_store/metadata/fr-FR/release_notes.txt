@@ -1,1 +1,1 @@
-Nous avons ajouté quatre pourboires facultatifs pour soutenir le développement. Répertoire des adhérents reste gratuit et complet : ils ne débloquent aucune fonction.
+Correction du chargement du catalogue des pourboires facultatifs sur iPhone et iPad. Répertoire des adhérents reste gratuit et complet.

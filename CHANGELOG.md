@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.1 - 2026-08-11
+
+### Corretto
+
+- Le mance facoltative su iPhone e iPad sono ora configurate nello store e il
+  relativo catalogo può essere caricato correttamente dall'app.
+
 ## 1.8.0 - 2026-08-05
 
 ### Aggiunto

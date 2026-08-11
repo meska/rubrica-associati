@@ -1,1 +1,1 @@
-We added four optional tips for anyone who wishes to support development. Member Directory remains free and complete: tips unlock no features.
+Fixed loading of the optional tip catalog on iPhone and iPad. Member Directory remains free and complete.
