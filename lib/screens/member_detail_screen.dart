@@ -1,4 +1,5 @@
 import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
@@ -22,11 +23,21 @@ class MemberDetailScreen extends StatefulWidget {
 
 class _MemberDetailScreenState extends State<MemberDetailScreen> {
   late Member _member;
+  List<RegisterEvent> _history = const [];
 
   @override
   void initState() {
     super.initState();
     _member = widget.member;
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    final id = _member.id;
+    if (id == null) return;
+    final history = await widget.repository.registerHistory(id);
+    if (!mounted) return;
+    setState(() => _history = history);
   }
 
   Future<void> _call(String phone) async {
@@ -49,6 +60,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     setState(() {
       _member = saved;
     });
+    await _loadHistory();
   }
 
   Future<void> _delete() async {
@@ -178,9 +190,45 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 18),
+          Text(
+            strings.registerHistoryTitle,
+            style: theme.textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Column(
+              children: [
+                if (_history.isEmpty)
+                  ListTile(title: Text(strings.registerHistoryEmpty))
+                else
+                  for (final e in _history)
+                    ListTile(
+                      key: ValueKey('register-event-${e.id}'),
+                      leading: const Icon(Icons.history),
+                      title: Text(_eventLabel(strings, e.type)),
+                      subtitle: Text(
+                        _formatIso(e.eventDate, strings.localeName),
+                      ),
+                    ),
+              ],
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  String _eventLabel(AppLocalizations strings, RegisterEventType type) =>
+      switch (type) {
+        RegisterEventType.admission => strings.registerEventAdmission,
+        RegisterEventType.cessation => strings.registerEventCessation,
+        RegisterEventType.correction => strings.registerEventCorrection,
+      };
+
+  String _formatIso(String iso, String localeName) {
+    final parsed = DateTime.tryParse(iso);
+    return parsed == null ? iso : DateFormat.yMd(localeName).format(parsed);
   }
 
   String _formatDate(DateTime? value, String localeName) =>

@@ -108,5 +108,10 @@
   "clearDate": "Cancella data",
   "notSpecified": "Non indicata",
   "directoryLoadFailed": "Non è stato possibile aprire la rubrica.",
-  "retry": "Riprova"
+  "retry": "Riprova",
+  "registerHistoryTitle": "Storico del libro soci",
+  "registerEventAdmission": "Ammissione",
+  "registerEventCessation": "Cessazione",
+  "registerEventCorrection": "Correzione",
+  "registerHistoryEmpty": "Nessuna annotazione"
 }

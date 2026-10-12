@@ -59,7 +59,7 @@ class RegisterEntry {
 class RegisterRepository {
   RegisterRepository(this._db);
 
-  final Database _db;
+  final DatabaseExecutor _db;
 
   /// Crea tabella e trigger append-only (migrazione additiva v5).
   static Future<void> createSchema(DatabaseExecutor db) async {
@@ -203,6 +203,62 @@ class RegisterRepository {
       cause: cause ?? target.cause,
       correctsEventId: eventId,
       note: note,
+      now: now,
+    );
+  }
+
+  static String todayIso([DateTime? now]) {
+    final d = now ?? DateTime.now();
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${d.year.toString().padLeft(4, '0')}-${two(d.month)}-${two(d.day)}';
+  }
+
+  /// Ammissione più recente del socio che non è seguita da una cessazione.
+  Future<RegisterEvent?> openAdmission(int memberId) async {
+    final events = await eventsForMember(memberId);
+    RegisterEvent? open;
+    for (final e in events) {
+      if (e.type == RegisterEventType.admission) open = e;
+      if (e.type == RegisterEventType.cessation) open = null;
+    }
+    return open;
+  }
+
+  /// Allinea nome e cognome del libro a quelli del socio: se differiscono
+  /// aggiunge una correzione (mai modifica). Senza ammissione aperta non fa
+  /// nulla (soci precedenti all'introduzione del libro).
+  Future<RegisterEvent?> syncIdentity({
+    required int memberId,
+    required String firstName,
+    required String lastName,
+    DateTime? now,
+  }) async {
+    final open = await openAdmission(memberId);
+    if (open == null) return null;
+    final effective = await _effectiveEvent(open.id);
+    if (effective == null ||
+        (effective.firstName == firstName && effective.lastName == lastName)) {
+      return null;
+    }
+    return recordCorrection(
+      eventId: open.id,
+      firstName: firstName,
+      lastName: lastName,
+      now: now,
+    );
+  }
+
+  /// Cessazione per cancellazione dall'app, solo se c'è un'ammissione aperta.
+  Future<RegisterEvent?> recordRemovalIfAdmitted(
+    int memberId, {
+    DateTime? now,
+  }) async {
+    if (await openAdmission(memberId) == null) return null;
+    return recordCessation(
+      memberId: memberId,
+      date: todayIso(now),
+      cause: CessationCause.other,
+      note: 'removed-from-app',
       now: now,
     );
   }

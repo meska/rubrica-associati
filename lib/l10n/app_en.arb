@@ -120,5 +120,10 @@
   "clearDate": "Clear date",
   "notSpecified": "Not specified",
   "directoryLoadFailed": "The directory could not be opened.",
-  "retry": "Try again"
+  "retry": "Try again",
+  "registerHistoryTitle": "Membership register history",
+  "registerEventAdmission": "Admission",
+  "registerEventCessation": "Cessation",
+  "registerEventCorrection": "Correction",
+  "registerHistoryEmpty": "No entries"
 }

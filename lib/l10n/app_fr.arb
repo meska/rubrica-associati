@@ -108,5 +108,10 @@
   "clearDate": "Effacer la date",
   "notSpecified": "Non renseignée",
   "directoryLoadFailed": "Impossible d’ouvrir le répertoire.",
-  "retry": "Réessayer"
+  "retry": "Réessayer",
+  "registerHistoryTitle": "Historique du registre des adhérents",
+  "registerEventAdmission": "Admission",
+  "registerEventCessation": "Cessation",
+  "registerEventCorrection": "Rectification",
+  "registerHistoryEmpty": "Aucune inscription"
 }

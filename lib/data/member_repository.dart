@@ -26,9 +26,16 @@ class MemberRepository implements ReviewSettingsStore {
   final Database? _databaseOverride;
   final String? _databasePathOverride;
   Database? _database;
+  bool _overrideSchemaReady = false;
 
   Future<Database> get _db async {
-    if (_databaseOverride != null) return _databaseOverride;
+    if (_databaseOverride != null) {
+      if (!_overrideSchemaReady) {
+        _overrideSchemaReady = true;
+        await RegisterRepository.createSchema(_databaseOverride);
+      }
+      return _databaseOverride;
+    }
     if (_database != null) return _database!;
 
     final databasePath = _databasePathOverride ?? await _defaultDatabasePath();
@@ -252,18 +259,48 @@ class MemberRepository implements ReviewSettingsStore {
   Future<Member> save(Member member) async {
     final db = await _db;
     final values = _valuesFor(member);
-    if (member.id == null) {
-      final id = await db.insert('members', values);
-      return member.copyWith(id: id);
-    }
+    return db.transaction((tx) async {
+      final register = RegisterRepository(tx);
+      if (member.id == null) {
+        final id = await tx.insert('members', values);
+        await register.recordAdmission(
+          memberId: id,
+          firstName: member.firstName.trim(),
+          lastName: member.lastName.trim(),
+          date: RegisterRepository.todayIso(),
+        );
+        return member.copyWith(id: id);
+      }
 
-    await db.update('members', values, where: 'id = ?', whereArgs: [member.id]);
-    return member;
+      await tx.update(
+        'members',
+        values,
+        where: 'id = ?',
+        whereArgs: [member.id],
+      );
+      await register.syncIdentity(
+        memberId: member.id!,
+        firstName: member.firstName.trim(),
+        lastName: member.lastName.trim(),
+      );
+      return member;
+    });
   }
 
+  /// Elimina il socio dalla rubrica; nel libro soci annota la cessazione e
+  /// conserva lo storico (nessuna cancellazione fisica delle annotazioni).
   Future<void> delete(int id) async {
     final db = await _db;
-    await db.delete('members', where: 'id = ?', whereArgs: [id]);
+    await db.transaction((tx) async {
+      await RegisterRepository(tx).recordRemovalIfAdmitted(id);
+      await tx.delete('members', where: 'id = ?', whereArgs: [id]);
+    });
+  }
+
+  /// Storico grezzo del libro soci per un socio.
+  Future<List<RegisterEvent>> registerHistory(int memberId) async {
+    final db = await _db;
+    return RegisterRepository(db).eventsForMember(memberId);
   }
 
   Future<ImportSaveResult> importMembers(List<Member> members) async {
@@ -276,7 +313,13 @@ class MemberRepository implements ReviewSettingsStore {
         final existing = await _findDuplicate(transaction, member);
         if (existing == null) {
           final values = _valuesFor(member);
-          await transaction.insert('members', values);
+          final id = await transaction.insert('members', values);
+          await RegisterRepository(transaction).recordAdmission(
+            memberId: id,
+            firstName: member.firstName.trim(),
+            lastName: member.lastName.trim(),
+            date: RegisterRepository.todayIso(),
+          );
           inserted++;
           continue;
         }
@@ -289,6 +332,11 @@ class MemberRepository implements ReviewSettingsStore {
           values,
           where: 'id = ?',
           whereArgs: [existing.id],
+        );
+        await RegisterRepository(transaction).syncIdentity(
+          memberId: existing.id!,
+          firstName: merged.firstName.trim(),
+          lastName: merged.lastName.trim(),
         );
         updated++;
       }

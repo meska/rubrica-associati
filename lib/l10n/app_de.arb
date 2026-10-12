@@ -108,5 +108,10 @@
   "clearDate": "Datum löschen",
   "notSpecified": "Nicht angegeben",
   "directoryLoadFailed": "Das Verzeichnis konnte nicht geöffnet werden.",
-  "retry": "Erneut versuchen"
+  "retry": "Erneut versuchen",
+  "registerHistoryTitle": "Verlauf im Mitgliederbuch",
+  "registerEventAdmission": "Aufnahme",
+  "registerEventCessation": "Austritt",
+  "registerEventCorrection": "Berichtigung",
+  "registerHistoryEmpty": "Keine Einträge"
 }
