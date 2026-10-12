@@ -14,6 +14,33 @@ class ImportSaveResult {
   final int updated;
 }
 
+/// Dati anagrafici dell'ente per l'intestazione dei documenti.
+class EntityProfile {
+  const EntityProfile({
+    required this.name,
+    this.address = '',
+    this.taxCode = '',
+    this.legalRepresentative = '',
+  });
+
+  static const addressKey = 'entity_address';
+  static const taxCodeKey = 'entity_tax_code';
+  static const repKey = 'entity_legal_representative';
+  static const maxFieldLength = 200;
+
+  final String name;
+  final String address;
+  final String taxCode;
+  final String legalRepresentative;
+
+  EntityProfile normalized() => EntityProfile(
+    name: name.trim(),
+    address: address.trim(),
+    taxCode: Member.normalizeTaxCode(taxCode),
+    legalRepresentative: legalRepresentative.trim(),
+  );
+}
+
 class MemberRepository implements ReviewSettingsStore {
   MemberRepository({Database? database, String? databasePath})
     : _databaseOverride = database,
@@ -32,6 +59,7 @@ class MemberRepository implements ReviewSettingsStore {
     if (_databaseOverride != null) {
       if (!_overrideSchemaReady) {
         _overrideSchemaReady = true;
+        await _addRegisterColumns(_databaseOverride);
         await RegisterRepository.createSchema(_databaseOverride);
       }
       return _databaseOverride;
@@ -41,7 +69,7 @@ class MemberRepository implements ReviewSettingsStore {
     final databasePath = _databasePathOverride ?? await _defaultDatabasePath();
     _database = await openDatabase(
       databasePath,
-      version: 5,
+      version: 6,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
@@ -56,6 +84,9 @@ class MemberRepository implements ReviewSettingsStore {
             member_number TEXT NOT NULL DEFAULT '',
             expiry_date TEXT,
             birth_date TEXT,
+            join_date TEXT,
+            tax_code TEXT NOT NULL DEFAULT '',
+            birth_place TEXT NOT NULL DEFAULT '',
             notes TEXT NOT NULL DEFAULT ''
           )
         ''');
@@ -85,6 +116,7 @@ class MemberRepository implements ReviewSettingsStore {
           await _populateNameKeys(db);
         }
         if (oldVersion < 5) await RegisterRepository.createSchema(db);
+        if (oldVersion < 6) await _addRegisterColumns(db);
       },
     );
     return _database!;
@@ -120,6 +152,26 @@ class MemberRepository implements ReviewSettingsStore {
       final source = File('$legacyPath$suffix');
       if (await source.exists()) {
         await source.copy('$databasePath$suffix');
+      }
+    }
+  }
+
+  /// Migrazione additiva v6: data iscrizione, codice fiscale, luogo di nascita.
+  /// Idempotente (controlla le colonne presenti).
+  static Future<void> _addRegisterColumns(DatabaseExecutor db) async {
+    final existing = (await db.rawQuery(
+      'PRAGMA table_info(members)',
+    )).map((row) => row['name']).toSet();
+    const columns = {
+      'join_date': 'TEXT',
+      'tax_code': "TEXT NOT NULL DEFAULT ''",
+      'birth_place': "TEXT NOT NULL DEFAULT ''",
+    };
+    for (final entry in columns.entries) {
+      if (!existing.contains(entry.key)) {
+        await db.execute(
+          'ALTER TABLE members ADD COLUMN ${entry.key} ${entry.value}',
+        );
       }
     }
   }
@@ -208,6 +260,30 @@ class MemberRepository implements ReviewSettingsStore {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  /// Dati dell'ente per l'intestazione del libro soci (chiavi entity_*).
+  Future<EntityProfile> loadEntityProfile() async {
+    final name = await loadOrganizationName();
+    return EntityProfile(
+      name: name,
+      address: await loadSetting(EntityProfile.addressKey) ?? '',
+      taxCode: await loadSetting(EntityProfile.taxCodeKey) ?? '',
+      legalRepresentative: await loadSetting(EntityProfile.repKey) ?? '',
+    );
+  }
+
+  Future<void> saveEntityProfile(EntityProfile profile) async {
+    final cleaned = profile.normalized();
+    if (cleaned.address.length > EntityProfile.maxFieldLength ||
+        cleaned.taxCode.length > EntityProfile.maxFieldLength ||
+        cleaned.legalRepresentative.length > EntityProfile.maxFieldLength) {
+      throw ArgumentError.value(profile, 'profile', 'Dati ente non validi');
+    }
+    await saveOrganizationName(cleaned.name);
+    await saveSetting(EntityProfile.addressKey, cleaned.address);
+    await saveSetting(EntityProfile.taxCodeKey, cleaned.taxCode);
+    await saveSetting(EntityProfile.repKey, cleaned.legalRepresentative);
+  }
+
   Future<List<Member>> search(String query) async {
     final db = await _db;
     final cleaned = query.trim().toLowerCase();
@@ -267,7 +343,7 @@ class MemberRepository implements ReviewSettingsStore {
           memberId: id,
           firstName: member.firstName.trim(),
           lastName: member.lastName.trim(),
-          date: RegisterRepository.todayIso(),
+          date: values['join_date'] as String? ?? RegisterRepository.todayIso(),
         );
         return member.copyWith(id: id);
       }
@@ -277,6 +353,12 @@ class MemberRepository implements ReviewSettingsStore {
         values,
         where: 'id = ?',
         whereArgs: [member.id],
+      );
+      await register.syncJoinDate(
+        memberId: member.id!,
+        firstName: member.firstName.trim(),
+        lastName: member.lastName.trim(),
+        joinDate: values['join_date'] as String?,
       );
       await register.syncIdentity(
         memberId: member.id!,
@@ -318,7 +400,8 @@ class MemberRepository implements ReviewSettingsStore {
             memberId: id,
             firstName: member.firstName.trim(),
             lastName: member.lastName.trim(),
-            date: RegisterRepository.todayIso(),
+            date:
+                values['join_date'] as String? ?? RegisterRepository.todayIso(),
           );
           inserted++;
           continue;
@@ -332,6 +415,12 @@ class MemberRepository implements ReviewSettingsStore {
           values,
           where: 'id = ?',
           whereArgs: [existing.id],
+        );
+        await RegisterRepository(transaction).syncJoinDate(
+          memberId: existing.id!,
+          firstName: merged.firstName.trim(),
+          lastName: merged.lastName.trim(),
+          joinDate: values['join_date'] as String?,
         );
         await RegisterRepository(transaction).syncIdentity(
           memberId: existing.id!,
@@ -430,6 +519,9 @@ class MemberRepository implements ReviewSettingsStore {
     memberNumber: _preferIncoming(old.memberNumber, incoming.memberNumber),
     expiryDate: incoming.expiryDate ?? old.expiryDate,
     birthDate: incoming.birthDate ?? old.birthDate,
+    joinDate: incoming.joinDate ?? old.joinDate,
+    taxCode: _preferIncoming(old.taxCode, incoming.taxCode),
+    birthPlace: _preferIncoming(old.birthPlace, incoming.birthPlace),
     notes: _preferIncoming(old.notes, incoming.notes),
   );
 

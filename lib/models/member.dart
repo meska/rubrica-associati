@@ -8,6 +8,9 @@ class Member {
     required this.memberNumber,
     this.expiryDate,
     this.birthDate,
+    this.joinDate,
+    this.taxCode = '',
+    this.birthPlace = '',
     required this.notes,
   });
 
@@ -19,6 +22,13 @@ class Member {
   final String memberNumber;
   final DateTime? expiryDate;
   final DateTime? birthDate;
+
+  /// Data di iscrizione/ammissione (libro soci); opzionale.
+  final DateTime? joinDate;
+
+  /// Codice fiscale, opzionale (maiuscolo, senza spazi).
+  final String taxCode;
+  final String birthPlace;
   final String notes;
 
   String get fullName => '$firstName $lastName'.trim();
@@ -52,8 +62,15 @@ class Member {
     memberNumber: memberNumber,
     expiryDate: expiryDate,
     birthDate: birthDate,
+    joinDate: joinDate,
+    taxCode: taxCode,
+    birthPlace: birthPlace,
     notes: notes,
   );
+
+  /// Normalizza il codice fiscale: maiuscolo e senza spazi.
+  static String normalizeTaxCode(String value) =>
+      value.replaceAll(RegExp(r'\s+'), '').toUpperCase();
 
   Map<String, Object?> toMap() => {
     'id': id,
@@ -66,6 +83,9 @@ class Member {
     'member_number': memberNumber.trim(),
     'expiry_date': _dateToStorage(expiryDate),
     'birth_date': _dateToStorage(birthDate),
+    'join_date': _dateToStorage(joinDate),
+    'tax_code': normalizeTaxCode(taxCode),
+    'birth_place': birthPlace.trim(),
     'notes': notes.trim(),
   };
 
@@ -78,8 +98,13 @@ class Member {
     memberNumber: map['member_number'] as String? ?? '',
     expiryDate: _dateFromStorage(map['expiry_date'] as String?),
     birthDate: _dateFromStorage(map['birth_date'] as String?),
+    joinDate: _dateFromStorage(map['join_date'] as String?),
+    taxCode: map['tax_code'] as String? ?? '',
+    birthPlace: map['birth_place'] as String? ?? '',
     notes: map['notes'] as String? ?? '',
   );
+
+  static String? dateToStorage(DateTime? value) => _dateToStorage(value);
 
   static String? _dateToStorage(DateTime? value) {
     if (value == null) return null;

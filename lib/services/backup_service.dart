@@ -99,6 +99,9 @@ class BackupService {
     'memberNumber': member.memberNumber,
     'expiryDate': _dateToJson(member.expiryDate),
     'birthDate': _dateToJson(member.birthDate),
+    'joinDate': _dateToJson(member.joinDate),
+    'taxCode': member.taxCode,
+    'birthPlace': member.birthPlace,
     'notes': member.notes,
   };
 
@@ -116,6 +119,12 @@ class BackupService {
       memberNumber: _string(row, 'memberNumber', 100, rowNumber),
       expiryDate: _date(row, 'expiryDate', rowNumber),
       birthDate: _date(row, 'birthDate', rowNumber),
+      // Campi aggiunti dopo: assenti nei vecchi backup .rubrica.
+      joinDate: _date(row, 'joinDate', rowNumber),
+      taxCode: Member.normalizeTaxCode(
+        _optionalString(row, 'taxCode', 40, rowNumber),
+      ),
+      birthPlace: _optionalString(row, 'birthPlace', 100, rowNumber),
       notes: _string(row, 'notes', 2000, rowNumber),
     );
   }

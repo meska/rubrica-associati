@@ -248,6 +248,34 @@ class RegisterRepository {
     );
   }
 
+  /// Allinea la data di ammissione del libro alla data di iscrizione del
+  /// socio ([joinDate], AAAA-MM-GG). Se il socio non ha mai avuto annotazioni
+  /// (precedente alla v5) crea l'ammissione; se la data differisce aggiunge
+  /// una correzione. Senza [joinDate] non fa nulla.
+  Future<RegisterEvent?> syncJoinDate({
+    required int memberId,
+    required String firstName,
+    required String lastName,
+    required String? joinDate,
+    DateTime? now,
+  }) async {
+    if (joinDate == null) return null;
+    final open = await openAdmission(memberId);
+    if (open == null) {
+      if ((await eventsForMember(memberId)).isNotEmpty) return null;
+      return recordAdmission(
+        memberId: memberId,
+        firstName: firstName,
+        lastName: lastName,
+        date: joinDate,
+        now: now,
+      );
+    }
+    final effective = await _effectiveEvent(open.id);
+    if (effective == null || effective.eventDate == joinDate) return null;
+    return recordCorrection(eventId: open.id, date: joinDate, now: now);
+  }
+
   /// Cessazione per cancellazione dall'app, solo se c'è un'ammissione aperta.
   Future<RegisterEvent?> recordRemovalIfAdmitted(
     int memberId, {
