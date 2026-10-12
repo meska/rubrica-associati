@@ -7,6 +7,7 @@ import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
+import 'package:rubrica_associati/services/review_service.dart';
 import 'package:rubrica_associati/services/spreadsheet_importer.dart';
 import 'package:rubrica_associati/services/tip_jar_service.dart';
 import 'package:rubrica_associati/support/app_support.dart';
@@ -23,10 +24,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.repository,
     this.tipJarController,
+    this.reviewService,
     this.supportLauncher = AppSupport.openExternal,
   });
 
   final MemberRepository repository;
+  final ReviewService? reviewService;
   final TipJarController? tipJarController;
   final ExternalSupportLauncher supportLauncher;
 
@@ -44,12 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
   var _loading = true;
   var _loadFailed = false;
   var _loadGeneration = 0;
+  var _reviewEnabled = true;
 
   @override
   void initState() {
     super.initState();
     _load();
     _loadOrganizationName();
+    unawaited(_initReview());
   }
 
   @override
@@ -78,6 +83,43 @@ class _HomeScreenState extends State<HomeScreen> {
         _loading = false;
         _loadFailed = true;
       });
+    }
+  }
+
+  Future<void> _initReview() async {
+    final service = widget.reviewService;
+    if (service == null) return;
+    try {
+      await service.registerLaunch();
+      final state = await service.loadState();
+      if (!mounted) return;
+      setState(() => _reviewEnabled = state.enabled);
+    } catch (_) {
+      // La richiesta di recensione non deve mai disturbare l'uso dell'app.
+    }
+  }
+
+  Future<void> _toggleReview() async {
+    final service = widget.reviewService;
+    if (service == null) return;
+    final next = !_reviewEnabled;
+    setState(() => _reviewEnabled = next);
+    try {
+      await service.setEnabled(next);
+    } catch (_) {
+      if (mounted) setState(() => _reviewEnabled = !next);
+    }
+  }
+
+  /// Dopo un'azione riuscita (mai dopo un errore): la policy decide se chiedere.
+  Future<void> _afterSuccess() async {
+    final service = widget.reviewService;
+    if (service == null) return;
+    try {
+      await service.recordSuccess();
+      await service.maybeRequest();
+    } catch (_) {
+      // Nessun effetto sull'azione appena riuscita.
     }
   }
 
@@ -168,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       );
+      unawaited(_afterSuccess());
     } on SpreadsheetImportException catch (error) {
       _showMessage(_spreadsheetErrorMessage(strings, error));
     } on BackupException catch (error) {
@@ -202,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final origin = box == null
           ? null
           : box.localToGlobal(Offset.zero) & box.size;
-      await SharePlus.instance.share(
+      final result = await SharePlus.instance.share(
         ShareParams(
           files: [XFile(backupFile.path, mimeType: 'application/json')],
           fileNameOverrides: [fileName],
@@ -211,6 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
           sharePositionOrigin: origin,
         ),
       );
+      if (result.status == ShareResultStatus.success) {
+        unawaited(_afterSuccess());
+      }
     } on BackupException catch (error) {
       _showMessage(_backupErrorMessage(strings, error));
     } on Object catch (_) {
@@ -353,6 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'organization') unawaited(_editOrganizationName());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
+              if (value == 'review') unawaited(_toggleReview());
             },
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -387,6 +434,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
+              if (widget.reviewService != null)
+                CheckedPopupMenuItem(
+                  value: 'review',
+                  checked: _reviewEnabled,
+                  child: Text(strings.reviewRequestSetting),
+                ),
               PopupMenuItem(
                 value: 'support',
                 child: ListTile(

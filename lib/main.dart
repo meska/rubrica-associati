@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/screens/home_screen.dart';
+import 'package:rubrica_associati/services/in_app_review_requester.dart';
+import 'package:rubrica_associati/services/review_service.dart';
 import 'package:rubrica_associati/services/tip_jar_service.dart';
 import 'package:rubrica_associati/support/app_support.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class RubricaAssociatiApp extends StatefulWidget {
     this.home,
     this.locale,
     this.tipJarController,
+    this.reviewService,
     this.supportLauncher = AppSupport.openExternal,
   });
 
@@ -34,6 +37,7 @@ class RubricaAssociatiApp extends StatefulWidget {
   final Widget? home;
   final Locale? locale;
   final TipJarController? tipJarController;
+  final ReviewService? reviewService;
   final ExternalSupportLauncher supportLauncher;
 
   @override
@@ -43,6 +47,17 @@ class RubricaAssociatiApp extends StatefulWidget {
 class _RubricaAssociatiAppState extends State<RubricaAssociatiApp> {
   TipJarController? _tipJarController;
   var _ownsTipJarController = false;
+  late final MemberRepository _repository =
+      widget.repository ?? MemberRepository();
+  late final ReviewService? _reviewService = _buildReviewService();
+
+  ReviewService? _buildReviewService() {
+    // Solo dove esiste una richiesta nativa; nei test si passa un fake.
+    if (!(Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+      return null;
+    }
+    return ReviewService(store: _repository, requester: InAppReviewRequester());
+  }
 
   @override
   void initState() {
@@ -90,7 +105,8 @@ class _RubricaAssociatiAppState extends State<RubricaAssociatiApp> {
       home:
           widget.home ??
           HomeScreen(
-            repository: widget.repository ?? MemberRepository(),
+            repository: _repository,
+            reviewService: widget.reviewService ?? _reviewService,
             tipJarController: _tipJarController,
             supportLauncher: widget.supportLauncher,
           ),

@@ -51,6 +51,7 @@
   "shareDirectory": "Share directory",
   "importDirectoryExcel": "Import directory / Excel",
   "fileFormat": "File format",
+  "reviewRequestSetting": "Ask for a review",
   "supportProject": "Support the project",
   "tipJarTitle": "Support Rubrica Associati",
   "tipJarBody": "The app is complete and free. If it saves you some paperwork, you can leave an optional tip.",
