@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/services/review_service.dart';
 import 'package:path/path.dart' as path;
@@ -33,7 +34,7 @@ class MemberRepository implements ReviewSettingsStore {
     final databasePath = _databasePathOverride ?? await _defaultDatabasePath();
     _database = await openDatabase(
       databasePath,
-      version: 4,
+      version: 5,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
@@ -58,6 +59,7 @@ class MemberRepository implements ReviewSettingsStore {
           'CREATE INDEX members_card_idx ON members(member_number)',
         );
         await _createSettingsTable(db);
+        await RegisterRepository.createSchema(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) await _createSettingsTable(db);
@@ -75,6 +77,7 @@ class MemberRepository implements ReviewSettingsStore {
           );
           await _populateNameKeys(db);
         }
+        if (oldVersion < 5) await RegisterRepository.createSchema(db);
       },
     );
     return _database!;
