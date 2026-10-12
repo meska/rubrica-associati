@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/services/review_service.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,7 +13,7 @@ class ImportSaveResult {
   final int updated;
 }
 
-class MemberRepository {
+class MemberRepository implements ReviewSettingsStore {
   MemberRepository({Database? database, String? databasePath})
     : _databaseOverride = database,
       _databasePathOverride = databasePath;
@@ -147,6 +148,28 @@ class MemberRepository {
   Future<void> close() async {
     await _database?.close();
     _database = null;
+  }
+
+  @override
+  Future<String?> loadSetting(String key) async {
+    final db = await _db;
+    final rows = await db.query(
+      'app_settings',
+      columns: const ['value'],
+      where: 'key = ?',
+      whereArgs: [key],
+      limit: 1,
+    );
+    return rows.isEmpty ? null : rows.single['value'] as String;
+  }
+
+  @override
+  Future<void> saveSetting(String key, String value) async {
+    final db = await _db;
+    await db.insert('app_settings', {
+      'key': key,
+      'value': value,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<String> loadOrganizationName() async {
