@@ -243,4 +243,43 @@ void main() {
       await upgradedRepo.close();
     },
   );
+
+  test('upgrade da v6 a v7: tabella chiusure creata, dati intatti', () async {
+    final file = path.join(dir.path, 'v6.db');
+    final old = await databaseFactoryFfi.openDatabase(
+      file,
+      options: OpenDatabaseOptions(
+        version: 6,
+        onCreate: (d, _) async {
+          await d.execute('''CREATE TABLE members (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            first_name TEXT NOT NULL, last_name TEXT NOT NULL,
+            name_key TEXT NOT NULL DEFAULT '',
+            phone TEXT NOT NULL DEFAULT '', phone_key TEXT NOT NULL DEFAULT '',
+            secondary_phone TEXT NOT NULL DEFAULT '',
+            secondary_phone_key TEXT NOT NULL DEFAULT '',
+            member_number TEXT NOT NULL DEFAULT '',
+            expiry_date TEXT, birth_date TEXT, join_date TEXT,
+            tax_code TEXT NOT NULL DEFAULT '',
+            birth_place TEXT NOT NULL DEFAULT '',
+            notes TEXT NOT NULL DEFAULT '')''');
+          await d.execute(
+            'CREATE TABLE app_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)',
+          );
+          await RegisterRepository.createSchema(d);
+          await d.insert('members', {
+            'first_name': 'Mario',
+            'last_name': 'Rossi',
+          });
+        },
+      ),
+    );
+    await old.close();
+
+    final repo = MemberRepository(databasePath: file);
+    expect(await repo.search(''), hasLength(1));
+    final closures = await repo.closureRepository();
+    expect(await closures.all(), isEmpty);
+    await repo.close();
+  });
 }
