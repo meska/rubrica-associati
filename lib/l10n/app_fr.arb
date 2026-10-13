@@ -113,5 +113,15 @@
   "registerEventAdmission": "Admission",
   "registerEventCessation": "Cessation",
   "registerEventCorrection": "Rectification",
-  "registerHistoryEmpty": "Aucune inscription"
+  "registerHistoryEmpty": "Aucune inscription",
+  "entityDetails": "Données de l'association",
+  "entityDetailsHint": "Utilisées dans l'en-tête du registre des membres.",
+  "entityAddress": "Adresse",
+  "entityTaxCode": "Numéro fiscal de l'association",
+  "entityLegalRepresentative": "Représentant légal",
+  "entityDetailsSaveFailed": "Les données de l'association n'ont pas pu être enregistrées.",
+  "joinDate": "Date d'adhésion",
+  "joinDatePicker": "DATE D'ADHÉSION",
+  "taxCode": "Code fiscal",
+  "birthPlace": "Lieu de naissance"
 }

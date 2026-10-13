@@ -292,6 +292,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _editEntityDetails() async {
+    final strings = AppLocalizations.of(context);
+    final current = await widget.repository.loadEntityProfile();
+    if (!mounted) return;
+    final profile = await showDialog<EntityProfile>(
+      context: context,
+      builder: (_) => _EntityDetailsDialog(initial: current),
+    );
+    if (profile == null || !mounted) return;
+    try {
+      await widget.repository.saveEntityProfile(profile);
+    } catch (_) {
+      _showMessage(strings.entityDetailsSaveFailed);
+    }
+  }
+
   Future<void> _editOrganizationName() async {
     final strings = AppLocalizations.of(context);
     final currentName = _displayOrganizationName(strings);
@@ -397,6 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'share') unawaited(_shareBackup());
               if (value == 'import') unawaited(_import());
               if (value == 'organization') unawaited(_editOrganizationName());
+              if (value == 'entity') unawaited(_editEntityDetails());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
               if (value == 'review') unawaited(_toggleReview());
@@ -423,6 +440,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.business_outlined),
                   title: Text(strings.organizationName),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'entity',
+                child: ListTile(
+                  leading: const Icon(Icons.account_balance_outlined),
+                  title: Text(strings.entityDetails),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
@@ -678,4 +703,90 @@ class _HomeScreenState extends State<HomeScreen> {
         'notes' => strings.notes,
         _ => field ?? '',
       };
+}
+
+class _EntityDetailsDialog extends StatefulWidget {
+  const _EntityDetailsDialog({required this.initial});
+
+  final EntityProfile initial;
+
+  @override
+  State<_EntityDetailsDialog> createState() => _EntityDetailsDialogState();
+}
+
+class _EntityDetailsDialogState extends State<_EntityDetailsDialog> {
+  late final TextEditingController _address;
+  late final TextEditingController _taxCode;
+  late final TextEditingController _representative;
+
+  @override
+  void initState() {
+    super.initState();
+    _address = TextEditingController(text: widget.initial.address);
+    _taxCode = TextEditingController(text: widget.initial.taxCode);
+    _representative = TextEditingController(
+      text: widget.initial.legalRepresentative,
+    );
+  }
+
+  @override
+  void dispose() {
+    _address.dispose();
+    _taxCode.dispose();
+    _representative.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+    const max = EntityProfile.maxFieldLength;
+    return AlertDialog(
+      title: Text(strings.entityDetails),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(strings.entityDetailsHint),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _address,
+              maxLength: max,
+              decoration: InputDecoration(labelText: strings.entityAddress),
+            ),
+            TextField(
+              controller: _taxCode,
+              maxLength: max,
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(labelText: strings.entityTaxCode),
+            ),
+            TextField(
+              controller: _representative,
+              maxLength: max,
+              decoration: InputDecoration(
+                labelText: strings.entityLegalRepresentative,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(strings.cancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(
+            EntityProfile(
+              name: widget.initial.name,
+              address: _address.text,
+              taxCode: _taxCode.text,
+              legalRepresentative: _representative.text,
+            ),
+          ),
+          child: Text(strings.save),
+        ),
+      ],
+    );
+  }
 }

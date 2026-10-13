@@ -125,5 +125,15 @@
   "registerEventAdmission": "Admission",
   "registerEventCessation": "Cessation",
   "registerEventCorrection": "Correction",
-  "registerHistoryEmpty": "No entries"
+  "registerHistoryEmpty": "No entries",
+  "entityDetails": "Organization details",
+  "entityDetailsHint": "Used in the header of the membership register.",
+  "entityAddress": "Address",
+  "entityTaxCode": "Organization tax code",
+  "entityLegalRepresentative": "Legal representative",
+  "entityDetailsSaveFailed": "The organization details could not be saved.",
+  "joinDate": "Membership date",
+  "joinDatePicker": "MEMBERSHIP DATE",
+  "taxCode": "Tax code",
+  "birthPlace": "Place of birth"
 }

@@ -113,5 +113,15 @@
   "registerEventAdmission": "Ammissione",
   "registerEventCessation": "Cessazione",
   "registerEventCorrection": "Correzione",
-  "registerHistoryEmpty": "Nessuna annotazione"
+  "registerHistoryEmpty": "Nessuna annotazione",
+  "entityDetails": "Dati dell'ente",
+  "entityDetailsHint": "Servono per l'intestazione del libro soci.",
+  "entityAddress": "Indirizzo",
+  "entityTaxCode": "Codice fiscale dell'ente",
+  "entityLegalRepresentative": "Rappresentante legale",
+  "entityDetailsSaveFailed": "Non è stato possibile salvare i dati dell'ente.",
+  "joinDate": "Data di iscrizione",
+  "joinDatePicker": "DATA DI ISCRIZIONE",
+  "taxCode": "Codice fiscale",
+  "birthPlace": "Luogo di nascita"
 }

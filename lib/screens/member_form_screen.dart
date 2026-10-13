@@ -21,6 +21,9 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
   late final TextEditingController _secondaryPhone;
   late final TextEditingController _memberNumber;
   late final TextEditingController _notes;
+  late final TextEditingController _taxCode;
+  late final TextEditingController _birthPlace;
+  DateTime? _joinDate;
   DateTime? _expiryDate;
   DateTime? _birthDate;
 
@@ -34,6 +37,9 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
     _secondaryPhone = TextEditingController(text: member?.secondaryPhone ?? '');
     _memberNumber = TextEditingController(text: member?.memberNumber ?? '');
     _notes = TextEditingController(text: member?.notes ?? '');
+    _taxCode = TextEditingController(text: member?.taxCode ?? '');
+    _birthPlace = TextEditingController(text: member?.birthPlace ?? '');
+    _joinDate = member?.joinDate;
     _expiryDate = member?.expiryDate;
     _birthDate = member?.birthDate;
   }
@@ -46,7 +52,21 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
     _secondaryPhone.dispose();
     _memberNumber.dispose();
     _notes.dispose();
+    _taxCode.dispose();
+    _birthPlace.dispose();
     super.dispose();
+  }
+
+  Future<void> _chooseJoinDate() async {
+    final strings = AppLocalizations.of(context);
+    final selected = await showDatePicker(
+      context: context,
+      initialDate: _joinDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      helpText: strings.joinDatePicker,
+    );
+    if (selected != null) setState(() => _joinDate = selected);
   }
 
   Future<void> _chooseDate({required bool expiry}) async {
@@ -90,6 +110,9 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
         memberNumber: _memberNumber.text.trim(),
         expiryDate: _expiryDate,
         birthDate: _birthDate,
+        joinDate: _joinDate,
+        taxCode: Member.normalizeTaxCode(_taxCode.text),
+        birthPlace: _birthPlace.text.trim(),
         notes: _notes.text.trim(),
       ),
     );
@@ -175,6 +198,34 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
                 icon: Icons.cake_outlined,
                 onTap: () => _chooseDate(expiry: false),
                 onClear: () => setState(() => _birthDate = null),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _birthPlace,
+                decoration: InputDecoration(
+                  labelText: strings.birthPlace,
+                  prefixIcon: const Icon(Icons.place_outlined),
+                ),
+                textCapitalization: TextCapitalization.words,
+                inputFormatters: [LengthLimitingTextInputFormatter(100)],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _taxCode,
+                decoration: InputDecoration(
+                  labelText: strings.taxCode,
+                  prefixIcon: const Icon(Icons.fingerprint),
+                ),
+                textCapitalization: TextCapitalization.characters,
+                inputFormatters: [LengthLimitingTextInputFormatter(32)],
+              ),
+              const SizedBox(height: 12),
+              _DateField(
+                label: strings.joinDate,
+                value: _joinDate,
+                icon: Icons.how_to_reg_outlined,
+                onTap: _chooseJoinDate,
+                onClear: () => setState(() => _joinDate = null),
               ),
               const SizedBox(height: 12),
               TextFormField(

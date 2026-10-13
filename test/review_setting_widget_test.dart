@@ -41,6 +41,10 @@ void main() {
       final store = _Store();
       final service = ReviewService(store: store, requester: _Requester());
 
+      tester.view.physicalSize = const Size(800, 1400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
       await tester.pumpWidget(
         RubricaAssociatiApp(
           locale: Locale(entry.key),

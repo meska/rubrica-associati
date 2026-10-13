@@ -95,6 +95,33 @@ class SpreadsheetImporter {
       'date de naissance',
       'geburtsdatum',
     },
+    'joinDate': {
+      'data iscrizione',
+      'data di iscrizione',
+      'iscrizione',
+      'data ammissione',
+      'data di ammissione',
+      'join date',
+      'membership date',
+      'date d adhesion',
+      'eintrittsdatum',
+    },
+    'taxCode': {
+      'codice fiscale',
+      'cf',
+      'tax code',
+      'fiscal code',
+      'code fiscal',
+      'steuernummer',
+    },
+    'birthPlace': {
+      'luogo nascita',
+      'luogo di nascita',
+      'place of birth',
+      'birthplace',
+      'lieu de naissance',
+      'geburtsort',
+    },
     'notes': {'note', 'annotazioni', 'notes', 'notizen'},
   };
 
@@ -165,6 +192,10 @@ class SpreadsheetImporter {
       if (expiry.invalid) {
         warnings.add('Riga ${index + 1}: scadenza non riconosciuta.');
       }
+      final join = _dateAt(row, columns['joinDate']);
+      if (join.invalid) {
+        warnings.add('Riga ${index + 1}: data di iscrizione non riconosciuta.');
+      }
       if (birth.invalid) {
         warnings.add('Riga ${index + 1}: data di nascita non riconosciuta.');
       }
@@ -182,6 +213,11 @@ class SpreadsheetImporter {
           ),
           expiryDate: expiry.value,
           birthDate: birth.value,
+          joinDate: join.value,
+          taxCode: Member.normalizeTaxCode(
+            _valueAt(row, columns['taxCode'], maxLength: 32),
+          ),
+          birthPlace: _valueAt(row, columns['birthPlace'], maxLength: 100),
           notes: _valueAt(row, columns['notes'], maxLength: 2000),
         ),
       );

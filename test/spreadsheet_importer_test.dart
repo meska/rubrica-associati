@@ -109,4 +109,33 @@ void main() {
       throwsA(isA<SpreadsheetImportException>()),
     );
   });
+
+  test('legge colonne opzionali del libro soci', () {
+    final result = importer.parseRows([
+      [
+        'Nome',
+        'Cognome',
+        'Data iscrizione',
+        'Codice fiscale',
+        'Luogo di nascita',
+      ],
+      ['Maria', 'Rossi', '01/02/2020', ' rssmra 50a41 h501z ', 'Roma'],
+      ['Luca', 'Bianchi', 'boh', '', ''],
+    ]);
+    final first = result.members.first;
+    expect(first.joinDate, DateTime(2020, 2, 1));
+    expect(first.taxCode, 'RSSMRA50A41H501Z');
+    expect(first.birthPlace, 'Roma');
+    expect(result.members.last.joinDate, isNull);
+    expect(result.warnings, hasLength(1));
+  });
+
+  test('senza colonne del libro soci il comportamento resta invariato', () {
+    final result = importer.parseRows([
+      ['Nome', 'Cognome'],
+      ['Maria', 'Rossi'],
+    ]);
+    expect(result.members.single.taxCode, '');
+    expect(result.members.single.joinDate, isNull);
+  });
 }

@@ -113,5 +113,15 @@
   "registerEventAdmission": "Aufnahme",
   "registerEventCessation": "Austritt",
   "registerEventCorrection": "Berichtigung",
-  "registerHistoryEmpty": "Keine Einträge"
+  "registerHistoryEmpty": "Keine Einträge",
+  "entityDetails": "Vereinsdaten",
+  "entityDetailsHint": "Werden im Kopf des Mitgliederverzeichnisses verwendet.",
+  "entityAddress": "Adresse",
+  "entityTaxCode": "Steuernummer des Vereins",
+  "entityLegalRepresentative": "Gesetzlicher Vertreter",
+  "entityDetailsSaveFailed": "Die Vereinsdaten konnten nicht gespeichert werden.",
+  "joinDate": "Eintrittsdatum",
+  "joinDatePicker": "EINTRITTSDATUM",
+  "taxCode": "Steuernummer",
+  "birthPlace": "Geburtsort"
 }

@@ -182,6 +182,21 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                   value: _formatDate(_member.birthDate, strings.localeName),
                 ),
                 _DetailRow(
+                  icon: Icons.place_outlined,
+                  label: strings.birthPlace,
+                  value: _member.birthPlace,
+                ),
+                _DetailRow(
+                  icon: Icons.fingerprint,
+                  label: strings.taxCode,
+                  value: _member.taxCode,
+                ),
+                _DetailRow(
+                  icon: Icons.how_to_reg_outlined,
+                  label: strings.joinDate,
+                  value: _formatDate(_member.joinDate, strings.localeName),
+                ),
+                _DetailRow(
                   icon: Icons.notes_outlined,
                   label: strings.notes,
                   value: _member.notes,
