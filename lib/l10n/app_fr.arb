@@ -68,9 +68,24 @@
   "tipHonoraryMember": "Membre honoraire numérique",
   "tipHonoraryMemberDescription": "Un soutien légendaire pour une petite application indépendante.",
   "tipJarPurchase": "Acheter {name} pour {price}",
-  "@tipJarPurchase": {"placeholders": {"name": {"type": "String"}, "price": {"type": "String"}}},
+  "@tipJarPurchase": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "tipJarPurchasePending": "Achat en attente pour {name}",
-  "@tipJarPurchasePending": {"placeholders": {"name": {"type": "String"}}},
+  "@tipJarPurchasePending": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "tipJarCheckoutBusy": "Un autre achat est déjà en cours",
   "searchHint": "Rechercher par nom, téléphone ou numéro",
   "clearSearch": "Effacer la recherche",
@@ -155,6 +170,48 @@
   "bookCauseDeath": "décès",
   "bookCauseOther": "autre",
   "bookDigestNote": "Empreinte SHA-256 du fichier : {digest}. Conservez-la à part pour vérifier que le PDF n'a pas été modifié.",
-  "@bookDigestNote": {"placeholders": {"digest": {"type": "String"}}},
-  "bookDone": "PDF prêt"
+  "@bookDigestNote": {
+    "placeholders": {
+      "digest": {
+        "type": "String"
+      }
+    }
+  },
+  "bookDone": "PDF prêt",
+  "closureTitle": "Clôture annuelle",
+  "closureHint": "Signez le PDF du registre en dehors de l'app et archivez ici le fichier signé (.pdf ou .p7m) : l'app en conserve une copie avec son empreinte SHA-256. L'app ne vérifie pas la signature.",
+  "closureArchive": "Archiver la clôture signée",
+  "closureNone": "Aucune clôture archivée.",
+  "closurePending": "Années sans clôture archivée : {years}",
+  "@closurePending": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
+  "closureIntact": "Fichier intact",
+  "closureAltered": "Fichier manquant ou altéré",
+  "closureArchivedOn": "archivée le {date}",
+  "@closureArchivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "closureSaved": "Clôture {year} archivée",
+  "@closureSaved": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "closureErrYear": "Année non valide.",
+  "closureErrEmpty": "Le fichier est vide.",
+  "closureErrSize": "Le fichier est trop volumineux.",
+  "closureErrType": "Seuls les fichiers .pdf ou .p7m sont acceptés.",
+  "closureErrNotPdf": "Le fichier n'est pas un PDF valide.",
+  "closureErrGeneric": "L'archivage a échoué."
 }

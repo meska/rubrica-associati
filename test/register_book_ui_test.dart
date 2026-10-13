@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rubrica_associati/data/closure_repository.dart';
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/main.dart';
@@ -8,6 +9,9 @@ import 'package:rubrica_associati/models/member.dart';
 class _Repo extends MemberRepository {
   @override
   Future<List<Member>> search(String query) async => const [];
+  @override
+  Future<ClosureRepository> closureRepository() async =>
+      throw UnsupportedError('no db in test');
   @override
   Future<String> loadOrganizationName() async => 'Centro';
   @override

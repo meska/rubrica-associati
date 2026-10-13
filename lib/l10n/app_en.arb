@@ -17,25 +17,70 @@
   "backupUnsupportedVersion": "This backup version is not supported.",
   "backupInvalidMembers": "The backup member list is invalid.",
   "backupInvalidMember": "Member {row} is invalid.",
-  "@backupInvalidMember": {"placeholders": {"row": {"type": "int"}}},
+  "@backupInvalidMember": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      }
+    }
+  },
   "backupUnreadable": "The backup is damaged or cannot be read.",
   "backupMissingMemberName": "Member {row} has no first or last name.",
-  "@backupMissingMemberName": {"placeholders": {"row": {"type": "int"}}},
+  "@backupMissingMemberName": {
+    "placeholders": {
+      "row": {
+        "type": "int"
+      }
+    }
+  },
   "backupInvalidField": "Field {field} is invalid for member {row}.",
-  "@backupInvalidField": {"placeholders": {"field": {"type": "String"}, "row": {"type": "int"}}},
+  "@backupInvalidField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      }
+    }
+  },
   "importCompleted": "Import completed",
   "importedNewMembers": "{count, plural, =0{No new members} =1{1 new member} other{{count} new members}}",
-  "@importedNewMembers": {"placeholders": {"count": {"type": "int"}}},
+  "@importedNewMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "importedUpdatedMembers": "{count, plural, =0{No members updated} =1{1 member updated} other{{count} members updated}}",
-  "@importedUpdatedMembers": {"placeholders": {"count": {"type": "int"}}},
+  "@importedUpdatedMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "importWarnings": "{count, plural, =1{1 row with a warning.} other{{count} rows with warnings.}}",
-  "@importWarnings": {"placeholders": {"count": {"type": "int"}}},
+  "@importWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "close": "Close",
   "importFailed": "Import failed. The file may be damaged.",
   "emptyDirectoryShare": "The directory is empty: there is nothing to share yet.",
   "shareTitle": "Share Member Directory",
   "shareSubject": "Member Directory backup from {date}",
-  "@shareSubject": {"placeholders": {"date": {"type": "String"}}},
+  "@shareSubject": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "shareFailed": "The directory could not be shared.",
   "supportOpenFailed": "The support page could not be opened.",
   "organizationName": "Organization name",
@@ -75,9 +120,24 @@
   "tipHonoraryMember": "Digital honorary member",
   "tipHonoraryMemberDescription": "Legendary support for an independent little app.",
   "tipJarPurchase": "Buy {name} for {price}",
-  "@tipJarPurchase": {"placeholders": {"name": {"type": "String"}, "price": {"type": "String"}}},
+  "@tipJarPurchase": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "tipJarPurchasePending": "Purchase pending for {name}",
-  "@tipJarPurchasePending": {"placeholders": {"name": {"type": "String"}}},
+  "@tipJarPurchasePending": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "tipJarCheckoutBusy": "Another purchase is already in progress",
   "searchHint": "Search by name, phone or member number",
   "clearSearch": "Clear search",
@@ -87,21 +147,51 @@
   "emptyDirectoryHelp": "Add the first member or import a directory or Excel file.",
   "noMemberFoundHelp": "Try another name, phone or member number.",
   "membersCount": "{count, plural, =0{No members} =1{1 member} other{{count} members}}",
-  "@membersCount": {"placeholders": {"count": {"type": "int"}}},
+  "@membersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberCard": "Card {number}",
-  "@memberCard": {"placeholders": {"number": {"type": "String"}}},
+  "@memberCard": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
   "expiredOn": "Expired on {date}",
-  "@expiredOn": {"placeholders": {"date": {"type": "String"}}},
+  "@expiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "openMember": "Open details",
   "phoneOpenFailed": "The phone app could not be opened.",
   "deleteMemberQuestion": "Delete this member?",
   "memberWillBeRemoved": "{name} will be removed from the directory.",
-  "@memberWillBeRemoved": {"placeholders": {"name": {"type": "String"}}},
+  "@memberWillBeRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "delete": "Delete",
   "member": "Member",
   "edit": "Edit",
   "callPhone": "Call {phone}",
-  "@callPhone": {"placeholders": {"phone": {"type": "String"}}},
+  "@callPhone": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "phone": "Phone",
   "secondaryPhone": "Secondary phone",
   "memberNumber": "Member number",
@@ -167,6 +257,48 @@
   "bookCauseDeath": "death",
   "bookCauseOther": "other",
   "bookDigestNote": "File SHA-256 fingerprint: {digest}. Keep it separately to verify the PDF has not been altered.",
-  "@bookDigestNote": {"placeholders": {"digest": {"type": "String"}}},
-  "bookDone": "PDF ready"
+  "@bookDigestNote": {
+    "placeholders": {
+      "digest": {
+        "type": "String"
+      }
+    }
+  },
+  "bookDone": "PDF ready",
+  "closureTitle": "Year-end closing",
+  "closureHint": "Sign the register PDF outside the app and archive the signed file here (.pdf or .p7m): the app keeps a copy with its SHA-256 fingerprint. The app does not verify the signature.",
+  "closureArchive": "Archive signed closing",
+  "closureNone": "No closing archived.",
+  "closurePending": "Years without an archived closing: {years}",
+  "@closurePending": {
+    "placeholders": {
+      "years": {
+        "type": "String"
+      }
+    }
+  },
+  "closureIntact": "File intact",
+  "closureAltered": "File missing or altered",
+  "closureArchivedOn": "archived on {date}",
+  "@closureArchivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "closureSaved": "Closing {year} archived",
+  "@closureSaved": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "closureErrYear": "Invalid year.",
+  "closureErrEmpty": "The file is empty.",
+  "closureErrSize": "The file is too large.",
+  "closureErrType": "Only .pdf or .p7m files are accepted.",
+  "closureErrNotPdf": "The file is not a valid PDF.",
+  "closureErrGeneric": "Archiving failed."
 }

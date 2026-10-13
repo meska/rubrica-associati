@@ -9,6 +9,7 @@ import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:rubrica_associati/screens/register_book_screen.dart';
 import 'package:rubrica_associati/screens/roster_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
+import 'package:rubrica_associati/services/closure_service.dart';
 import 'package:rubrica_associati/services/review_service.dart';
 import 'package:rubrica_associati/services/spreadsheet_importer.dart';
 import 'package:rubrica_associati/services/tip_jar_service.dart';
@@ -277,10 +278,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _openRegisterBook() async {
     final entries = await widget.repository.registerEntries();
     final profile = await widget.repository.loadEntityProfile();
+    ClosureService? closureService;
+    try {
+      final closures = await widget.repository.closureRepository();
+      final docs = await getApplicationDocumentsDirectory();
+      closureService = ClosureService(
+        repository: closures,
+        directory: Directory(path.join(docs.path, 'chiusure')),
+      );
+    } catch (_) {
+      closureService = null;
+    }
     if (!mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => RegisterBookScreen(entries: entries, profile: profile),
+        builder: (_) => RegisterBookScreen(
+          entries: entries,
+          profile: profile,
+          closureService: closureService,
+        ),
       ),
     );
   }
