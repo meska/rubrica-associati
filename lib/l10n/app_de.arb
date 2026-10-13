@@ -123,5 +123,13 @@
   "joinDate": "Eintrittsdatum",
   "joinDatePicker": "EINTRITTSDATUM",
   "taxCode": "Steuernummer",
-  "birthPlace": "Geburtsort"
+  "birthPlace": "Geburtsort",
+  "rosterTitle": "Mitgliederliste",
+  "rosterHint": "Reduzierte Ansicht: nur Name und Mitgliedsstatus, keine persönlichen Daten. Für Mitglieder.",
+  "rosterNameHeader": "Name",
+  "rosterQualityHeader": "Status",
+  "rosterQualityMember": "Mitglied",
+  "rosterExport": "Namensliste exportieren",
+  "rosterEmpty": "Keine Mitglieder vorhanden.",
+  "rosterShareTitle": "Mitgliederliste"
 }

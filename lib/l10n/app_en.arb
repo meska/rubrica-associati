@@ -135,5 +135,13 @@
   "joinDate": "Membership date",
   "joinDatePicker": "MEMBERSHIP DATE",
   "taxCode": "Tax code",
-  "birthPlace": "Place of birth"
+  "birthPlace": "Place of birth",
+  "rosterTitle": "Member list",
+  "rosterHint": "Reduced view: name and membership status only, no personal data. For members.",
+  "rosterNameHeader": "Name",
+  "rosterQualityHeader": "Status",
+  "rosterQualityMember": "Member",
+  "rosterExport": "Export name list",
+  "rosterEmpty": "No members to show.",
+  "rosterShareTitle": "Member list"
 }

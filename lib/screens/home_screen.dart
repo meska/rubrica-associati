@@ -6,6 +6,7 @@ import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
+import 'package:rubrica_associati/screens/roster_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
 import 'package:rubrica_associati/services/review_service.dart';
 import 'package:rubrica_associati/services/spreadsheet_importer.dart';
@@ -264,6 +265,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _openRoster() async {
+    final members = await widget.repository.search('');
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => RosterScreen(members: members)),
+    );
+  }
+
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(
@@ -414,6 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'import') unawaited(_import());
               if (value == 'organization') unawaited(_editOrganizationName());
               if (value == 'entity') unawaited(_editEntityDetails());
+              if (value == 'roster') unawaited(_openRoster());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
               if (value == 'review') unawaited(_toggleReview());
@@ -448,6 +458,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.account_balance_outlined),
                   title: Text(strings.entityDetails),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'roster',
+                child: ListTile(
+                  leading: const Icon(Icons.groups_outlined),
+                  title: Text(strings.rosterTitle),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),

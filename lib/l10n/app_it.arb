@@ -123,5 +123,13 @@
   "joinDate": "Data di iscrizione",
   "joinDatePicker": "DATA DI ISCRIZIONE",
   "taxCode": "Codice fiscale",
-  "birthPlace": "Luogo di nascita"
+  "birthPlace": "Luogo di nascita",
+  "rosterTitle": "Elenco soci",
+  "rosterHint": "Vista ridotta: solo nome e qualità di socio, senza dati personali. Per i soci.",
+  "rosterNameHeader": "Nome",
+  "rosterQualityHeader": "Qualità",
+  "rosterQualityMember": "Socio",
+  "rosterExport": "Esporta elenco nominativo",
+  "rosterEmpty": "Nessun socio da mostrare.",
+  "rosterShareTitle": "Elenco soci"
 }

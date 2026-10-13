@@ -123,5 +123,13 @@
   "joinDate": "Date d'adhésion",
   "joinDatePicker": "DATE D'ADHÉSION",
   "taxCode": "Code fiscal",
-  "birthPlace": "Lieu de naissance"
+  "birthPlace": "Lieu de naissance",
+  "rosterTitle": "Liste des membres",
+  "rosterHint": "Vue réduite : nom et qualité de membre uniquement, sans données personnelles. Pour les membres.",
+  "rosterNameHeader": "Nom",
+  "rosterQualityHeader": "Qualité",
+  "rosterQualityMember": "Membre",
+  "rosterExport": "Exporter la liste nominative",
+  "rosterEmpty": "Aucun membre à afficher.",
+  "rosterShareTitle": "Liste des membres"
 }
