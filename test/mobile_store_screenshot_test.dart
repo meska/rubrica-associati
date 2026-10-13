@@ -35,32 +35,30 @@ void main() {
   final generateScreenshots =
       Platform.environment['GENERATE_STORE_SCREENSHOTS'] == '1';
 
-  testWidgets(
-    'genera gli screenshot mobili localizzati per App Store e Play',
-    (tester) async {
-      await tester.runAsync(loadStoreScreenshotFonts);
-      tester.view.devicePixelRatio = 3;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets('genera gli screenshot mobili localizzati per App Store e Play', (
+    tester,
+  ) async {
+    await tester.runAsync(loadStoreScreenshotFonts);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-      for (final store in _stores) {
-        tester.view.physicalSize = store.physicalSize;
-        for (final locale in _locales.entries) {
-          final featuredMember = storeFeaturedMemberFor(locale.key);
-          await _captureLocalizedSet(
-            tester,
-            repository: StoreScreenshotRepository(
-              organizationName: _organizationNames[locale.key]!,
-            ),
-            locale: locale.value,
-            directory: '${store.directory}/${locale.key}',
-            featuredMember: featuredMember,
-          );
-        }
+    for (final store in _stores) {
+      tester.view.physicalSize = store.physicalSize;
+      for (final locale in _locales.entries) {
+        final featuredMember = storeFeaturedMemberFor(locale.key);
+        await _captureLocalizedSet(
+          tester,
+          repository: StoreScreenshotRepository(
+            organizationName: _organizationNames[locale.key]!,
+          ),
+          locale: locale.value,
+          directory: '${store.directory}/${locale.key}',
+          featuredMember: featuredMember,
+        );
       }
-    },
-    skip: !generateScreenshots,
-  );
+    }
+  }, skip: !generateScreenshots);
 }
 
 const _organizationNames = <String, String>{

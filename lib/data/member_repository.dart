@@ -380,6 +380,11 @@ class MemberRepository implements ReviewSettingsStore {
   }
 
   /// Storico grezzo del libro soci per un socio.
+  Future<List<RegisterEntry>> registerEntries() async {
+    final db = await _db;
+    return RegisterRepository(db).entries();
+  }
+
   Future<List<RegisterEvent>> registerHistory(int memberId) async {
     final db = await _db;
     return RegisterRepository(db).eventsForMember(memberId);

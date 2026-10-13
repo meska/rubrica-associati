@@ -14,35 +14,33 @@ void main() {
   final generateScreenshots =
       Platform.environment['GENERATE_STORE_SCREENSHOTS'] == '1';
 
-  testWidgets(
-    'genera gli screenshot desktop per Microsoft Store',
-    (tester) async {
-      // Flutter Test usa Ahem, che rende ogni lettera come un quadrato: qua carichiamo
-      // i font veri del motore prima de far le foto promozionali.
-      await tester.runAsync(loadStoreScreenshotFonts);
-      tester.view.physicalSize = const Size(1366, 768);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets('genera gli screenshot desktop per Microsoft Store', (
+    tester,
+  ) async {
+    // Flutter Test usa Ahem, che rende ogni lettera come un quadrato: qua carichiamo
+    // i font veri del motore prima de far le foto promozionali.
+    await tester.runAsync(loadStoreScreenshotFonts);
+    tester.view.physicalSize = const Size(1366, 768);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-      final repository = StoreScreenshotRepository();
-      const locales = <String, Locale>{
-        'it-IT': Locale('it'),
-        'en-US': Locale('en'),
-        'fr-FR': Locale('fr'),
-        'de-DE': Locale('de'),
-      };
-      for (final entry in locales.entries) {
-        await _captureLocalizedSet(
-          tester,
-          repository: repository,
-          locale: entry.value,
-          directory: entry.key,
-        );
-      }
-    },
-    skip: !generateScreenshots,
-  );
+    final repository = StoreScreenshotRepository();
+    const locales = <String, Locale>{
+      'it-IT': Locale('it'),
+      'en-US': Locale('en'),
+      'fr-FR': Locale('fr'),
+      'de-DE': Locale('de'),
+    };
+    for (final entry in locales.entries) {
+      await _captureLocalizedSet(
+        tester,
+        repository: repository,
+        locale: entry.value,
+        directory: entry.key,
+      );
+    }
+  }, skip: !generateScreenshots);
 }
 
 Future<void> _captureLocalizedSet(

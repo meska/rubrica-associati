@@ -6,6 +6,7 @@ import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
+import 'package:rubrica_associati/screens/register_book_screen.dart';
 import 'package:rubrica_associati/screens/roster_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
 import 'package:rubrica_associati/services/review_service.dart';
@@ -273,6 +274,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _openRegisterBook() async {
+    final entries = await widget.repository.registerEntries();
+    final profile = await widget.repository.loadEntityProfile();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => RegisterBookScreen(entries: entries, profile: profile),
+      ),
+    );
+  }
+
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(
@@ -424,6 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'organization') unawaited(_editOrganizationName());
               if (value == 'entity') unawaited(_editEntityDetails());
               if (value == 'roster') unawaited(_openRoster());
+              if (value == 'book') unawaited(_openRegisterBook());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
               if (value == 'review') unawaited(_toggleReview());
@@ -466,6 +479,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.groups_outlined),
                   title: Text(strings.rosterTitle),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'book',
+                child: ListTile(
+                  leading: const Icon(Icons.menu_book_outlined),
+                  title: Text(strings.bookTitle),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
