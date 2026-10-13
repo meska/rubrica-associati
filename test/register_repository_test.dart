@@ -210,7 +210,7 @@ void main() {
       await members.close();
 
       final upgraded = await databaseFactoryFfi.openDatabase(file);
-      expect(await upgraded.getVersion(), 7);
+      expect(await upgraded.getVersion(), 8);
       expect(await upgraded.query('members'), hasLength(1));
       final r = RegisterRepository(upgraded);
       expect(await r.allEvents(), isEmpty);

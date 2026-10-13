@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:rubrica_associati/data/closure_repository.dart';
+import 'package:rubrica_associati/data/volunteer_repository.dart';
 import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/services/review_service.dart';
@@ -63,6 +64,7 @@ class MemberRepository implements ReviewSettingsStore {
         await _addRegisterColumns(_databaseOverride);
         await RegisterRepository.createSchema(_databaseOverride);
         await ClosureRepository.createSchema(_databaseOverride);
+        await VolunteerRepository.createSchema(_databaseOverride);
       }
       return _databaseOverride;
     }
@@ -71,7 +73,7 @@ class MemberRepository implements ReviewSettingsStore {
     final databasePath = _databasePathOverride ?? await _defaultDatabasePath();
     _database = await openDatabase(
       databasePath,
-      version: 7,
+      version: 8,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE members (
@@ -101,6 +103,7 @@ class MemberRepository implements ReviewSettingsStore {
         await _createSettingsTable(db);
         await RegisterRepository.createSchema(db);
         await ClosureRepository.createSchema(db);
+        await VolunteerRepository.createSchema(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) await _createSettingsTable(db);
@@ -121,6 +124,7 @@ class MemberRepository implements ReviewSettingsStore {
         if (oldVersion < 5) await RegisterRepository.createSchema(db);
         if (oldVersion < 6) await _addRegisterColumns(db);
         if (oldVersion < 7) await ClosureRepository.createSchema(db);
+        if (oldVersion < 8) await VolunteerRepository.createSchema(db);
       },
     );
     return _database!;
@@ -391,6 +395,9 @@ class MemberRepository implements ReviewSettingsStore {
 
   Future<ClosureRepository> closureRepository() async =>
       ClosureRepository(await _db);
+
+  Future<VolunteerRepository> volunteerRepository() async =>
+      VolunteerRepository(await _db);
 
   Future<List<RegisterEvent>> registerHistory(int memberId) async {
     final db = await _db;
