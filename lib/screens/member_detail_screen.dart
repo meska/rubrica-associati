@@ -1,8 +1,10 @@
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
+import 'package:rubrica_associati/models/card_validity.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
+import 'package:rubrica_associati/widgets/member_quick_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,12 +26,24 @@ class MemberDetailScreen extends StatefulWidget {
 class _MemberDetailScreenState extends State<MemberDetailScreen> {
   late Member _member;
   List<RegisterEvent> _history = const [];
+  var _historyLoaded = false;
+  CardValidity _validity = CardValidity.calendarYear;
 
   @override
   void initState() {
     super.initState();
     _member = widget.member;
     _loadHistory();
+    _loadValidity();
+  }
+
+  Future<void> _loadValidity() async {
+    try {
+      final v = await widget.repository.loadCardValidity();
+      if (mounted) setState(() => _validity = v);
+    } catch (_) {
+      // Resta l'anno solare.
+    }
   }
 
   Future<void> _loadHistory() async {
@@ -37,7 +51,10 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     if (id == null) return;
     final history = await widget.repository.registerHistory(id);
     if (!mounted) return;
-    setState(() => _history = history);
+    setState(() {
+      _history = history;
+      _historyLoaded = true;
+    });
   }
 
   Future<void> _call(String phone) async {
@@ -61,6 +78,106 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       _member = saved;
     });
     await _loadHistory();
+  }
+
+  void _message(String text) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+
+  Future<void> _completeCard({required bool renewing}) async {
+    final strings = AppLocalizations.of(context);
+    final result = await showCardDialog(
+      context,
+      renewing: renewing,
+      initialNumber: _member.memberNumber,
+      currentExpiry: _member.expiryDate,
+      validity: _validity,
+      onValidityChanged: (v) async {
+        _validity = v;
+        await widget.repository.saveCardValidity(v);
+      },
+    );
+    if (result == null || !mounted) return;
+    try {
+      final saved = await widget.repository.save(
+        _member.copyWith(
+          memberNumber: result.number,
+          expiryDate: result.expiry,
+        ),
+      );
+      if (!mounted) return;
+      setState(() => _member = saved);
+      _message(strings.cardSaved);
+    } catch (_) {
+      if (mounted) _message(strings.entityDetailsSaveFailed);
+    }
+  }
+
+  Future<void> _admitInBook() async {
+    final strings = AppLocalizations.of(context);
+    final id = _member.id;
+    if (id == null) return;
+    final date = await showAdmitOneDialog(
+      context,
+      name: _member.fullName,
+      joinDate: _member.joinDate,
+    );
+    if (date == null || !mounted) return;
+    try {
+      await widget.repository.admitMember(id, fallbackDate: date);
+      await _loadHistory();
+      if (mounted) _message(strings.bookAdmitOneDone);
+    } catch (_) {
+      if (mounted) _message(strings.bookAdmitFailed);
+    }
+  }
+
+  /// «Da completare»: scorciatoie per ciò che manca, solo se manca qualcosa.
+  Widget _toComplete(AppLocalizations strings) {
+    final needsCard =
+        _member.memberNumber.isEmpty || _member.expiryDate == null;
+    final expired = _member.isExpired;
+    final notInBook =
+        _historyLoaded &&
+        !_history.any((e) => e.type == RegisterEventType.admission);
+    if (!needsCard && !expired && !notInBook) return const SizedBox.shrink();
+    return Card(
+      margin: const EdgeInsets.only(top: 14),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              strings.toComplete,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            if (expired) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: () => _completeCard(renewing: true),
+                icon: const Icon(Icons.autorenew),
+                label: Text(strings.renewCard),
+              ),
+            ] else if (needsCard) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: () => _completeCard(renewing: false),
+                icon: const Icon(Icons.badge_outlined),
+                label: Text(strings.addCard),
+              ),
+            ],
+            if (notInBook) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: _admitInBook,
+                icon: const Icon(Icons.menu_book_outlined),
+                label: Text(strings.registerInBook),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _delete() async {
@@ -151,6 +268,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
               label: Text(strings.callPhone(_member.secondaryPhone)),
             ),
           ],
+          _toComplete(strings),
           const SizedBox(height: 18),
           Card(
             child: Column(

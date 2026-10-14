@@ -4,6 +4,10 @@
 
 ### Aggiunto
 
+- Scorciatoie «Da completare» nella scheda del socio: aggiungi o rinnova la
+  tessera con scadenze proposte e registra il socio nel libro con un tocco.
+  La regola di scadenza delle tessere (fine anno, 12 mesi, data fissa) è
+  configurabile.
 - Filtri in rubrica (Tutti, In regola, Scaduti, Non nel libro) e aggiornamento
   massivo per registrare nel libro soci l'ammissione dei soci storici.
 - Voce «Valuta l'app» nel menu; l'interruttore delle richieste automatiche è

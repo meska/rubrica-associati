@@ -318,5 +318,51 @@
   },
   "hintShow": "Afficher",
   "hintNoExpiryHere": "Pour savoir qui est en règle, ouvrez la fiche d'un membre, touchez Modifier et saisissez la date d'expiration de la carte.",
-  "filterMore": "Autres filtres"
+  "filterMore": "Autres filtres",
+  "toComplete": "À compléter",
+  "addCard": "Ajouter la carte",
+  "renewCard": "Renouveler la carte",
+  "registerInBook": "Inscrire au registre",
+  "cardUntil": "Jusqu'au {date}",
+  "@cardUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardOtherDate": "Autre date",
+  "cardRuleLine": "Les cartes expirent : {rule}",
+  "@cardRuleLine": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleChange": "Modifier",
+  "cardRuleTitle": "Quand les cartes expirent-elles ?",
+  "cardRuleYearEnd": "En fin d'année (31 décembre)",
+  "cardRuleTwelve": "12 mois après le renouvellement",
+  "cardRuleFixed": "Chaque année à la même date",
+  "cardRulePick": "Choisir la date",
+  "cardRuleDescFixed": "chaque année le {date}",
+  "@cardRuleDescFixed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleDescTwelve": "12 mois après le renouvellement",
+  "cardSaved": "Carte mise à jour",
+  "bookAdmitOneBody": "L'admission de {name} sera inscrite au registre des membres.",
+  "@bookAdmitOneBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitOneDone": "Admission enregistrée"
 }

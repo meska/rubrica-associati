@@ -171,30 +171,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (withoutDate > 0) ...[
                   Text(strings.bookAdmitWithoutDate(withoutDate)),
                   const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          strings.bookAdmitDate(
-                            _formatDate(fallback, strings.localeName),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: fallback,
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            setDialogState(() => fallback = picked);
-                          }
-                        },
-                        child: Text(strings.bookAdmitChangeDate),
-                      ),
-                    ],
+                  Text(
+                    strings.bookAdmitDate(
+                      _formatDate(fallback, strings.localeName),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: fallback,
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime.now(),
+                        );
+                        if (picked != null) {
+                          setDialogState(() => fallback = picked);
+                        }
+                      },
+                      child: Text(strings.bookAdmitChangeDate),
+                    ),
                   ),
                 ],
                 const SizedBox(height: 10),

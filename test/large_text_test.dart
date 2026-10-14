@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rubrica_associati/data/member_repository.dart';
 import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/main.dart';
+import 'package:rubrica_associati/models/card_validity.dart';
 import 'package:rubrica_associati/models/member.dart';
 
 /// Regressione: con testo ingrandito (utenti anziani) nessuna schermata
@@ -36,6 +37,8 @@ class _Fake extends MemberRepository {
   Future<Set<int>> membersNotInBook() async => {1};
   @override
   Future<List<RegisterEvent>> registerHistory(int id) async => const [];
+  @override
+  Future<CardValidity> loadCardValidity() async => CardValidity.calendarYear;
 }
 
 void main() {
@@ -59,6 +62,21 @@ void main() {
         await tester.tap(find.byType(ListTile).first);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull, reason: 'scheda socio scaduto');
+
+        // Scorciatoie «Da completare» (rinnova tessera, registra nel libro) e
+        // finestra della regola di scadenza, anche con testo molto grande.
+        await tester.ensureVisible(find.byIcon(Icons.autorenew));
+        await tester.tap(find.byIcon(Icons.autorenew));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: 'finestra tessera');
+        await tester.tapAt(const Offset(2, 2));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byIcon(Icons.menu_book_outlined));
+        await tester.tap(find.byIcon(Icons.menu_book_outlined));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: 'finestra libro');
+        await tester.tapAt(const Offset(2, 2));
+        await tester.pumpAndSettle();
         tester.state<NavigatorState>(find.byType(Navigator).first).pop();
         await tester.pumpAndSettle();
 
@@ -74,4 +92,26 @@ void main() {
       });
     }
   }
+
+  testWidgets('testo x3: aggiornamento massivo del libro', (tester) async {
+    tester.view.physicalSize = const Size(360, 1800);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 3.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.pumpWidget(
+      RubricaAssociatiApp(locale: const Locale('it'), repository: _Fake()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Altri filtri'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('Non nel libro'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull, reason: 'filtro non nel libro');
+    await tester.ensureVisible(find.byIcon(Icons.menu_book_outlined));
+    await tester.tap(find.byIcon(Icons.menu_book_outlined));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull, reason: 'dialogo massivo');
+  });
 }

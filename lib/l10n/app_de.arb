@@ -318,5 +318,51 @@
   },
   "hintShow": "Anzeigen",
   "hintNoExpiryHere": "Um zu sehen, wer aktuell ist, öffnen Sie die Karteikarte eines Mitglieds, tippen Sie auf Bearbeiten und tragen Sie das Ablaufdatum ein.",
-  "filterMore": "Weitere Filter"
+  "filterMore": "Weitere Filter",
+  "toComplete": "Zu ergänzen",
+  "addCard": "Karte hinzufügen",
+  "renewCard": "Karte erneuern",
+  "registerInBook": "Im Buch eintragen",
+  "cardUntil": "Bis {date}",
+  "@cardUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardOtherDate": "Anderes Datum",
+  "cardRuleLine": "Karten laufen ab: {rule}",
+  "@cardRuleLine": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleChange": "Ändern",
+  "cardRuleTitle": "Wann laufen die Karten ab?",
+  "cardRuleYearEnd": "Zum Jahresende (31. Dezember)",
+  "cardRuleTwelve": "12 Monate nach der Erneuerung",
+  "cardRuleFixed": "Jedes Jahr am selben Datum",
+  "cardRulePick": "Datum wählen",
+  "cardRuleDescFixed": "jedes Jahr am {date}",
+  "@cardRuleDescFixed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleDescTwelve": "12 Monate nach der Erneuerung",
+  "cardSaved": "Karte aktualisiert",
+  "bookAdmitOneBody": "Die Aufnahme von {name} wird im Mitgliederbuch eingetragen.",
+  "@bookAdmitOneBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitOneDone": "Aufnahme eingetragen"
 }

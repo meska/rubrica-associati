@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:rubrica_associati/data/closure_repository.dart';
 import 'package:rubrica_associati/data/volunteer_repository.dart';
 import 'package:rubrica_associati/data/register_repository.dart';
+import 'package:rubrica_associati/models/card_validity.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/services/review_service.dart';
 import 'package:path/path.dart' as path;
@@ -384,6 +385,41 @@ class MemberRepository implements ReviewSettingsStore {
     await db.transaction((tx) async {
       await RegisterRepository(tx).recordRemovalIfAdmitted(id);
       await tx.delete('members', where: 'id = ?', whereArgs: [id]);
+    });
+  }
+
+  Future<CardValidity> loadCardValidity() async =>
+      CardValidity.fromStorage(await loadSetting(CardValidity.storageKey));
+
+  Future<void> saveCardValidity(CardValidity value) =>
+      saveSetting(CardValidity.storageKey, value.toStorage());
+
+  /// Registra nel libro l'ammissione di un solo socio che non ha ancora
+  /// annotazioni. Usa la data di iscrizione della scheda se c'è, altrimenti
+  /// [fallbackDate] (AAAA-MM-GG). Ritorna false se il socio era già nel libro
+  /// o non esiste. Come ogni annotazione del libro, non si cancella.
+  Future<bool> admitMember(int memberId, {required String fallbackDate}) async {
+    final db = await _db;
+    return db.transaction((tx) async {
+      final rows = await tx.query(
+        'members',
+        columns: const ['id', 'first_name', 'last_name', 'join_date'],
+        where: 'id = ?',
+        whereArgs: [memberId],
+        limit: 1,
+      );
+      if (rows.isEmpty) return false;
+      final register = RegisterRepository(tx);
+      if ((await register.eventsForMember(memberId)).isNotEmpty) return false;
+      final join = (rows.single['join_date'] as String?)?.trim();
+      await register.recordAdmission(
+        memberId: memberId,
+        firstName: (rows.single['first_name'] as String? ?? '').trim(),
+        lastName: (rows.single['last_name'] as String? ?? '').trim(),
+        date: (join == null || join.isEmpty) ? fallbackDate : join,
+        note: 'quick-admission',
+      );
+      return true;
     });
   }
 

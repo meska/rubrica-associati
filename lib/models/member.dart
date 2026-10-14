@@ -53,20 +53,21 @@ class Member {
     ).isBefore(DateTime(today.year, today.month, today.day));
   }
 
-  Member copyWith({int? id}) => Member(
-    id: id ?? this.id,
-    firstName: firstName,
-    lastName: lastName,
-    phone: phone,
-    secondaryPhone: secondaryPhone,
-    memberNumber: memberNumber,
-    expiryDate: expiryDate,
-    birthDate: birthDate,
-    joinDate: joinDate,
-    taxCode: taxCode,
-    birthPlace: birthPlace,
-    notes: notes,
-  );
+  Member copyWith({int? id, String? memberNumber, DateTime? expiryDate}) =>
+      Member(
+        id: id ?? this.id,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        secondaryPhone: secondaryPhone,
+        memberNumber: memberNumber ?? this.memberNumber,
+        expiryDate: expiryDate ?? this.expiryDate,
+        birthDate: birthDate,
+        joinDate: joinDate,
+        taxCode: taxCode,
+        birthPlace: birthPlace,
+        notes: notes,
+      );
 
   /// Normalizza il codice fiscale: maiuscolo e senza spazi.
   static String normalizeTaxCode(String value) =>

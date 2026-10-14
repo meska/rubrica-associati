@@ -318,5 +318,51 @@
   },
   "hintShow": "Mostra",
   "hintNoExpiryHere": "Per sapere chi è in regola, apri la scheda di un socio, tocca Modifica e inserisci la scadenza della tessera.",
-  "filterMore": "Altri filtri"
+  "filterMore": "Altri filtri",
+  "toComplete": "Da completare",
+  "addCard": "Aggiungi tessera",
+  "renewCard": "Rinnova tessera",
+  "registerInBook": "Registra nel libro",
+  "cardUntil": "Fino al {date}",
+  "@cardUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardOtherDate": "Altra data",
+  "cardRuleLine": "Le tessere scadono: {rule}",
+  "@cardRuleLine": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleChange": "Cambia",
+  "cardRuleTitle": "Quando scadono le tessere?",
+  "cardRuleYearEnd": "A fine anno (31 dicembre)",
+  "cardRuleTwelve": "Dopo 12 mesi dal rinnovo",
+  "cardRuleFixed": "Ogni anno nella stessa data",
+  "cardRulePick": "Scegli la data",
+  "cardRuleDescFixed": "ogni anno il {date}",
+  "@cardRuleDescFixed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardRuleDescTwelve": "12 mesi dopo il rinnovo",
+  "cardSaved": "Tessera aggiornata",
+  "bookAdmitOneBody": "Verrà annotata nel libro soci l'ammissione di {name}.",
+  "@bookAdmitOneBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitOneDone": "Ammissione registrata"
 }
