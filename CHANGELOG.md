@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.9.0 - 2026-10-14
+
+### Aggiunto
+
+- Libro soci: registro append-only di ammissioni, cessazioni e correzioni, con
+  numero progressivo, dati dell'ente e campi aggiuntivi del socio (data di
+  iscrizione, codice fiscale, luogo di nascita).
+- Esportazione del libro soci per anno in PDF per archiviazione, con impronta
+  SHA-256, e archivio delle chiusure annuali firmate (.pdf/.p7m).
+- Elenco soci ridotto (nome e qualità) con esportazione CSV nominativa.
+- Registro dei volontari con sezione occasionali ed esportazione PDF.
+- Richiesta di recensione discreta tramite le API ufficiali di App Store e
+  Google Play, disattivabile dal menu.
+
+### Migliorato
+
+- Il database passa alla versione 8 con migrazioni additive: nessun dato
+  esistente viene modificato.
+- I file di chiusura annuale e i volontari non sono inclusi nel backup
+  `.rubrica`.
+
 ## 1.8.1 - 2026-08-11
 
 ### Corretto

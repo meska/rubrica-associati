@@ -1,1 +1,1 @@
-rubrica,associati,soci,centro anziani,tessere,telefono,offline,circolo,associazione
+soci,centro anziani,tessere,tesseramento,volontari,iscritti,scadenze,pro loco,excel,csv,telefono
