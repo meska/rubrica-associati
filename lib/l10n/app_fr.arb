@@ -305,5 +305,17 @@
   },
   "bookAdmitFailed": "Échec de l'enregistrement : rien n'a été modifié.",
   "bookNothingMissing": "Tous les membres sont déjà dans le registre.",
-  "filterNoExpiry": "Sans date d'expiration"
+  "filterNoExpiry": "Sans date d'expiration",
+  "filterEmpty": "Aucun membre dans cette liste",
+  "filterShowAll": "Tout afficher",
+  "hintNoExpiryElsewhere": "{count, plural, =1{1 membre n'a pas de date d'expiration, il n'apparaît donc pas ici.} other{{count} membres n'ont pas de date d'expiration, ils n'apparaissent donc pas ici.}}",
+  "@hintNoExpiryElsewhere": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hintShow": "Afficher",
+  "hintNoExpiryHere": "Pour savoir qui est en règle, ouvrez la fiche d'un membre, touchez Modifier et saisissez la date d'expiration de la carte."
 }

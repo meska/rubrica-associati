@@ -163,4 +163,34 @@ void main() {
     expect(find.text('2 ammissioni registrate'), findsOneWidget);
     expect(find.text('Non nel libro (0)'), findsOneWidget);
   });
+
+  testWidgets('suggerimenti chiari per chi non ha la scadenza', (tester) async {
+    final repo = _Repo([_m(1), _m(2)], {});
+    tester.view.physicalSize = const Size(900, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      RubricaAssociatiApp(locale: const Locale('it'), repository: repo),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('In regola (0)'));
+    await tester.pumpAndSettle();
+    // Non "La rubrica è vuota": la rubrica ha soci, è il filtro a essere vuoto.
+    expect(find.text('La rubrica è vuota'), findsNothing);
+    expect(find.text('Nessun socio in questo elenco'), findsOneWidget);
+    expect(
+      find.text(
+        '2 soci non hanno la data di scadenza, quindi non compaiono qui.',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Mostra'));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('inserisci la scadenza della tessera'),
+      findsOneWidget,
+    );
+    expect(find.byType(ListTile), findsNWidgets(2));
+  });
 }

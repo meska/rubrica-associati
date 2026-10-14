@@ -392,5 +392,17 @@
   },
   "bookAdmitFailed": "Recording failed: nothing was changed.",
   "bookNothingMissing": "All members are already in the book.",
-  "filterNoExpiry": "No expiry date"
+  "filterNoExpiry": "No expiry date",
+  "filterEmpty": "No members in this list",
+  "filterShowAll": "Show all",
+  "hintNoExpiryElsewhere": "{count, plural, =1{1 member has no expiry date, so it does not appear here.} other{{count} members have no expiry date, so they do not appear here.}}",
+  "@hintNoExpiryElsewhere": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hintShow": "Show",
+  "hintNoExpiryHere": "To see who is in good standing, open a member, tap Edit and enter the card expiry date."
 }

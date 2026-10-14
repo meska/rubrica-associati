@@ -263,6 +263,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Suggerimenti in parole semplici: chi non ha la scadenza non compare in
+  /// «In regola»/«Scaduti», e va detto come sistemare.
+  Widget _filterHint(AppLocalizations strings) {
+    final noExpiry = applyMemberFilter(
+      _members,
+      MemberFilter.noExpiry,
+      _notInBook,
+    ).length;
+    if (noExpiry == 0) return const SizedBox.shrink();
+    final String text;
+    final bool offerShow;
+    switch (_filter) {
+      case MemberFilter.inGoodStanding:
+      case MemberFilter.expired:
+        text = strings.hintNoExpiryElsewhere(noExpiry);
+        offerShow = true;
+      case MemberFilter.noExpiry:
+        text = strings.hintNoExpiryHere;
+        offerShow = false;
+      case MemberFilter.all:
+      case MemberFilter.notInBook:
+        return const SizedBox.shrink();
+    }
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const Icon(Icons.info_outline),
+            const SizedBox(width: 10),
+            Expanded(child: Text(text)),
+            if (offerShow)
+              TextButton(
+                onPressed: () =>
+                    setState(() => _filter = MemberFilter.noExpiry),
+                child: Text(strings.hintShow),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _missingBookBanner(AppLocalizations strings) {
     final missing = applyMemberFilter(
       _members,
@@ -775,6 +819,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             _filterBar(strings),
             _missingBookBanner(strings),
+            _filterHint(strings),
             Expanded(child: _buildContent()),
           ],
         ),
@@ -817,6 +862,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 icon: const Icon(Icons.refresh),
                 label: Text(strings.retry),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (_visibleMembers.isEmpty && _members.isNotEmpty) {
+      // Il filtro non trova nessuno, ma la rubrica non è vuota.
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.filter_list_off,
+                size: 56,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                strings.filterEmpty,
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 14),
+              OutlinedButton(
+                onPressed: () => setState(() => _filter = MemberFilter.all),
+                child: Text(strings.filterShowAll),
               ),
             ],
           ),

@@ -305,5 +305,17 @@
   },
   "bookAdmitFailed": "Registrazione non riuscita: nessuna modifica fatta.",
   "bookNothingMissing": "Tutti i soci sono già nel libro.",
-  "filterNoExpiry": "Senza scadenza"
+  "filterNoExpiry": "Senza scadenza",
+  "filterEmpty": "Nessun socio in questo elenco",
+  "filterShowAll": "Mostra tutti",
+  "hintNoExpiryElsewhere": "{count, plural, =1{1 socio non ha la data di scadenza, quindi non compare qui.} other{{count} soci non hanno la data di scadenza, quindi non compaiono qui.}}",
+  "@hintNoExpiryElsewhere": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hintShow": "Mostra",
+  "hintNoExpiryHere": "Per sapere chi è in regola, apri la scheda di un socio, tocca Modifica e inserisci la scadenza della tessera."
 }

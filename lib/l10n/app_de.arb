@@ -305,5 +305,17 @@
   },
   "bookAdmitFailed": "Eintrag fehlgeschlagen: Es wurde nichts geändert.",
   "bookNothingMissing": "Alle Mitglieder sind bereits im Buch.",
-  "filterNoExpiry": "Ohne Ablaufdatum"
+  "filterNoExpiry": "Ohne Ablaufdatum",
+  "filterEmpty": "Keine Mitglieder in dieser Liste",
+  "filterShowAll": "Alle anzeigen",
+  "hintNoExpiryElsewhere": "{count, plural, =1{1 Mitglied hat kein Ablaufdatum und erscheint daher hier nicht.} other{{count} Mitglieder haben kein Ablaufdatum und erscheinen daher hier nicht.}}",
+  "@hintNoExpiryElsewhere": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hintShow": "Anzeigen",
+  "hintNoExpiryHere": "Um zu sehen, wer aktuell ist, öffnen Sie die Karteikarte eines Mitglieds, tippen Sie auf Bearbeiten und tragen Sie das Ablaufdatum ein."
 }
