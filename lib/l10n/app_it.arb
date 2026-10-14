@@ -213,5 +213,37 @@
   "closureErrSize": "Il file è troppo grande.",
   "closureErrType": "Sono ammessi solo file .pdf o .p7m.",
   "closureErrNotPdf": "Il file non è un PDF valido.",
-  "closureErrGeneric": "Archiviazione non riuscita."
+  "closureErrGeneric": "Archiviazione non riuscita.",
+  "volTitle": "Registro volontari",
+  "volMenu": "Registro volontari",
+  "volHint": "Registro dei volontari con i dati previsti dal DM 6/10/2021. Le annotazioni non si sovrascrivono: correzioni e cessazioni sono nuove annotazioni.",
+  "volAdd": "Aggiungi volontario",
+  "volEmpty": "Nessun volontario registrato.",
+  "volSectionRegular": "Volontari",
+  "volSectionOccasional": "Volontari occasionali",
+  "volExport": "Esporta PDF",
+  "volResidence": "Residenza o domicilio",
+  "volStartDate": "Inizio attività",
+  "volEndDate": "Cessazione attività",
+  "volOccasional": "Volontario occasionale",
+  "volCease": "Registra cessazione",
+  "volCorrect": "Correggi i dati",
+  "volActive": "attivo",
+  "volStatusCeased": "cessato il {date}",
+  "@volStatusCeased": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "volErrIdentity": "Inserisci il codice fiscale, oppure nome, cognome, luogo e data di nascita.",
+  "volErrResidence": "Residenza o domicilio obbligatori.",
+  "volErrGeneric": "Operazione non completata.",
+  "volPdfTitle": "Registro volontari",
+  "volPdfOccasional": "Volontari occasionali (sezione separata)",
+  "volPdfStarted": "inizio",
+  "volPdfBorn": "nato/a",
+  "volPdfResidence": "residenza",
+  "volShareTitle": "Registro volontari"
 }

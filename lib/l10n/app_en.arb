@@ -300,5 +300,37 @@
   "closureErrSize": "The file is too large.",
   "closureErrType": "Only .pdf or .p7m files are accepted.",
   "closureErrNotPdf": "The file is not a valid PDF.",
-  "closureErrGeneric": "Archiving failed."
+  "closureErrGeneric": "Archiving failed.",
+  "volTitle": "Volunteers register",
+  "volMenu": "Volunteers register",
+  "volHint": "Register of volunteers with the data required by the ministerial decree of 6 Oct 2021. Entries are never overwritten: corrections and cessations are new annotations.",
+  "volAdd": "Add volunteer",
+  "volEmpty": "No volunteers registered.",
+  "volSectionRegular": "Volunteers",
+  "volSectionOccasional": "Occasional volunteers",
+  "volExport": "Export PDF",
+  "volResidence": "Residence or domicile",
+  "volStartDate": "Start of activity",
+  "volEndDate": "End of activity",
+  "volOccasional": "Occasional volunteer",
+  "volCease": "Record cessation",
+  "volCorrect": "Correct data",
+  "volActive": "active",
+  "volStatusCeased": "ceased on {date}",
+  "@volStatusCeased": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "volErrIdentity": "Enter the tax code, or first name, last name, place and date of birth.",
+  "volErrResidence": "Residence or domicile is required.",
+  "volErrGeneric": "Operation not completed.",
+  "volPdfTitle": "Volunteers register",
+  "volPdfOccasional": "Occasional volunteers (separate section)",
+  "volPdfStarted": "started",
+  "volPdfBorn": "born",
+  "volPdfResidence": "residence",
+  "volShareTitle": "Volunteers register"
 }

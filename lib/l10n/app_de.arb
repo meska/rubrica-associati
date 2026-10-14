@@ -213,5 +213,37 @@
   "closureErrSize": "Die Datei ist zu groß.",
   "closureErrType": "Nur .pdf- oder .p7m-Dateien sind zulässig.",
   "closureErrNotPdf": "Die Datei ist kein gültiges PDF.",
-  "closureErrGeneric": "Archivierung fehlgeschlagen."
+  "closureErrGeneric": "Archivierung fehlgeschlagen.",
+  "volTitle": "Freiwilligenregister",
+  "volMenu": "Freiwilligenregister",
+  "volHint": "Register der Freiwilligen mit den im Ministerialdekret vom 6.10.2021 vorgesehenen Daten. Einträge werden nie überschrieben: Korrekturen und Beendigungen sind neue Vermerke.",
+  "volAdd": "Freiwillige/n hinzufügen",
+  "volEmpty": "Keine Freiwilligen eingetragen.",
+  "volSectionRegular": "Freiwillige",
+  "volSectionOccasional": "Gelegentliche Freiwillige",
+  "volExport": "PDF exportieren",
+  "volResidence": "Wohnsitz oder Domizil",
+  "volStartDate": "Beginn der Tätigkeit",
+  "volEndDate": "Ende der Tätigkeit",
+  "volOccasional": "Gelegentliche/r Freiwillige/r",
+  "volCease": "Beendigung eintragen",
+  "volCorrect": "Daten korrigieren",
+  "volActive": "aktiv",
+  "volStatusCeased": "beendet am {date}",
+  "@volStatusCeased": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "volErrIdentity": "Steuernummer oder Vor- und Nachname, Geburtsort und Geburtsdatum eingeben.",
+  "volErrResidence": "Wohnsitz oder Domizil ist erforderlich.",
+  "volErrGeneric": "Vorgang nicht abgeschlossen.",
+  "volPdfTitle": "Freiwilligenregister",
+  "volPdfOccasional": "Gelegentliche Freiwillige (getrennter Abschnitt)",
+  "volPdfStarted": "Beginn",
+  "volPdfBorn": "geboren",
+  "volPdfResidence": "Wohnsitz",
+  "volShareTitle": "Freiwilligenregister"
 }

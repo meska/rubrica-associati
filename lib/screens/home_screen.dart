@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/data/volunteer_repository.dart';
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:rubrica_associati/screens/register_book_screen.dart';
 import 'package:rubrica_associati/screens/roster_screen.dart';
+import 'package:rubrica_associati/screens/volunteer_screen.dart';
 import 'package:rubrica_associati/services/backup_service.dart';
 import 'package:rubrica_associati/services/closure_service.dart';
 import 'package:rubrica_associati/services/review_service.dart';
@@ -301,6 +303,22 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _openVolunteers() async {
+    final profile = await widget.repository.loadEntityProfile();
+    VolunteerRepository repo;
+    try {
+      repo = await widget.repository.volunteerRepository();
+    } catch (_) {
+      return;
+    }
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => VolunteerScreen(repository: repo, profile: profile),
+      ),
+    );
+  }
+
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(
@@ -453,6 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'entity') unawaited(_editEntityDetails());
               if (value == 'roster') unawaited(_openRoster());
               if (value == 'book') unawaited(_openRegisterBook());
+              if (value == 'volunteers') unawaited(_openVolunteers());
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
               if (value == 'review') unawaited(_toggleReview());
@@ -503,6 +522,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.menu_book_outlined),
                   title: Text(strings.bookTitle),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              PopupMenuItem(
+                value: 'volunteers',
+                child: ListTile(
+                  leading: const Icon(Icons.handshake_outlined),
+                  title: Text(strings.volMenu),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),

@@ -213,5 +213,37 @@
   "closureErrSize": "Le fichier est trop volumineux.",
   "closureErrType": "Seuls les fichiers .pdf ou .p7m sont acceptés.",
   "closureErrNotPdf": "Le fichier n'est pas un PDF valide.",
-  "closureErrGeneric": "L'archivage a échoué."
+  "closureErrGeneric": "L'archivage a échoué.",
+  "volTitle": "Registre des bénévoles",
+  "volMenu": "Registre des bénévoles",
+  "volHint": "Registre des bénévoles avec les données prévues par le décret ministériel du 6/10/2021. Les inscriptions ne sont jamais écrasées : corrections et cessations sont de nouvelles annotations.",
+  "volAdd": "Ajouter un bénévole",
+  "volEmpty": "Aucun bénévole enregistré.",
+  "volSectionRegular": "Bénévoles",
+  "volSectionOccasional": "Bénévoles occasionnels",
+  "volExport": "Exporter le PDF",
+  "volResidence": "Résidence ou domicile",
+  "volStartDate": "Début d'activité",
+  "volEndDate": "Fin d'activité",
+  "volOccasional": "Bénévole occasionnel",
+  "volCease": "Enregistrer la cessation",
+  "volCorrect": "Corriger les données",
+  "volActive": "actif",
+  "volStatusCeased": "cessé le {date}",
+  "@volStatusCeased": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "volErrIdentity": "Saisissez le code fiscal, ou prénom, nom, lieu et date de naissance.",
+  "volErrResidence": "La résidence ou le domicile est obligatoire.",
+  "volErrGeneric": "Opération non terminée.",
+  "volPdfTitle": "Registre des bénévoles",
+  "volPdfOccasional": "Bénévoles occasionnels (section séparée)",
+  "volPdfStarted": "début",
+  "volPdfBorn": "né(e)",
+  "volPdfResidence": "résidence",
+  "volShareTitle": "Registre des bénévoles"
 }
