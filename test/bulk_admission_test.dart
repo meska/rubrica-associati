@@ -150,9 +150,13 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Tutti (3)'), findsOneWidget);
-    expect(find.text('Non nel libro (2)'), findsOneWidget);
+    // «Non nel libro» sta nel menu dei filtri secondari.
+    expect(find.text('Non nel libro (2)'), findsNothing);
+    await tester.tap(find.byTooltip('Altri filtri'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Non nel libro (2)'));
     await tester.pumpAndSettle();
+    expect(find.text('Non nel libro (2)'), findsOneWidget); // ora è un chip
     expect(find.text('2 soci non sono ancora nel libro soci'), findsOneWidget);
     await tester.tap(find.text('Registra ammissione'));
     await tester.pumpAndSettle();

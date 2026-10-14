@@ -317,5 +317,6 @@
     }
   },
   "hintShow": "Mostra",
-  "hintNoExpiryHere": "Per sapere chi è in regola, apri la scheda di un socio, tocca Modifica e inserisci la scadenza della tessera."
+  "hintNoExpiryHere": "Per sapere chi è in regola, apri la scheda di un socio, tocca Modifica e inserisci la scadenza della tessera.",
+  "filterMore": "Altri filtri"
 }

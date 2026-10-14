@@ -246,18 +246,41 @@ class _HomeScreenState extends State<HomeScreen> {
       MemberFilter.noExpiry: strings.filterNoExpiry,
       MemberFilter.notInBook: strings.filterNotInBook,
     };
-    // Wrap invece di una riga scorrevole: con 5 filtri nessuno resta nascosto.
+    // Tre filtri principali sempre visibili; gli altri stanno nel menu «...».
+    // Se uno dei secondari è attivo compare come chip, così si vede sempre
+    // cosa si sta guardando.
+    const main = [
+      MemberFilter.all,
+      MemberFilter.inGoodStanding,
+      MemberFilter.expired,
+    ];
+    const more = [MemberFilter.noExpiry, MemberFilter.notInBook];
+    Widget chip(MemberFilter f) => ChoiceChip(
+      label: Text('${labels[f]} (${count(f)})'),
+      selected: _filter == f,
+      onSelected: (_) => setState(() => _filter = f),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
         spacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          for (final f in MemberFilter.values)
-            ChoiceChip(
-              label: Text('${labels[f]} (${count(f)})'),
-              selected: _filter == f,
-              onSelected: (_) => setState(() => _filter = f),
-            ),
+          for (final f in main) chip(f),
+          if (more.contains(_filter)) chip(_filter),
+          PopupMenuButton<MemberFilter>(
+            tooltip: strings.filterMore,
+            icon: const Icon(Icons.more_horiz),
+            onSelected: (f) => setState(() => _filter = f),
+            itemBuilder: (_) => [
+              for (final f in more)
+                CheckedPopupMenuItem(
+                  value: f,
+                  checked: _filter == f,
+                  child: Text('${labels[f]} (${count(f)})'),
+                ),
+            ],
+          ),
         ],
       ),
     );

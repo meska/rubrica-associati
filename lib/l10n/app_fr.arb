@@ -317,5 +317,6 @@
     }
   },
   "hintShow": "Afficher",
-  "hintNoExpiryHere": "Pour savoir qui est en règle, ouvrez la fiche d'un membre, touchez Modifier et saisissez la date d'expiration de la carte."
+  "hintNoExpiryHere": "Pour savoir qui est en règle, ouvrez la fiche d'un membre, touchez Modifier et saisissez la date d'expiration de la carte.",
+  "filterMore": "Autres filtres"
 }

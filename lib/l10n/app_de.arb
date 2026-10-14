@@ -317,5 +317,6 @@
     }
   },
   "hintShow": "Anzeigen",
-  "hintNoExpiryHere": "Um zu sehen, wer aktuell ist, öffnen Sie die Karteikarte eines Mitglieds, tippen Sie auf Bearbeiten und tragen Sie das Ablaufdatum ein."
+  "hintNoExpiryHere": "Um zu sehen, wer aktuell ist, öffnen Sie die Karteikarte eines Mitglieds, tippen Sie auf Bearbeiten und tragen Sie das Ablaufdatum ein.",
+  "filterMore": "Weitere Filter"
 }
