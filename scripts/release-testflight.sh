@@ -7,7 +7,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly ROOT_DIR
 readonly EXPORT_OPTIONS="$ROOT_DIR/ios/ExportOptions-AppStore.plist"
-readonly PROFILE_NAME="Rubrica Associati App Store"
+readonly PROFILE_NAME="Rubrica Associati App Store 2026-10"
 readonly API_CONFIG_PATH="${APP_STORE_CONNECT_CONFIG_PATH:-$ROOT_DIR/.env.appstore}"
 
 if [[ -f "$API_CONFIG_PATH" ]]; then
@@ -94,6 +94,8 @@ fi
 cd "$ROOT_DIR"
 
 # El numero build vien da pubspec.yaml: prima de rilassar, va sempre aumentà.
+# Mai caricare una IPA vecchia se la build fallisce.
+rm -f build/ios/ipa/*.ipa
 "$flutter_bin" build ipa --release --export-options-plist="$EXPORT_OPTIONS"
 
 ipa_path="$(find build/ios/ipa -maxdepth 1 -name '*.ipa' -type f -print -quit)"

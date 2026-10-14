@@ -35,6 +35,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>L'app non usa la fotocamera per proprio conto: serve solo se scegli di acquisire un file dal selettore di importazione.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Consente di scegliere contenuti dalla libreria quando apri il selettore di importazione.</string>
 	<key>UIApplicationSceneManifest</key>
