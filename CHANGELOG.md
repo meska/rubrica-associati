@@ -4,6 +4,10 @@
 
 ### Aggiunto
 
+- Filtri in rubrica (Tutti, In regola, Scaduti, Non nel libro) e aggiornamento
+  massivo per registrare nel libro soci l'ammissione dei soci storici.
+- Voce «Valuta l'app» nel menu; l'interruttore delle richieste automatiche è
+  ora «Ricordami di valutare l'app».
 - Libro soci: registro append-only di ammissioni, cessazioni e correzioni, con
   numero progressivo, dati dell'ente e campi aggiuntivi del socio (data di
   iscrizione, codice fiscale, luogo di nascita).

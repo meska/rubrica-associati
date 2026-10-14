@@ -26,14 +26,20 @@ class _Requester implements ReviewRequester {
   Future<bool> isAvailable() async => true;
   @override
   Future<void> requestReview() async {}
+  int opened = 0;
+  @override
+  Future<bool> openStoreReview() async {
+    opened++;
+    return true;
+  }
 }
 
 void main() {
   for (final entry in {
-    'it': 'Richiesta di recensione',
-    'en': 'Ask for a review',
-    'fr': "Demande d'avis",
-    'de': 'Bewertungsanfrage',
+    'it': "Ricordami di valutare l'app",
+    'en': 'Remind me to rate the app',
+    'fr': "Me rappeler de noter l'app",
+    'de': 'Erinnerung zur Bewertung',
   }.entries) {
     testWidgets('review switch toggles and persists (${entry.key})', (
       tester,
@@ -67,4 +73,26 @@ void main() {
       expect(store.values[ReviewService.enabledKey], '1');
     });
   }
+
+  testWidgets('Rate the app opens the store review page', (tester) async {
+    final requester = _Requester();
+    final service = ReviewService(store: _Store(), requester: requester);
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      RubricaAssociatiApp(
+        locale: const Locale('it'),
+        repository: _FakeRepository(),
+        reviewService: service,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Valuta l'app"));
+    await tester.pumpAndSettle();
+    expect(requester.opened, 1);
+  });
 }

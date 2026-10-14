@@ -44,7 +44,7 @@
   "shareDirectory": "Partager le répertoire",
   "importDirectoryExcel": "Importer le répertoire / Excel",
   "fileFormat": "Format du fichier",
-  "reviewRequestSetting": "Demande d'avis",
+  "reviewRequestSetting": "Me rappeler de noter l'app",
   "supportProject": "Soutenir le projet",
   "tipJarTitle": "Soutenir Rubrica Associati",
   "tipJarBody": "L’application est complète et gratuite. Si elle vous épargne un peu de paperasse, vous pouvez laisser un pourboire facultatif.",
@@ -245,5 +245,64 @@
   "volPdfStarted": "début",
   "volPdfBorn": "né(e)",
   "volPdfResidence": "résidence",
-  "volShareTitle": "Registre des bénévoles"
+  "volShareTitle": "Registre des bénévoles",
+  "filterAll": "Tous",
+  "filterActive": "En règle",
+  "filterExpired": "Expirés",
+  "filterNotInBook": "Hors registre",
+  "rateApp": "Noter l'app",
+  "bookMissingBanner": "{count, plural, =1{1 membre n'est pas encore dans le registre des membres} other{{count} membres ne sont pas encore dans le registre des membres}}",
+  "@bookMissingBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitAll": "Enregistrer l'admission",
+  "bookAdmitTitle": "{count, plural, =1{Enregistrer l'admission d'1 membre ?} other{Enregistrer l'admission de {count} membres ?}}",
+  "@bookAdmitTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithDate": "{count, plural, =1{1 membre : la date d'adhésion de la fiche sera utilisée.} other{{count} membres : la date d'adhésion de chaque fiche sera utilisée.}}",
+  "@bookAdmitWithDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithoutDate": "{count, plural, =1{1 membre sans date d'adhésion : la date ci-dessous sera enregistrée.} other{{count} membres sans date d'adhésion : la date ci-dessous sera enregistrée.}}",
+  "@bookAdmitWithoutDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitDate": "Date : {date}",
+  "@bookAdmitDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitChangeDate": "Changer la date",
+  "bookAdmitNote": "Les inscriptions du registre ne se suppriment pas : une erreur se corrige par une nouvelle inscription.",
+  "bookAdmitConfirm": "Enregistrer",
+  "bookAdmitDone": "{count, plural, =1{1 admission enregistrée} other{{count} admissions enregistrées}}",
+  "@bookAdmitDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitFailed": "Échec de l'enregistrement : rien n'a été modifié.",
+  "bookNothingMissing": "Tous les membres sont déjà dans le registre."
 }

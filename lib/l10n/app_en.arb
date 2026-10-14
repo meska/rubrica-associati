@@ -96,7 +96,7 @@
   "shareDirectory": "Share directory",
   "importDirectoryExcel": "Import directory / Excel",
   "fileFormat": "File format",
-  "reviewRequestSetting": "Ask for a review",
+  "reviewRequestSetting": "Remind me to rate the app",
   "supportProject": "Support the project",
   "tipJarTitle": "Support Rubrica Associati",
   "tipJarBody": "The app is complete and free. If it saves you some paperwork, you can leave an optional tip.",
@@ -332,5 +332,64 @@
   "volPdfStarted": "started",
   "volPdfBorn": "born",
   "volPdfResidence": "residence",
-  "volShareTitle": "Volunteers register"
+  "volShareTitle": "Volunteers register",
+  "filterAll": "All",
+  "filterActive": "In good standing",
+  "filterExpired": "Expired",
+  "filterNotInBook": "Not in the book",
+  "rateApp": "Rate the app",
+  "bookMissingBanner": "{count, plural, =1{1 member is not yet in the members book} other{{count} members are not yet in the members book}}",
+  "@bookMissingBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitAll": "Record admission",
+  "bookAdmitTitle": "{count, plural, =1{Record the admission of 1 member?} other{Record the admission of {count} members?}}",
+  "@bookAdmitTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithDate": "{count, plural, =1{1 member: the join date on the card will be used.} other{{count} members: the join date on each card will be used.}}",
+  "@bookAdmitWithDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithoutDate": "{count, plural, =1{1 member has no join date: the date below will be recorded.} other{{count} members have no join date: the date below will be recorded.}}",
+  "@bookAdmitWithoutDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitDate": "Date: {date}",
+  "@bookAdmitDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitChangeDate": "Change date",
+  "bookAdmitNote": "Book entries cannot be deleted; a mistake is fixed with a new entry.",
+  "bookAdmitConfirm": "Record",
+  "bookAdmitDone": "{count, plural, =1{1 admission recorded} other{{count} admissions recorded}}",
+  "@bookAdmitDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitFailed": "Recording failed: nothing was changed.",
+  "bookNothingMissing": "All members are already in the book."
 }

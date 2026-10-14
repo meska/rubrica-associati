@@ -16,6 +16,12 @@ class FakeRequester implements ReviewRequester {
   Future<bool> isAvailable() async => available;
   @override
   Future<void> requestReview() async => calls++;
+  int opened = 0;
+  @override
+  Future<bool> openStoreReview() async {
+    opened++;
+    return true;
+  }
 }
 
 void main() {
@@ -120,6 +126,17 @@ void main() {
     expect(await svc.maybeRequest(), isFalse);
     expect((await svc.loadState()).lastPrompt, isNull);
   });
+
+  test('openStoreReview delegates and ignores policy limits', () async {
+    expect(await service.openStoreReview(), isTrue);
+    expect(requester.opened, 1);
+    expect(requester.calls, 0);
+  });
+
+  test('openStoreReview never throws', () async {
+    final svc = ReviewService(store: store, requester: _Failing());
+    expect(await svc.openStoreReview(), isFalse);
+  });
 }
 
 class _Failing implements ReviewRequester {
@@ -127,4 +144,6 @@ class _Failing implements ReviewRequester {
   Future<bool> isAvailable() async => true;
   @override
   Future<void> requestReview() async => throw StateError('store');
+  @override
+  Future<bool> openStoreReview() async => throw StateError('store');
 }

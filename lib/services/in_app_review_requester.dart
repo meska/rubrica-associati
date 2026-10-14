@@ -7,6 +7,7 @@ import 'package:rubrica_associati/services/review_service.dart';
 abstract class InAppReviewGateway {
   Future<bool> isAvailable();
   Future<void> requestReview();
+  Future<void> openStoreListing(String appStoreId);
 }
 
 class _PluginGateway implements InAppReviewGateway {
@@ -15,6 +16,10 @@ class _PluginGateway implements InAppReviewGateway {
 
   @override
   Future<void> requestReview() => InAppReview.instance.requestReview();
+
+  @override
+  Future<void> openStoreListing(String appStoreId) =>
+      InAppReview.instance.openStoreListing(appStoreId: appStoreId);
 }
 
 /// Richiesta nativa (StoreKit su Apple, Play In-App Review su Android).
@@ -44,4 +49,18 @@ class InAppReviewRequester implements ReviewRequester {
 
   @override
   Future<void> requestReview() => _gateway.requestReview();
+
+  /// ID App Store di Rubrica Associati (su Android si usa il package name).
+  static const appStoreId = '6791575906';
+
+  @override
+  Future<bool> openStoreReview() async {
+    if (!_supportedPlatform()) return false;
+    try {
+      await _gateway.openStoreListing(appStoreId);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }

@@ -44,7 +44,7 @@
   "shareDirectory": "Condividi rubrica",
   "importDirectoryExcel": "Importa rubrica / Excel",
   "fileFormat": "Formato del file",
-  "reviewRequestSetting": "Richiesta di recensione",
+  "reviewRequestSetting": "Ricordami di valutare l'app",
   "supportProject": "Sostieni il progetto",
   "tipJarTitle": "Sostieni Rubrica Associati",
   "tipJarBody": "L’app è completa e gratuita. Se ti risparmia un po’ di scartoffie, puoi lasciare una mancia facoltativa.",
@@ -245,5 +245,64 @@
   "volPdfStarted": "inizio",
   "volPdfBorn": "nato/a",
   "volPdfResidence": "residenza",
-  "volShareTitle": "Registro volontari"
+  "volShareTitle": "Registro volontari",
+  "filterAll": "Tutti",
+  "filterActive": "In regola",
+  "filterExpired": "Scaduti",
+  "filterNotInBook": "Non nel libro",
+  "rateApp": "Valuta l'app",
+  "bookMissingBanner": "{count, plural, =1{1 socio non è ancora nel libro soci} other{{count} soci non sono ancora nel libro soci}}",
+  "@bookMissingBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitAll": "Registra ammissione",
+  "bookAdmitTitle": "{count, plural, =1{Registrare l'ammissione di 1 socio?} other{Registrare l'ammissione di {count} soci?}}",
+  "@bookAdmitTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithDate": "{count, plural, =1{1 socio: verrà usata la data di iscrizione della scheda.} other{{count} soci: verrà usata la data di iscrizione di ogni scheda.}}",
+  "@bookAdmitWithDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithoutDate": "{count, plural, =1{1 socio senza data di iscrizione: verrà annotata la data qui sotto.} other{{count} soci senza data di iscrizione: verrà annotata la data qui sotto.}}",
+  "@bookAdmitWithoutDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitDate": "Data: {date}",
+  "@bookAdmitDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitChangeDate": "Cambia data",
+  "bookAdmitNote": "Le annotazioni del libro non si cancellano: un errore si corregge con una nuova annotazione.",
+  "bookAdmitConfirm": "Registra",
+  "bookAdmitDone": "{count, plural, =1{1 ammissione registrata} other{{count} ammissioni registrate}}",
+  "@bookAdmitDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitFailed": "Registrazione non riuscita: nessuna modifica fatta.",
+  "bookNothingMissing": "Tutti i soci sono già nel libro."
 }

@@ -387,6 +387,49 @@ class MemberRepository implements ReviewSettingsStore {
     });
   }
 
+  /// Id dei soci della rubrica che non sono ancora annotati nel libro soci.
+  Future<Set<int>> membersNotInBook() async {
+    final db = await _db;
+    final rows = await db.query('members', columns: const ['id']);
+    return RegisterRepository(
+      db,
+    ).memberIdsWithoutEvents([for (final r in rows) r['id'] as int]);
+  }
+
+  /// Aggiornamento massivo: annota l'ammissione di tutti i soci non ancora nel
+  /// libro. Usa la data di iscrizione del socio se c'è, altrimenti
+  /// [fallbackDate] (AAAA-MM-GG). Una sola transazione: o tutti o nessuno.
+  /// Le annotazioni sono append-only; un errore si corregge con una nuova
+  /// annotazione. Ritorna quante ammissioni ha scritto.
+  Future<int> admitAllMissing({required String fallbackDate}) async {
+    final db = await _db;
+    return db.transaction((tx) async {
+      final rows = await tx.query(
+        'members',
+        columns: const ['id', 'first_name', 'last_name', 'join_date'],
+      );
+      final register = RegisterRepository(tx);
+      final missing = await register.memberIdsWithoutEvents([
+        for (final r in rows) r['id'] as int,
+      ]);
+      var written = 0;
+      for (final r in rows) {
+        final id = r['id'] as int;
+        if (!missing.contains(id)) continue;
+        final join = (r['join_date'] as String?)?.trim();
+        await register.recordAdmission(
+          memberId: id,
+          firstName: (r['first_name'] as String? ?? '').trim(),
+          lastName: (r['last_name'] as String? ?? '').trim(),
+          date: (join == null || join.isEmpty) ? fallbackDate : join,
+          note: 'bulk-admission',
+        );
+        written++;
+      }
+      return written;
+    });
+  }
+
   /// Storico grezzo del libro soci per un socio.
   Future<List<RegisterEntry>> registerEntries() async {
     final db = await _db;

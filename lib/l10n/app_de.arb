@@ -44,7 +44,7 @@
   "shareDirectory": "Verzeichnis teilen",
   "importDirectoryExcel": "Verzeichnis / Excel importieren",
   "fileFormat": "Dateiformat",
-  "reviewRequestSetting": "Bewertungsanfrage",
+  "reviewRequestSetting": "Erinnerung zur Bewertung",
   "supportProject": "Projekt unterstützen",
   "tipJarTitle": "Rubrica Associati unterstützen",
   "tipJarBody": "Die App ist vollständig und kostenlos. Wenn sie Ihnen etwas Papierkram erspart, können Sie ein freiwilliges Trinkgeld geben.",
@@ -245,5 +245,64 @@
   "volPdfStarted": "Beginn",
   "volPdfBorn": "geboren",
   "volPdfResidence": "Wohnsitz",
-  "volShareTitle": "Freiwilligenregister"
+  "volShareTitle": "Freiwilligenregister",
+  "filterAll": "Alle",
+  "filterActive": "Aktuell",
+  "filterExpired": "Abgelaufen",
+  "filterNotInBook": "Nicht im Buch",
+  "rateApp": "App bewerten",
+  "bookMissingBanner": "{count, plural, =1{1 Mitglied ist noch nicht im Mitgliederbuch} other{{count} Mitglieder sind noch nicht im Mitgliederbuch}}",
+  "@bookMissingBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitAll": "Aufnahme eintragen",
+  "bookAdmitTitle": "{count, plural, =1{Aufnahme von 1 Mitglied eintragen?} other{Aufnahme von {count} Mitgliedern eintragen?}}",
+  "@bookAdmitTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithDate": "{count, plural, =1{1 Mitglied: Das Beitrittsdatum der Karteikarte wird verwendet.} other{{count} Mitglieder: Das Beitrittsdatum jeder Karteikarte wird verwendet.}}",
+  "@bookAdmitWithDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitWithoutDate": "{count, plural, =1{1 Mitglied ohne Beitrittsdatum: Das untenstehende Datum wird eingetragen.} other{{count} Mitglieder ohne Beitrittsdatum: Das untenstehende Datum wird eingetragen.}}",
+  "@bookAdmitWithoutDate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitDate": "Datum: {date}",
+  "@bookAdmitDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAdmitChangeDate": "Datum ändern",
+  "bookAdmitNote": "Einträge im Buch können nicht gelöscht werden; ein Fehler wird mit einem neuen Eintrag korrigiert.",
+  "bookAdmitConfirm": "Eintragen",
+  "bookAdmitDone": "{count, plural, =1{1 Aufnahme eingetragen} other{{count} Aufnahmen eingetragen}}",
+  "@bookAdmitDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookAdmitFailed": "Eintrag fehlgeschlagen: Es wurde nichts geändert.",
+  "bookNothingMissing": "Alle Mitglieder sind bereits im Buch."
 }

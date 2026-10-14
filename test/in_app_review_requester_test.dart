@@ -15,6 +15,13 @@ class _Gateway implements InAppReviewGateway {
 
   @override
   Future<void> requestReview() async => requests++;
+
+  String? openedStoreId;
+  @override
+  Future<void> openStoreListing(String appStoreId) async {
+    if (throws) throw StateError('plugin');
+    openedStoreId = appStoreId;
+  }
 }
 
 void main() {
@@ -45,4 +52,37 @@ void main() {
     );
     expect(await r.isAvailable(), isFalse);
   });
+
+  test(
+    'openStoreReview opens the store listing with the App Store id',
+    () async {
+      final gateway = _Gateway();
+      final r = InAppReviewRequester(
+        gateway: gateway,
+        supportedPlatform: () => true,
+      );
+      expect(await r.openStoreReview(), isTrue);
+      expect(gateway.openedStoreId, InAppReviewRequester.appStoreId);
+    },
+  );
+
+  test(
+    'openStoreReview is false on unsupported platforms and on errors',
+    () async {
+      expect(
+        await InAppReviewRequester(
+          gateway: _Gateway(),
+          supportedPlatform: () => false,
+        ).openStoreReview(),
+        isFalse,
+      );
+      expect(
+        await InAppReviewRequester(
+          gateway: _Gateway(throws: true),
+          supportedPlatform: () => true,
+        ).openStoreReview(),
+        isFalse,
+      );
+    },
+  );
 }

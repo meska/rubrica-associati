@@ -339,6 +339,19 @@ class RegisterRepository {
     return rows.map(_fromRow).toList();
   }
 
+  /// Soci che non hanno alcuna annotazione nel libro (tipico di chi usava
+  /// l'app prima del libro soci). I soci con cessazione non rientrano.
+  Future<Set<int>> memberIdsWithoutEvents(Iterable<int> memberIds) async {
+    final rows = await _db.rawQuery(
+      'SELECT DISTINCT member_id AS id FROM register_events',
+    );
+    final withEvents = {for (final r in rows) r['id'] as int};
+    return {
+      for (final id in memberIds)
+        if (!withEvents.contains(id)) id,
+    };
+  }
+
   Future<List<RegisterEvent>> allEvents() async {
     final rows = await _db.query('register_events', orderBy: 'id');
     return rows.map(_fromRow).toList();

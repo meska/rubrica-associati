@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/data/register_repository.dart';
 import 'package:rubrica_associati/data/volunteer_repository.dart';
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/models/member_filter.dart';
 import 'package:rubrica_associati/screens/member_detail_screen.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
 import 'package:rubrica_associati/screens/register_book_screen.dart';
@@ -53,6 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
   var _loadFailed = false;
   var _loadGeneration = 0;
   var _reviewEnabled = true;
+  var _filter = MemberFilter.all;
+  Set<int> _notInBook = const {};
 
   @override
   void initState() {
@@ -74,10 +78,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final query = _searchController.text;
     try {
       final members = await widget.repository.search(query);
+      Set<int> notInBook = const {};
+      try {
+        notInBook = await widget.repository.membersNotInBook();
+      } catch (_) {
+        // Il filtro del libro è un extra: la rubrica si carica comunque.
+      }
       // Se nel frattempo xe cambiada la ricerca, sta risposta ormai xe vecia.
       if (!mounted || generation != _loadGeneration) return;
       setState(() {
         _members = members;
+        _notInBook = notInBook;
         _loading = false;
         _loadFailed = false;
       });
@@ -114,6 +125,177 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (_) {
       if (mounted) setState(() => _reviewEnabled = !next);
     }
+  }
+
+  Future<void> _rateApp() async {
+    final service = widget.reviewService;
+    if (service == null) return;
+    await service.openStoreReview();
+  }
+
+  List<Member> get _visibleMembers =>
+      applyMemberFilter(_members, _filter, _notInBook);
+
+  Future<void> _admitAllMissing() async {
+    final strings = AppLocalizations.of(context);
+    final missing = _members
+        .where((m) => m.id != null && _notInBook.contains(m.id))
+        .toList(growable: false);
+    // Anche fuori dalla ricerca corrente: il libro riguarda tutti i soci.
+    final all = await widget.repository.search('');
+    final allMissing = all
+        .where((m) => m.id != null && _notInBook.contains(m.id))
+        .toList(growable: false);
+    if (!mounted) return;
+    if (allMissing.isEmpty && missing.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(strings.bookNothingMissing)));
+      return;
+    }
+    final withDate = allMissing.where((m) => m.joinDate != null).length;
+    final withoutDate = allMissing.length - withDate;
+    var fallback = DateTime.now();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(strings.bookAdmitTitle(allMissing.length)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (withDate > 0) Text(strings.bookAdmitWithDate(withDate)),
+                if (withDate > 0 && withoutDate > 0) const SizedBox(height: 10),
+                if (withoutDate > 0) ...[
+                  Text(strings.bookAdmitWithoutDate(withoutDate)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          strings.bookAdmitDate(
+                            _formatDate(fallback, strings.localeName),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: fallback,
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          );
+                          if (picked != null) {
+                            setDialogState(() => fallback = picked);
+                          }
+                        },
+                        child: Text(strings.bookAdmitChangeDate),
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 10),
+                Text(
+                  strings.bookAdmitNote,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(strings.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(strings.bookAdmitConfirm),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      final written = await widget.repository.admitAllMissing(
+        fallbackDate: RegisterRepository.todayIso(fallback),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(strings.bookAdmitDone(written))));
+      await _load();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(strings.bookAdmitFailed)));
+    }
+  }
+
+  Widget _filterBar(AppLocalizations strings) {
+    int count(MemberFilter f) =>
+        applyMemberFilter(_members, f, _notInBook).length;
+    final labels = {
+      MemberFilter.all: strings.filterAll,
+      MemberFilter.inGoodStanding: strings.filterActive,
+      MemberFilter.expired: strings.filterExpired,
+      MemberFilter.notInBook: strings.filterNotInBook,
+    };
+    return SizedBox(
+      height: 44,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          for (final f in MemberFilter.values)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text('${labels[f]} (${count(f)})'),
+                selected: _filter == f,
+                onSelected: (_) => setState(() => _filter = f),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _missingBookBanner(AppLocalizations strings) {
+    final missing = applyMemberFilter(
+      _members,
+      MemberFilter.notInBook,
+      _notInBook,
+    ).length;
+    if (_filter != MemberFilter.notInBook || _notInBook.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              strings.bookMissingBanner(
+                missing > 0 ? missing : _notInBook.length,
+              ),
+            ),
+            const SizedBox(height: 8),
+            FilledButton.icon(
+              onPressed: _admitAllMissing,
+              icon: const Icon(Icons.menu_book_outlined),
+              label: Text(strings.bookAdmitAll),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// Dopo un'azione riuscita (mai dopo un errore): la policy decide se chiedere.
@@ -475,6 +657,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (value == 'help') unawaited(_showImportHelp());
               if (value == 'support') unawaited(_openSupport());
               if (value == 'review') unawaited(_toggleReview());
+              if (value == 'rate') unawaited(_rateApp());
             },
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -542,6 +725,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               if (widget.reviewService != null)
+                PopupMenuItem(
+                  value: 'rate',
+                  child: ListTile(
+                    leading: const Icon(Icons.star_outline),
+                    title: Text(strings.rateApp),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              if (widget.reviewService != null)
                 CheckedPopupMenuItem(
                   value: 'review',
                   checked: _reviewEnabled,
@@ -583,6 +775,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            _filterBar(strings),
+            _missingBookBanner(strings),
             Expanded(child: _buildContent()),
           ],
         ),
@@ -631,7 +825,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    if (_members.isEmpty) {
+    if (_visibleMembers.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -678,18 +872,18 @@ class _HomeScreenState extends State<HomeScreen> {
       onRefresh: _load,
       child: ListView.builder(
         padding: const EdgeInsets.only(bottom: 88),
-        itemCount: _members.length + 1,
+        itemCount: _visibleMembers.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 6),
               child: Text(
-                strings.membersCount(_members.length),
+                strings.membersCount(_visibleMembers.length),
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             );
           }
-          final member = _members[index - 1];
+          final member = _visibleMembers[index - 1];
           return Card(
             child: ListTile(
               onTap: () => _openMember(member),

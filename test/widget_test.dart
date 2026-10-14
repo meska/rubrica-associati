@@ -126,6 +126,11 @@ void main() {
   testWidgets('mostra un errore se Ko-fi non può essere aperto', (
     tester,
   ) async {
+    // Il menu ha più voci: serve una finestra alta perché siano tutte visibili.
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       RubricaAssociatiApp(
         repository: _FakeMemberRepository(),

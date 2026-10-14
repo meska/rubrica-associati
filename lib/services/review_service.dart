@@ -5,6 +5,10 @@ import 'review_prompt_policy.dart';
 abstract class ReviewRequester {
   Future<bool> isAvailable();
   Future<void> requestReview();
+
+  /// Apre la scheda dello store sulla pagina "scrivi una recensione".
+  /// Azione avviata dall'utente (mai automatica).
+  Future<bool> openStoreReview() async => false;
 }
 
 /// Archivio chiave/valore (implementato da MemberRepository su app_settings).
@@ -65,6 +69,15 @@ class ReviewService {
 
   Future<void> setEnabled(bool value) =>
       _store.saveSetting(enabledKey, value ? '1' : '0');
+
+  /// Voce di menu «Valuta l'app»: apre lo store. Non lancia mai.
+  Future<bool> openStoreReview() async {
+    try {
+      return await _requester.openStoreReview();
+    } catch (_) {
+      return false;
+    }
+  }
 
   /// Chiede la recensione se la policy lo consente. Non lancia mai.
   Future<bool> maybeRequest({bool afterError = false}) async {
