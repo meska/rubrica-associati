@@ -391,5 +391,6 @@
     }
   },
   "bookAdmitFailed": "Recording failed: nothing was changed.",
-  "bookNothingMissing": "All members are already in the book."
+  "bookNothingMissing": "All members are already in the book.",
+  "filterNoExpiry": "No expiry date"
 }

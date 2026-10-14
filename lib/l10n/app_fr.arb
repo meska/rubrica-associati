@@ -304,5 +304,6 @@
     }
   },
   "bookAdmitFailed": "Échec de l'enregistrement : rien n'a été modifié.",
-  "bookNothingMissing": "Tous les membres sont déjà dans le registre."
+  "bookNothingMissing": "Tous les membres sont déjà dans le registre.",
+  "filterNoExpiry": "Sans date d'expiration"
 }

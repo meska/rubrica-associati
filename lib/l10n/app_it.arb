@@ -304,5 +304,6 @@
     }
   },
   "bookAdmitFailed": "Registrazione non riuscita: nessuna modifica fatta.",
-  "bookNothingMissing": "Tutti i soci sono già nel libro."
+  "bookNothingMissing": "Tutti i soci sono già nel libro.",
+  "filterNoExpiry": "Senza scadenza"
 }

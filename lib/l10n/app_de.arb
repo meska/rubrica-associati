@@ -304,5 +304,6 @@
     }
   },
   "bookAdmitFailed": "Eintrag fehlgeschlagen: Es wurde nichts geändert.",
-  "bookNothingMissing": "Alle Mitglieder sind bereits im Buch."
+  "bookNothingMissing": "Alle Mitglieder sind bereits im Buch.",
+  "filterNoExpiry": "Ohne Ablaufdatum"
 }

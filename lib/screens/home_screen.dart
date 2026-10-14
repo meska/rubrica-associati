@@ -243,22 +243,20 @@ class _HomeScreenState extends State<HomeScreen> {
       MemberFilter.all: strings.filterAll,
       MemberFilter.inGoodStanding: strings.filterActive,
       MemberFilter.expired: strings.filterExpired,
+      MemberFilter.noExpiry: strings.filterNoExpiry,
       MemberFilter.notInBook: strings.filterNotInBook,
     };
-    return SizedBox(
-      height: 44,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+    // Wrap invece di una riga scorrevole: con 5 filtri nessuno resta nascosto.
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        spacing: 8,
         children: [
           for (final f in MemberFilter.values)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ChoiceChip(
-                label: Text('${labels[f]} (${count(f)})'),
-                selected: _filter == f,
-                onSelected: (_) => setState(() => _filter = f),
-              ),
+            ChoiceChip(
+              label: Text('${labels[f]} (${count(f)})'),
+              selected: _filter == f,
+              onSelected: (_) => setState(() => _filter = f),
             ),
         ],
       ),

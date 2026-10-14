@@ -42,12 +42,13 @@ void main() {
     final past = DateTime(2020);
     final future = DateTime(2999);
     final members = [_m(1, expiry: past), _m(2, expiry: future), _m(3)];
-    test('in regola = non scaduti; scaduti; non nel libro', () {
+    test('in regola = scadenza valida; senza scadenza a parte', () {
       List<int?> ids(MemberFilter f) =>
           applyMemberFilter(members, f, {3}).map((m) => m.id).toList();
       expect(ids(MemberFilter.all), [1, 2, 3]);
-      expect(ids(MemberFilter.inGoodStanding), [2, 3]);
+      expect(ids(MemberFilter.inGoodStanding), [2]);
       expect(ids(MemberFilter.expired), [1]);
+      expect(ids(MemberFilter.noExpiry), [3]);
       expect(ids(MemberFilter.notInBook), [3]);
     });
   });
