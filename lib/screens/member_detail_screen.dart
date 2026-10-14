@@ -275,8 +275,19 @@ class _DetailRow extends StatelessWidget {
         ListTile(
           leading: Icon(icon, color: color),
           title: Text(label),
-          subtitle: Text(shownValue, style: TextStyle(color: color)),
-          trailing: warning ? Chip(label: Text(strings.expired)) : null,
+          // L'avviso «Scaduta» sta sotto il valore: un trailing largo rompe il
+          // layout con il testo ingrandito.
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(shownValue, style: TextStyle(color: color)),
+              if (warning)
+                Text(
+                  strings.expired,
+                  style: TextStyle(color: color, fontWeight: FontWeight.w700),
+                ),
+            ],
+          ),
         ),
         if (!last) const Divider(height: 1, indent: 56),
       ],

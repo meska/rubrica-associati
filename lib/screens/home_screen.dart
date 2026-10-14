@@ -255,32 +255,61 @@ class _HomeScreenState extends State<HomeScreen> {
       MemberFilter.expired,
     ];
     const more = [MemberFilter.noExpiry, MemberFilter.notInBook];
-    Widget chip(MemberFilter f) => ChoiceChip(
-      label: Text('${labels[f]} (${count(f)})'),
-      selected: _filter == f,
-      onSelected: (_) => setState(() => _filter = f),
+    // Tre filtri principali in un controllo segmentato (una sola riga, testo
+    // senza conteggio: l'intestazione «N associati» lo mostra già); gli altri
+    // stanno nel menu «...». Se ne è attivo uno secondario compare come chip
+    // rimovibile, così si vede sempre cosa si sta guardando.
+    final hidden = more.contains(_filter);
+    final moreButton = PopupMenuButton<MemberFilter>(
+      tooltip: strings.filterMore,
+      icon: const Icon(Icons.more_horiz),
+      onSelected: (f) => setState(() => _filter = f),
+      itemBuilder: (_) => [
+        for (final f in more)
+          CheckedPopupMenuItem(
+            value: f,
+            checked: _filter == f,
+            child: Text('${labels[f]} (${count(f)})'),
+          ),
+      ],
     );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
-        spacing: 8,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+      child: Row(
         children: [
-          for (final f in main) chip(f),
-          if (more.contains(_filter)) chip(_filter),
-          PopupMenuButton<MemberFilter>(
-            tooltip: strings.filterMore,
-            icon: const Icon(Icons.more_horiz),
-            onSelected: (f) => setState(() => _filter = f),
-            itemBuilder: (_) => [
-              for (final f in more)
-                CheckedPopupMenuItem(
-                  value: f,
-                  checked: _filter == f,
-                  child: Text('${labels[f]} (${count(f)})'),
-                ),
-            ],
+          Expanded(
+            child: hidden
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: InputChip(
+                      label: Text(
+                        '${labels[_filter]} (${count(_filter)})',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      deleteButtonTooltipMessage: strings.filterAll,
+                      onDeleted: () =>
+                          setState(() => _filter = MemberFilter.all),
+                    ),
+                  )
+                : SegmentedButton<MemberFilter>(
+                    showSelectedIcon: false,
+                    segments: [
+                      for (final f in main)
+                        ButtonSegment(
+                          value: f,
+                          label: Text(
+                            labels[f]!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    selected: {_filter},
+                    onSelectionChanged: (v) =>
+                        setState(() => _filter = v.first),
+                  ),
           ),
+          moreButton,
         ],
       ),
     );
@@ -705,7 +734,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _displayOrganizationName(strings),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 13),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),

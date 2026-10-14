@@ -124,7 +124,15 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.member == null ? strings.newMember : strings.edit),
-        actions: [TextButton(onPressed: _save, child: Text(strings.save))],
+        // Solo icona in alto (non sfora col testo grande); il pulsante con il
+        // testo «Salva socio» sta in fondo al modulo.
+        actions: [
+          IconButton(
+            tooltip: strings.save,
+            onPressed: _save,
+            icon: const Icon(Icons.check),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Form(

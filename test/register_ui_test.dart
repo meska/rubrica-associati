@@ -95,7 +95,7 @@ void main() {
       find.widgetWithText(TextFormField, 'Luogo di nascita'),
       ' Roma ',
     );
-    await tester.tap(find.text('Salva').first);
+    await tester.tap(find.byTooltip('Salva'));
     await tester.pumpAndSettle();
     expect(result?.taxCode, 'RSSMRA');
     expect(result?.birthPlace, 'Roma');

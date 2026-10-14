@@ -149,7 +149,7 @@ void main() {
       RubricaAssociatiApp(locale: const Locale('it'), repository: repo),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Tutti (3)'), findsOneWidget);
+    expect(find.text('Tutti'), findsOneWidget);
     // «Non nel libro» sta nel menu dei filtri secondari.
     expect(find.text('Non nel libro (2)'), findsNothing);
     await tester.tap(find.byTooltip('Altri filtri'));
@@ -178,7 +178,7 @@ void main() {
       RubricaAssociatiApp(locale: const Locale('it'), repository: repo),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('In regola (0)'));
+    await tester.tap(find.text('In regola'));
     await tester.pumpAndSettle();
     // Non "La rubrica è vuota": la rubrica ha soci, è il filtro a essere vuoto.
     expect(find.text('La rubrica è vuota'), findsNothing);
