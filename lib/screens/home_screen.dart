@@ -333,14 +333,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : SegmentedButton<MemberFilter>(
                     showSelectedIcon: false,
+                    // Padding ridotto: le etichette restano intere anche su 320 px.
+                    style: const ButtonStyle(
+                      padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                    ),
                     segments: [
                       for (final f in main)
                         ButtonSegment(
                           value: f,
-                          label: Text(
-                            labels[f]!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          // Se non c'è spazio il testo si rimpicciolisce: meglio di
+                          // un'etichetta tagliata con i puntini.
+                          label: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(labels[f]!, maxLines: 1),
                           ),
                         ),
                     ],
