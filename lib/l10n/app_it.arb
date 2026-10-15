@@ -364,5 +364,6 @@
       }
     }
   },
-  "bookAdmitOneDone": "Ammissione registrata"
+  "bookAdmitOneDone": "Ammissione registrata",
+  "selectMember": "Scegli un associato dall’elenco"
 }

@@ -1,1 +1,1 @@
-We added an optional Ko-fi link for anyone who wishes to support development. Member Directory remains free and complete: support unlocks no features.
+What's new: members book with history and PDF export, volunteers register, directory filters (in good standing, expired, no expiry date), shortcuts to add or renew a card with a configurable expiry rule, and a two-column layout on iPad and computers. Member Directory remains free and complete.

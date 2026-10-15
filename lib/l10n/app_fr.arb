@@ -364,5 +364,6 @@
       }
     }
   },
-  "bookAdmitOneDone": "Admission enregistrée"
+  "bookAdmitOneDone": "Admission enregistrée",
+  "selectMember": "Choisissez un membre dans la liste"
 }

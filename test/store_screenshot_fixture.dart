@@ -2,22 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:rubrica_associati/data/member_repository.dart';
+import 'package:rubrica_associati/data/register_repository.dart';
+import 'package:rubrica_associati/models/card_validity.dart';
 import 'package:rubrica_associati/models/member.dart';
 
 /// Dati inventati e stabili condivisi da tutte le immagini promozionali.
-const storeFeaturedMember = Member(
+final storeFeaturedMember = Member(
   id: 1,
   firstName: 'Maria',
   lastName: 'Rossi',
   phone: '333 123 4567',
   secondaryPhone: '049 765 4321',
   memberNumber: 'A-001',
-  expiryDate: null,
+  expiryDate: DateTime(2030, 12, 31),
   birthDate: null,
+  joinDate: DateTime(2024, 1, 15),
   notes: 'Volontaria del centro e referente per le attività culturali.',
 );
 
-const storeMembers = <Member>[
+final storeMembers = <Member>[
   storeFeaturedMember,
   Member(
     id: 2,
@@ -76,6 +79,7 @@ Member storeFeaturedMemberFor(String locale) => Member(
   memberNumber: storeFeaturedMember.memberNumber,
   expiryDate: storeFeaturedMember.expiryDate,
   birthDate: storeFeaturedMember.birthDate,
+  joinDate: storeFeaturedMember.joinDate,
   notes: _localizedDemoNotes[locale]!,
 );
 
@@ -96,6 +100,26 @@ class StoreScreenshotRepository extends MemberRepository {
 
   @override
   Future<String> loadOrganizationName() async => organizationName;
+
+  // Nessun accesso al database: schermate stabili e senza avvisi «Da completare».
+  @override
+  Future<Set<int>> membersNotInBook() async => const {};
+
+  @override
+  Future<CardValidity> loadCardValidity() async => CardValidity.calendarYear;
+
+  @override
+  Future<List<RegisterEvent>> registerHistory(int memberId) async => [
+    RegisterEvent(
+      id: 1,
+      memberId: memberId,
+      type: RegisterEventType.admission,
+      eventDate: '2024-01-15',
+      firstName: storeFeaturedMember.firstName,
+      lastName: storeFeaturedMember.lastName,
+      recordedAt: '2024-01-15T09:00:00Z',
+    ),
+  ];
 }
 
 /// Carica i font veri: Ahem no xe bon par screenshot da pubblicare.

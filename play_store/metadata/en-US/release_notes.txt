@@ -1,1 +1,1 @@
-Optional tip setup is now complete across mobile stores. Member Directory remains free and complete.
+What's new: members book with history and PDF export, volunteers register, directory filters (in good standing, expired, no expiry date), shortcuts to add or renew a card with a configurable expiry rule, and a two-column layout on iPad and computers. Member Directory remains free and complete.

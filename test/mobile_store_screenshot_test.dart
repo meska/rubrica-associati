@@ -24,6 +24,12 @@ const _stores = <_MobileStore>[
     directory: 'app_store/screenshots',
     physicalSize: Size(1242, 2688),
   ),
+  // iPad Pro 13": obbligatorio perché l'app supporta anche iPad.
+  _MobileStore(
+    directory: 'app_store/screenshots_ipad',
+    physicalSize: Size(2064, 2752),
+    pixelRatio: 2,
+  ),
   _MobileStore(
     directory: 'play_store/graphics/phone-screenshots',
     physicalSize: Size(1242, 2484),
@@ -39,12 +45,12 @@ void main() {
     tester,
   ) async {
     await tester.runAsync(loadStoreScreenshotFonts);
-    tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
     for (final store in _stores) {
       tester.view.physicalSize = store.physicalSize;
+      tester.view.devicePixelRatio = store.pixelRatio;
       for (final locale in _locales.entries) {
         final featuredMember = storeFeaturedMemberFor(locale.key);
         await _captureLocalizedSet(
@@ -55,6 +61,7 @@ void main() {
           locale: locale.value,
           directory: '${store.directory}/${locale.key}',
           featuredMember: featuredMember,
+          pixelRatio: store.pixelRatio,
         );
       }
     }
@@ -76,11 +83,20 @@ Future<void> _captureLocalizedSet(
   required Locale locale,
   required String directory,
   required Member featuredMember,
+  required double pixelRatio,
 }) async {
   await _pumpScreenshot(
     tester,
     app: RubricaAssociatiApp(repository: repository, locale: locale),
     path: '$directory/home.png',
+    pixelRatio: pixelRatio,
+    // Su iPad lista e scheda stanno affiancate: mostra un socio selezionato.
+    afterPump: pixelRatio == 2
+        ? () async {
+            await tester.tap(find.byType(ListTile).first);
+            await tester.pumpAndSettle();
+          }
+        : null,
   );
 
   await _pumpScreenshot(
@@ -90,6 +106,7 @@ Future<void> _captureLocalizedSet(
       home: MemberDetailScreen(member: featuredMember, repository: repository),
     ),
     path: '$directory/detail.png',
+    pixelRatio: pixelRatio,
   );
 
   await _pumpScreenshot(
@@ -99,6 +116,7 @@ Future<void> _captureLocalizedSet(
       home: MemberFormScreen(member: featuredMember),
     ),
     path: '$directory/form.png',
+    pixelRatio: pixelRatio,
   );
 }
 
@@ -106,15 +124,18 @@ Future<void> _pumpScreenshot(
   WidgetTester tester, {
   required Widget app,
   required String path,
+  required double pixelRatio,
+  Future<void> Function()? afterPump,
 }) async {
   await tester.pumpWidget(RepaintBoundary(key: _screenshotKey, child: app));
   await tester.pumpAndSettle();
+  if (afterPump != null) await afterPump();
 
   final boundary = tester.renderObject<RenderRepaintBoundary>(
     find.byKey(_screenshotKey),
   );
   await tester.runAsync(() async {
-    final image = await boundary.toImage(pixelRatio: 3);
+    final image = await boundary.toImage(pixelRatio: pixelRatio);
     expect(image.width, tester.view.physicalSize.width.toInt());
     expect(image.height, tester.view.physicalSize.height.toInt());
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -129,8 +150,13 @@ Future<void> _pumpScreenshot(
 }
 
 class _MobileStore {
-  const _MobileStore({required this.directory, required this.physicalSize});
+  const _MobileStore({
+    required this.directory,
+    required this.physicalSize,
+    this.pixelRatio = 3,
+  });
 
   final String directory;
   final Size physicalSize;
+  final double pixelRatio;
 }

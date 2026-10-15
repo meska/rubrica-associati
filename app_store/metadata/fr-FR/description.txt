@@ -8,7 +8,16 @@ Gérez les données des adhérents directement sur votre appareil :
 • notez le numéro d’adhérent, l’expiration, l’anniversaire et des remarques ;
 • importez des listes Excel (.xlsx) et CSV ;
 • exportez et partagez tout le répertoire entre vos appareils ;
-• personnalisez le nom de votre centre ou association.
+• personnalisez le nom de votre centre ou association;
+• filtrez les membres en règle, expirés ou sans date d’expiration ;
+• ajoutez ou renouvelez une carte en un geste, avec une règle d’expiration configurable (fin d’année, 12 mois ou date fixe) ;
+• tenez le registre des membres : admissions, départs et corrections sont enregistrés avec leur historique, sans rien supprimer ;
+• exportez le registre par année en PDF pour l’archivage, avec une empreinte SHA-256, et conservez le fichier de clôture signé par votre organisation ;
+• affichez une liste réduite (nom et qualité de membre seulement) et exportez la liste nominative en CSV ;
+• tenez le registre des bénévoles ;
+• sur iPad et ordinateur, la liste et la fiche sont affichées côte à côte.
+
+Le registre des membres est un outil d’aide et ne remplace pas l’avis d’un professionnel.
 
 L’application fonctionne entièrement hors ligne, sans compte ni serveur. Vos données restent sur l’appareil, sauf si vous choisissez explicitement d’exporter et de partager une sauvegarde.
 

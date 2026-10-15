@@ -169,6 +169,7 @@ for locale in "${microsoft_store_locales[@]}"; do
 done
 
 validate_mobile_screenshot_set "$repo_root/app_store/screenshots" 1242 2688
+validate_mobile_screenshot_set "$repo_root/app_store/screenshots_ipad" 2064 2752
 validate_mobile_screenshot_set "$repo_root/play_store/graphics/phone-screenshots" 1242 2484
 
 # Gli ID nel codice devono coincidere esattamente con il catalogo approvato.

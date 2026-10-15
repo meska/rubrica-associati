@@ -17,6 +17,8 @@ platform :ios do
 
     source_metadata_path = File.expand_path("../app_store/metadata", __dir__)
     source_screenshots_path = File.expand_path("../app_store/screenshots", __dir__)
+    # iPad Pro 13": obbligatori perché l'app supporta anche iPad.
+    source_ipad_screenshots_path = File.expand_path("../app_store/screenshots_ipad", __dir__)
     release_path = File.expand_path("../build/app_store_listing", __dir__)
     metadata_path = File.join(release_path, "metadata")
     screenshots_path = File.join(release_path, "screenshots")
@@ -40,6 +42,10 @@ platform :ios do
       FileUtils.mkdir_p(File.join(screenshots_path, store_locale))
       Dir.glob(File.join(source_screenshots_path, screenshot_locale, "*.png")).each do |image|
         FileUtils.cp(image, File.join(screenshots_path, store_locale, File.basename(image)))
+      end
+      # Il prefisso tiene distinti i file iPad; Apple riconosce il dispositivo dalle dimensioni.
+      Dir.glob(File.join(source_ipad_screenshots_path, screenshot_locale, "*.png")).each do |image|
+        FileUtils.cp(image, File.join(screenshots_path, store_locale, "ipad_#{File.basename(image)}"))
       end
     end
 

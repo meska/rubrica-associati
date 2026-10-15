@@ -1,5 +1,6 @@
 import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/member.dart';
+import 'package:rubrica_associati/widgets/content_width.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -135,124 +136,134 @@ class _MemberFormScreenState extends State<MemberFormScreen> {
         ],
       ),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _firstName,
-                      decoration: InputDecoration(labelText: strings.firstName),
-                      textCapitalization: TextCapitalization.words,
-                      inputFormatters: [LengthLimitingTextInputFormatter(100)],
+        child: ContentWidth(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _firstName,
+                        decoration: InputDecoration(
+                          labelText: strings.firstName,
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(100),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _lastName,
-                      decoration: InputDecoration(labelText: strings.lastName),
-                      textCapitalization: TextCapitalization.words,
-                      inputFormatters: [LengthLimitingTextInputFormatter(100)],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _lastName,
+                        decoration: InputDecoration(
+                          labelText: strings.lastName,
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(100),
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _phone,
+                  decoration: InputDecoration(
+                    labelText: strings.phone,
+                    prefixIcon: const Icon(Icons.phone_outlined),
                   ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _phone,
-                decoration: InputDecoration(
-                  labelText: strings.phone,
-                  prefixIcon: const Icon(Icons.phone_outlined),
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [LengthLimitingTextInputFormatter(40)],
                 ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [LengthLimitingTextInputFormatter(40)],
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _secondaryPhone,
-                decoration: InputDecoration(
-                  labelText: strings.secondaryPhone,
-                  prefixIcon: const Icon(Icons.phone_outlined),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _secondaryPhone,
+                  decoration: InputDecoration(
+                    labelText: strings.secondaryPhone,
+                    prefixIcon: const Icon(Icons.phone_outlined),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [LengthLimitingTextInputFormatter(40)],
                 ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [LengthLimitingTextInputFormatter(40)],
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _memberNumber,
-                decoration: InputDecoration(
-                  labelText: strings.memberNumber,
-                  prefixIcon: const Icon(Icons.badge_outlined),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _memberNumber,
+                  decoration: InputDecoration(
+                    labelText: strings.memberNumber,
+                    prefixIcon: const Icon(Icons.badge_outlined),
+                  ),
+                  inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 ),
-                inputFormatters: [LengthLimitingTextInputFormatter(100)],
-              ),
-              const SizedBox(height: 12),
-              _DateField(
-                label: strings.membershipExpiry,
-                value: _expiryDate,
-                icon: Icons.event_available_outlined,
-                onTap: () => _chooseDate(expiry: true),
-                onClear: () => setState(() => _expiryDate = null),
-              ),
-              const SizedBox(height: 12),
-              _DateField(
-                label: strings.dateOfBirth,
-                value: _birthDate,
-                icon: Icons.cake_outlined,
-                onTap: () => _chooseDate(expiry: false),
-                onClear: () => setState(() => _birthDate = null),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _birthPlace,
-                decoration: InputDecoration(
-                  labelText: strings.birthPlace,
-                  prefixIcon: const Icon(Icons.place_outlined),
+                const SizedBox(height: 12),
+                _DateField(
+                  label: strings.membershipExpiry,
+                  value: _expiryDate,
+                  icon: Icons.event_available_outlined,
+                  onTap: () => _chooseDate(expiry: true),
+                  onClear: () => setState(() => _expiryDate = null),
                 ),
-                textCapitalization: TextCapitalization.words,
-                inputFormatters: [LengthLimitingTextInputFormatter(100)],
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _taxCode,
-                decoration: InputDecoration(
-                  labelText: strings.taxCode,
-                  prefixIcon: const Icon(Icons.fingerprint),
+                const SizedBox(height: 12),
+                _DateField(
+                  label: strings.dateOfBirth,
+                  value: _birthDate,
+                  icon: Icons.cake_outlined,
+                  onTap: () => _chooseDate(expiry: false),
+                  onClear: () => setState(() => _birthDate = null),
                 ),
-                textCapitalization: TextCapitalization.characters,
-                inputFormatters: [LengthLimitingTextInputFormatter(32)],
-              ),
-              const SizedBox(height: 12),
-              _DateField(
-                label: strings.joinDate,
-                value: _joinDate,
-                icon: Icons.how_to_reg_outlined,
-                onTap: _chooseJoinDate,
-                onClear: () => setState(() => _joinDate = null),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _notes,
-                decoration: InputDecoration(
-                  labelText: strings.notes,
-                  alignLabelWithHint: true,
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _birthPlace,
+                  decoration: InputDecoration(
+                    labelText: strings.birthPlace,
+                    prefixIcon: const Icon(Icons.place_outlined),
+                  ),
+                  textCapitalization: TextCapitalization.words,
+                  inputFormatters: [LengthLimitingTextInputFormatter(100)],
                 ),
-                minLines: 3,
-                maxLines: 5,
-                inputFormatters: [LengthLimitingTextInputFormatter(2000)],
-              ),
-              const SizedBox(height: 24),
-              FilledButton.icon(
-                onPressed: _save,
-                icon: const Icon(Icons.save_outlined),
-                label: Text(strings.saveMember),
-              ),
-            ],
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _taxCode,
+                  decoration: InputDecoration(
+                    labelText: strings.taxCode,
+                    prefixIcon: const Icon(Icons.fingerprint),
+                  ),
+                  textCapitalization: TextCapitalization.characters,
+                  inputFormatters: [LengthLimitingTextInputFormatter(32)],
+                ),
+                const SizedBox(height: 12),
+                _DateField(
+                  label: strings.joinDate,
+                  value: _joinDate,
+                  icon: Icons.how_to_reg_outlined,
+                  onTap: _chooseJoinDate,
+                  onClear: () => setState(() => _joinDate = null),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _notes,
+                  decoration: InputDecoration(
+                    labelText: strings.notes,
+                    alignLabelWithHint: true,
+                  ),
+                  minLines: 3,
+                  maxLines: 5,
+                  inputFormatters: [LengthLimitingTextInputFormatter(2000)],
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: _save,
+                  icon: const Icon(Icons.save_outlined),
+                  label: Text(strings.saveMember),
+                ),
+              ],
+            ),
           ),
         ),
       ),

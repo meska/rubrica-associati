@@ -4,6 +4,7 @@ import 'package:rubrica_associati/l10n/generated/app_localizations.dart';
 import 'package:rubrica_associati/models/card_validity.dart';
 import 'package:rubrica_associati/models/member.dart';
 import 'package:rubrica_associati/screens/member_form_screen.dart';
+import 'package:rubrica_associati/widgets/content_width.dart';
 import 'package:rubrica_associati/widgets/member_quick_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,10 +15,18 @@ class MemberDetailScreen extends StatefulWidget {
     super.key,
     required this.member,
     required this.repository,
+    this.onChanged,
+    this.onDeleted,
   });
 
   final Member member;
   final MemberRepository repository;
+
+  /// Usati nel pannello laterale (schermi larghi): la lista va riletta dopo
+  /// una modifica e, se il socio è eliminato, il pannello si svuota invece di
+  /// chiudere una pagina.
+  final VoidCallback? onChanged;
+  final VoidCallback? onDeleted;
 
   @override
   State<MemberDetailScreen> createState() => _MemberDetailScreenState();
@@ -77,6 +86,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     setState(() {
       _member = saved;
     });
+    widget.onChanged?.call();
     await _loadHistory();
   }
 
@@ -106,6 +116,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
       );
       if (!mounted) return;
       setState(() => _member = saved);
+      widget.onChanged?.call();
       _message(strings.cardSaved);
     } catch (_) {
       if (mounted) _message(strings.entityDetailsSaveFailed);
@@ -125,6 +136,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     try {
       await widget.repository.admitMember(id, fallbackDate: date);
       await _loadHistory();
+      widget.onChanged?.call();
       if (mounted) _message(strings.bookAdmitOneDone);
     } catch (_) {
       if (mounted) _message(strings.bookAdmitFailed);
@@ -201,7 +213,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
     );
     if (confirmed != true || _member.id == null) return;
     await widget.repository.delete(_member.id!);
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    if (widget.onDeleted != null) {
+      widget.onDeleted!();
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -234,120 +251,122 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          CircleAvatar(
-            radius: 42,
-            backgroundColor: theme.colorScheme.primaryContainer,
-            child: Text(
-              _member.initials,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                color: theme.colorScheme.onPrimaryContainer,
+      body: ContentWidth(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            CircleAvatar(
+              radius: 42,
+              backgroundColor: theme.colorScheme.primaryContainer,
+              child: Text(
+                _member.initials,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _member.fullName,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 20),
-          if (_member.phone.isNotEmpty)
-            FilledButton.icon(
-              onPressed: () => _call(_member.phone),
-              icon: const Icon(Icons.call),
-              label: Text(strings.callPhone(_member.phone)),
+            const SizedBox(height: 16),
+            Text(
+              _member.fullName,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineSmall,
             ),
-          if (_member.secondaryPhone.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            if (_member.phone.isNotEmpty)
+              FilledButton.icon(
+                onPressed: () => _call(_member.phone),
+                icon: const Icon(Icons.call),
+                label: Text(strings.callPhone(_member.phone)),
+              ),
+            if (_member.secondaryPhone.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => _call(_member.secondaryPhone),
+                icon: const Icon(Icons.call_outlined),
+                label: Text(strings.callPhone(_member.secondaryPhone)),
+              ),
+            ],
+            _toComplete(strings),
+            const SizedBox(height: 18),
+            Card(
+              child: Column(
+                children: [
+                  _DetailRow(
+                    icon: Icons.phone_outlined,
+                    label: strings.phone,
+                    value: _member.phone,
+                  ),
+                  _DetailRow(
+                    icon: Icons.phone_outlined,
+                    label: strings.secondaryPhone,
+                    value: _member.secondaryPhone,
+                  ),
+                  _DetailRow(
+                    icon: Icons.badge_outlined,
+                    label: strings.memberNumber,
+                    value: _member.memberNumber,
+                  ),
+                  _DetailRow(
+                    icon: Icons.event_available_outlined,
+                    label: strings.membershipExpiry,
+                    value: _formatDate(_member.expiryDate, strings.localeName),
+                    warning: _member.isExpired,
+                  ),
+                  _DetailRow(
+                    icon: Icons.cake_outlined,
+                    label: strings.dateOfBirth,
+                    value: _formatDate(_member.birthDate, strings.localeName),
+                  ),
+                  _DetailRow(
+                    icon: Icons.place_outlined,
+                    label: strings.birthPlace,
+                    value: _member.birthPlace,
+                  ),
+                  _DetailRow(
+                    icon: Icons.fingerprint,
+                    label: strings.taxCode,
+                    value: _member.taxCode,
+                  ),
+                  _DetailRow(
+                    icon: Icons.how_to_reg_outlined,
+                    label: strings.joinDate,
+                    value: _formatDate(_member.joinDate, strings.localeName),
+                  ),
+                  _DetailRow(
+                    icon: Icons.notes_outlined,
+                    label: strings.notes,
+                    value: _member.notes,
+                    last: true,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              strings.registerHistoryTitle,
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () => _call(_member.secondaryPhone),
-              icon: const Icon(Icons.call_outlined),
-              label: Text(strings.callPhone(_member.secondaryPhone)),
+            Card(
+              child: Column(
+                children: [
+                  if (_history.isEmpty)
+                    ListTile(title: Text(strings.registerHistoryEmpty))
+                  else
+                    for (final e in _history)
+                      ListTile(
+                        key: ValueKey('register-event-${e.id}'),
+                        leading: const Icon(Icons.history),
+                        title: Text(_eventLabel(strings, e.type)),
+                        subtitle: Text(
+                          _formatIso(e.eventDate, strings.localeName),
+                        ),
+                      ),
+                ],
+              ),
             ),
           ],
-          _toComplete(strings),
-          const SizedBox(height: 18),
-          Card(
-            child: Column(
-              children: [
-                _DetailRow(
-                  icon: Icons.phone_outlined,
-                  label: strings.phone,
-                  value: _member.phone,
-                ),
-                _DetailRow(
-                  icon: Icons.phone_outlined,
-                  label: strings.secondaryPhone,
-                  value: _member.secondaryPhone,
-                ),
-                _DetailRow(
-                  icon: Icons.badge_outlined,
-                  label: strings.memberNumber,
-                  value: _member.memberNumber,
-                ),
-                _DetailRow(
-                  icon: Icons.event_available_outlined,
-                  label: strings.membershipExpiry,
-                  value: _formatDate(_member.expiryDate, strings.localeName),
-                  warning: _member.isExpired,
-                ),
-                _DetailRow(
-                  icon: Icons.cake_outlined,
-                  label: strings.dateOfBirth,
-                  value: _formatDate(_member.birthDate, strings.localeName),
-                ),
-                _DetailRow(
-                  icon: Icons.place_outlined,
-                  label: strings.birthPlace,
-                  value: _member.birthPlace,
-                ),
-                _DetailRow(
-                  icon: Icons.fingerprint,
-                  label: strings.taxCode,
-                  value: _member.taxCode,
-                ),
-                _DetailRow(
-                  icon: Icons.how_to_reg_outlined,
-                  label: strings.joinDate,
-                  value: _formatDate(_member.joinDate, strings.localeName),
-                ),
-                _DetailRow(
-                  icon: Icons.notes_outlined,
-                  label: strings.notes,
-                  value: _member.notes,
-                  last: true,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 18),
-          Text(
-            strings.registerHistoryTitle,
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: Column(
-              children: [
-                if (_history.isEmpty)
-                  ListTile(title: Text(strings.registerHistoryEmpty))
-                else
-                  for (final e in _history)
-                    ListTile(
-                      key: ValueKey('register-event-${e.id}'),
-                      leading: const Icon(Icons.history),
-                      title: Text(_eventLabel(strings, e.type)),
-                      subtitle: Text(
-                        _formatIso(e.eventDate, strings.localeName),
-                      ),
-                    ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

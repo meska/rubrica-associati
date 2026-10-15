@@ -8,7 +8,16 @@ Verwalten Sie Mitgliedsdaten direkt auf Ihrem Gerät:
 • Mitgliedsnummer, Ablaufdatum, Geburtstag und Notizen erfassen;
 • Excel- (.xlsx) und CSV-Listen importieren;
 • das gesamte Verzeichnis zwischen Ihren Geräten exportieren und teilen;
-• den Namen Ihres Zentrums oder Vereins anpassen.
+• den Namen Ihres Zentrums oder Vereins anpassen;
+• Mitglieder filtern: aktuell, abgelaufen oder ohne Ablaufdatum;
+• Mitgliedsausweis mit einem Fingertipp hinzufügen oder erneuern, mit einstellbarer Ablaufregel (Jahresende, 12 Monate oder festes Datum);
+• das Mitgliederbuch führen: Aufnahmen, Austritte und Korrekturen werden mit Verlauf festgehalten, nichts wird gelöscht;
+• das Buch jahresweise als PDF zur Archivierung exportieren, mit SHA-256-Prüfsumme, und die von Ihrem Verein signierte Abschlussdatei aufbewahren;
+• eine reduzierte Liste (nur Name und Mitgliedsstatus) anzeigen und die Namensliste als CSV exportieren;
+• das Freiwilligenregister führen;
+• auf iPad und Computern stehen Liste und Mitgliedskarte nebeneinander.
+
+Das Mitgliederbuch ist ein Hilfsmittel und ersetzt keine fachliche Beratung.
 
 Die App funktioniert vollständig offline, ohne Konto und ohne Server. Ihre Daten bleiben auf dem Gerät, außer Sie exportieren und teilen ausdrücklich eine Sicherung.
 

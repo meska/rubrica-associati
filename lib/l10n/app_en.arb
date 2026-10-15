@@ -451,5 +451,6 @@
       }
     }
   },
-  "bookAdmitOneDone": "Admission recorded"
+  "bookAdmitOneDone": "Admission recorded",
+  "selectMember": "Choose a member from the list"
 }

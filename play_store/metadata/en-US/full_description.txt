@@ -8,7 +8,16 @@ Manage member details directly on your device:
 • record membership number, expiry date, birthday and notes;
 • import Excel (.xlsx) and CSV lists;
 • export and share the entire directory between your devices;
-• customize the name of your center or association.
+• customize the name of your center or association;
+• filter members in good standing, expired or without an expiry date;
+• add or renew a card in one tap, with a configurable expiry rule (year end, 12 months or a fixed date);
+• keep the members book: admissions, terminations and corrections are recorded with their history, and nothing is deleted;
+• export the book by year as a PDF for archiving, with a SHA-256 fingerprint, and keep the closing file signed by your organization;
+• show a reduced list (name and membership status only) and export the name list as CSV;
+• keep the volunteers register;
+• on iPad and computers the list and the member card sit side by side.
+
+The members book is a support tool and does not replace professional advice.
 
 The app works completely offline, with no account and no server. Your data stays on your device unless you explicitly choose to export and share a backup.
 

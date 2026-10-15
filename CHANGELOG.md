@@ -4,6 +4,8 @@
 
 ### Aggiunto
 
+- Layout a due colonne su iPad, Mac e desktop (lista e scheda affiancate) e
+  larghezza del contenuto limitata sugli schermi grandi; screenshot iPad 13".
 - Scorciatoie «Da completare» nella scheda del socio: aggiungi o rinnova la
   tessera con scadenze proposte e registra il socio nel libro con un tocco.
   La regola di scadenza delle tessere (fine anno, 12 mesi, data fissa) è

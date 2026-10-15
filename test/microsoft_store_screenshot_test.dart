@@ -53,8 +53,11 @@ Future<void> _captureLocalizedSet(
     RubricaAssociatiApp(repository: repository, locale: locale),
   );
   await tester.pumpAndSettle();
+  // Su desktop lista e scheda sono affiancate: seleziona il primo socio.
+  await tester.tap(find.byType(ListTile).first);
+  await tester.pumpAndSettle();
   await expectLater(
-    find.byType(Scaffold),
+    find.byType(Scaffold).first,
     matchesGoldenFile(
       '../microsoft_store/screenshots/$directory/01-rubrica-desktop.png',
     ),
@@ -80,7 +83,7 @@ Future<void> _captureLocalizedSet(
   await tester.pumpWidget(
     RubricaAssociatiApp(
       locale: locale,
-      home: const MemberFormScreen(member: storeFeaturedMember),
+      home: MemberFormScreen(member: storeFeaturedMember),
     ),
   );
   await tester.pumpAndSettle();

@@ -1,1 +1,1 @@
-La configuration des pourboires facultatifs est désormais complète sur les stores mobiles. Répertoire des adhérents reste gratuit et complet.
+Nouveautés : registre des membres avec historique et export PDF, registre des bénévoles, filtres dans le répertoire (en règle, expirés, sans expiration), raccourcis pour ajouter ou renouveler une carte avec une règle d’expiration configurable, et affichage en deux colonnes sur iPad et ordinateur. Répertoire des adhérents reste gratuit et complet.

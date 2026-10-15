@@ -364,5 +364,6 @@
       }
     }
   },
-  "bookAdmitOneDone": "Aufnahme eingetragen"
+  "bookAdmitOneDone": "Aufnahme eingetragen",
+  "selectMember": "Wählen Sie ein Mitglied aus der Liste"
 }

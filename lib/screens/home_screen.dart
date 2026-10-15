@@ -18,6 +18,7 @@ import 'package:rubrica_associati/services/review_service.dart';
 import 'package:rubrica_associati/services/spreadsheet_importer.dart';
 import 'package:rubrica_associati/services/tip_jar_service.dart';
 import 'package:rubrica_associati/support/app_support.dart';
+import 'package:rubrica_associati/widgets/content_width.dart';
 import 'package:rubrica_associati/widgets/support_sheet.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
   var _reviewEnabled = true;
   var _filter = MemberFilter.all;
   Set<int> _notInBook = const {};
+  Member? _selected;
+
+  /// Da questa larghezza (iPad in orizzontale e verticale grande, Mac,
+  /// Windows) lista e scheda stanno affiancate.
+  static const _wideBreakpoint = 840.0;
 
   @override
   void initState() {
@@ -131,6 +137,43 @@ class _HomeScreenState extends State<HomeScreen> {
     final service = widget.reviewService;
     if (service == null) return;
     await service.openStoreReview();
+  }
+
+  Widget _detailPane(AppLocalizations strings) {
+    final member = _selected;
+    if (member == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.person_search_outlined,
+                size: 64,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                strings.selectMember,
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return MemberDetailScreen(
+      key: ValueKey('detail-${member.id}'),
+      member: member,
+      repository: widget.repository,
+      onChanged: _load,
+      onDeleted: () {
+        setState(() => _selected = null);
+        _load();
+      },
+    );
   }
 
   List<Member> get _visibleMembers =>
@@ -427,6 +470,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openMember(Member member) async {
+    if (MediaQuery.sizeOf(context).width >= _wideBreakpoint) {
+      setState(() => _selected = member);
+      return;
+    }
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) =>
@@ -713,6 +760,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final strings = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         leading: Padding(
           padding: const EdgeInsets.all(8),
           child: ClipRRect(
@@ -843,36 +891,55 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-              child: SearchBar(
-                controller: _searchController,
-                onChanged: _search,
-                hintText: strings.searchHint,
-                leading: const Icon(Icons.search),
-                trailing: [
-                  if (_searchController.text.isNotEmpty)
-                    IconButton(
-                      tooltip: strings.clearSearch,
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {});
-                        _load();
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                ],
-              ),
-            ),
-            _filterBar(strings),
-            _missingBookBanner(strings),
-            _filterHint(strings),
-            Expanded(child: _buildContent()),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final listColumn = Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                  child: SearchBar(
+                    controller: _searchController,
+                    onChanged: _search,
+                    hintText: strings.searchHint,
+                    leading: const Icon(Icons.search),
+                    trailing: [
+                      if (_searchController.text.isNotEmpty)
+                        IconButton(
+                          tooltip: strings.clearSearch,
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {});
+                            _load();
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                    ],
+                  ),
+                ),
+                _filterBar(strings),
+                _missingBookBanner(strings),
+                _filterHint(strings),
+                Expanded(child: _buildContent()),
+              ],
+            );
+            if (constraints.maxWidth < _wideBreakpoint) {
+              return ContentWidth(child: listColumn);
+            }
+            return Row(
+              children: [
+                SizedBox(width: 400, child: listColumn),
+                const VerticalDivider(width: 1),
+                Expanded(child: _detailPane(strings)),
+              ],
+            );
+          },
         ),
       ),
+      // In due colonne il pulsante resta sopra la lista, non sulla scheda.
+      floatingActionButtonLocation:
+          MediaQuery.sizeOf(context).width >= _wideBreakpoint
+          ? FloatingActionButtonLocation.startFloat
+          : null,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addMember,
         icon: const Icon(Icons.person_add_outlined),
@@ -1008,6 +1075,9 @@ class _HomeScreenState extends State<HomeScreen> {
           return Card(
             child: ListTile(
               onTap: () => _openMember(member),
+              selected:
+                  MediaQuery.sizeOf(context).width >= _wideBreakpoint &&
+                  _selected?.id == member.id,
               leading: CircleAvatar(child: Text(member.initials)),
               title: Text(member.fullName),
               subtitle: Text(_memberSubtitle(member, strings)),

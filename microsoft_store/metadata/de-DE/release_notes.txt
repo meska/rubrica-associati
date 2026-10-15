@@ -1,1 +1,1 @@
-Ein freiwilliger Ko-fi-Link unterstützt jetzt die Entwicklung. Mitgliederverzeichnis bleibt kostenlos und vollständig: Die Unterstützung schaltet keine Funktionen frei.
+Neu: Mitgliederbuch mit Verlauf und PDF-Export, Freiwilligenregister, Filter im Verzeichnis (aktuell, abgelaufen, ohne Ablaufdatum), Kurzbefehle zum Hinzufügen oder Erneuern des Ausweises mit einstellbarer Ablaufregel und eine zweispaltige Ansicht auf iPad und Computern. Mitgliederverzeichnis bleibt kostenlos und vollständig.
