@@ -61,6 +61,11 @@ install -d \
   "$app_dir/usr/share/icons/hicolor/512x512/apps"
 cp -a "$bundle_dir/." "$app_dir/usr/bin/"
 ln -s rubrica_associati "$app_dir/usr/bin/rubrica-associati"
+# linuxdeploy riscrive l'RPATH dell'eseguibile in $ORIGIN/../lib: SQLite (compilata
+# dai build hooks e messa in usr/bin/lib) non verrebbe piu' trovata. La copiamo
+# dove l'AppImage la cerca, altrimenti la rubrica non si apre.
+install -d "$app_dir/usr/lib"
+install -m 0755 "$bundle_dir/lib/libsqlite3.so" "$app_dir/usr/lib/libsqlite3.so"
 install -m 0644 "$desktop_file" "$app_dir/usr/share/applications/"
 install -m 0644 "$icon_file" "$app_dir/usr/share/icons/hicolor/512x512/apps/"
 
@@ -73,6 +78,12 @@ OUTPUT="$appimage_output" VERSION="$app_version" APPIMAGE_EXTRACT_AND_RUN=1 \
   --desktop-file "$desktop_file" \
   --icon-file "$icon_file" \
   --output appimage
+
+# Controllo di regressione: SQLite deve stare dove l'AppImage la cerca.
+sqlite_check="$(mktemp -d)"
+(cd "$sqlite_check" && APPIMAGE_EXTRACT_AND_RUN=1 "$appimage_output" --appimage-extract 'usr/lib/libsqlite3.so' >/dev/null)
+test -f "$sqlite_check/squashfs-root/usr/lib/libsqlite3.so" || { echo "AppImage senza usr/lib/libsqlite3.so" >&2; exit 1; }
+rm -rf "$sqlite_check"
 
 debian_version="$app_version-$build_number"
 debian_root="$temporary_dir/debian"
