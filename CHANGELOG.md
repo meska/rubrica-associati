@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.1 - 2026-10-16
+
+### Corretto
+
+- Linux (solo pacchetto AppImage): la rubrica non si apriva ("Impossibile aprire
+  la rubrica") perché la libreria SQLite non era dove l'AppImage la cerca.
+  Nessuna modifica all'app su iOS, Android e Windows.
+
 ## 1.9.0 - 2026-10-14
 
 ### Aggiunto
